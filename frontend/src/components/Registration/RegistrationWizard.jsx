@@ -46,10 +46,28 @@ export default function RegistrationWizard() {
     setError(null);
     try {
       const response = await register(data);
-      setStep1Data({ user_id: response.user_id, access: response.access, refresh: response.refresh });
+      setStep1Data({ user_id: response.user_id });
       setStep(2);
     } catch (err) {
-      setError(err.response?.data?.error?.message || 'Registration failed. Please try again.');
+      console.error('Registration error:', err.response?.data);
+      const errors = err.response?.data;
+      if (errors) {
+        if (errors.email) {
+          setError(errors.email[0] || 'Email error');
+        } else if (errors.password) {
+          setError(errors.password[0] || 'Password error');
+        } else if (errors.confirm_password) {
+          setError(errors.confirm_password[0] || 'Password confirmation error');
+        } else if (errors.full_name) {
+          setError(errors.full_name[0] || 'Name error');
+        } else if (errors.non_field_errors) {
+          setError(errors.non_field_errors[0]);
+        } else {
+          setError('Registration failed. Please check your input.');
+        }
+      } else {
+        setError(err.response?.data?.error?.message || 'Registration failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

@@ -27,7 +27,9 @@ class RegistrationViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['post'], url_path='register')
     def register_step1(self, request):
         serializer = Step1Serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            logger.error(f"Registration validation failed: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         user = serializer.save()
         return Response({
             'user_id': user.id,

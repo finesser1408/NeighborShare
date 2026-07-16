@@ -22,7 +22,11 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // Don't redirect to login for public endpoints
+    const publicEndpoints = ['/auth/register', '/auth/login', '/items/search', '/items/categories', '/items/'];
+    const isPublicEndpoint = publicEndpoints.some(endpoint => originalRequest.url?.includes(endpoint));
+
+    if (error.response?.status === 401 && !originalRequest._retry && !isPublicEndpoint) {
       originalRequest._retry = true;
 
       const refreshToken = localStorage.getItem('refresh_token');
