@@ -1,0 +1,105 @@
+from rest_framework import serializers
+from django.contrib.auth import get_user_model
+from django.contrib.gis.geos import Point
+from users.models import User, UserProfile
+import re
+
+User = get_user_model()
+
+
+class Step1Serializer(serializers.Serializer):
+    full_name = serializers.CharField(max_length=200)
+    email = serializers.EmailField()
+    password = serializers.CharField(min_length=8, write_only=True)
+    confirm_password = serializers.CharField(write_only=True)
+
+    def validate_email(self, value):
+        if User.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError("A user with this email already exists.")
+        return value.lower()
+
+    def validate(self, attrs):
+        if attrs['password'] != attrs['confirm_password']:
+            raise serializers.ValidationError({'confirm_password': 'Passwords do not match.'})
+        return attrs
+
+    def save(self):
+        full_name = self.validated_data['full_name'].strip()
+        name_parts = full_name.split(' ', 1)
+        first_name = name_parts[0]
+        last_name = name_parts[1] if len(name_parts) > 1 else ''
+
+        user = User.objects.create_user(
+            username=self.validated_data['email'],
+            email=self.validated_data['email'],
+            password=self.validated_data['password'],
+            first_name=first_name,
+            last_name=last_name,
+            is_active=False,
+        )
+        UserProfile.objects.create(user=user, registration_step=1)
+        return user
+
+
+class Step2Serializer(serializers.Serializer):
+    national_id = serializers.CharField(max_length=20)
+    selfie = serializers.ImageField(required=False)
+
+    def validate_national_id(self, value):
+        pattern = r'^\d{2}-\d{6,7}[A-Z]\d{2}$'
+        if not re.match(pattern, value):
+            raise serializers.ValidationError(
+                "Invalid Zimbabwean National ID format. Expected format: XX-XXXXXXXA00"
+            )
+        return value
+
+
+class Step3Serializer(serializers.Serializer):
+    street_address = serializers.CharField(max_length=500)
+
+    def validate_street_address(self, value):
+        if len(value.strip()) < 10:
+            raise serializers.ValidationError("Please provide a complete street address.")
+        return value.strip()
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField()
+    email = serializers.EmailField(source='user.email', read_only=True)
+    phone_number = serializers.CharField(source='user.phone_number', read_only=True)
+    profile_photo = serializers.ImageField(source='user.profile_photo', read_only=True)
+    home_location = serializers.SerializerMethodField()
+    trust_score_display = serializers.SerializerMethodField()
+
+    class Meta:
+        model = UserProfile
+        fields = [
+            'id', 'full_name', 'email', 'phone_number', 'profile_photo',
+            'home_address', 'home_location', 'trust_score', 'trust_score_display',
+            'national_id_verified', 'is_active', 'created_at',
+        ]
+        read_only_fields = fields
+
+    def get_full_name(self, obj):
+        return f"{obj.user.first_name} {obj.user.last_name}".strip()
+
+    def get_home_location(self, obj):
+        if obj.home_location:
+            return {
+                'lat': obj.home_location.y,
+                'lng': obj.home_location.x,
+            }
+        return None
+
+    def get_trust_score_display(self, obj):
+        if obj.trust_score == 0 and not obj.national_id_verified:
+            return "Not Verified"
+        if obj.trust_score > 0 and obj.user.ratings_received.count() < 3:
+            return "New Member"
+        return f"{obj.trust_score:.0f}/100"
+
+
+class UserRegistrationResponseSerializer(serializers.Serializer):
+    access = serializers.CharField()
+    refresh = serializers.CharField()
+    user = UserProfileSerializer()

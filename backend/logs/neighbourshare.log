@@ -1,0 +1,91 @@
+INFO 2026-07-14 08:29:13,496 autoreload 13276 13172 Watching for file changes with StatReloader
+INFO 2026-07-14 11:32:15,039 autoreload 13276 13172 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\neighbourshare\settings.py changed, reloading.
+INFO 2026-07-14 11:32:29,755 autoreload 26004 11860 Watching for file changes with StatReloader
+INFO 2026-07-14 11:42:56,386 autoreload 26004 11860 C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\conf\locale\__init__.py changed, reloading.
+INFO 2026-07-14 12:33:18,852 autoreload 17732 16136 Watching for file changes with StatReloader
+INFO 2026-07-14 12:48:15,531 autoreload 15708 11992 Watching for file changes with StatReloader
+INFO 2026-07-16 08:47:24,296 autoreload 21824 21944 Watching for file changes with StatReloader
+INFO 2026-07-16 08:48:38,333 basehttp 21824 14956 "GET /api/items/search?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:48:38,355 basehttp 21824 2680 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-16 08:48:52,356 basehttp 21824 2680 "GET /api/items/search?lat=-17.797563713122937&lng=31.008768312516835&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:48:52,718 basehttp 21824 20044 "GET /api/items/search/?lat=-17.797563713122937&lng=31.008768312516835&radius_km=5&sort=distance HTTP/1.1" 200 151
+INFO 2026-07-16 08:48:52,756 basehttp 21824 20044 "GET /api/items/search?lat=-17.826164483039296&lng=30.92657135403753&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:48:52,964 basehttp 21824 21072 "GET /api/items/search/?lat=-17.826164483039296&lng=30.92657135403753&radius_km=5&sort=distance HTTP/1.1" 200 150
+INFO 2026-07-16 08:48:53,356 basehttp 21824 21072 "GET /api/items/search?lat=-17.797563713122937&lng=31.008853450649976&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:48:53,392 basehttp 21824 8316 "GET /api/items/search/?lat=-17.797563713122937&lng=31.008853450649976&radius_km=5&sort=distance HTTP/1.1" 200 151
+INFO 2026-07-16 08:48:53,634 basehttp 21824 8316 "GET /api/items/search?lat=-17.783261608815994&lng=31.05008102219997&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:48:53,650 basehttp 21824 7832 "GET /api/items/search/?lat=-17.783261608815994&lng=31.05008102219997&radius_km=5&sort=distance HTTP/1.1" 200 150
+INFO 2026-07-16 08:48:54,065 basehttp 21824 7832 "GET /api/items/search?lat=-17.776110127175002&lng=31.070694807974988&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:48:54,403 basehttp 21824 19440 "GET /api/items/search/?lat=-17.776110127175002&lng=31.070694807974988&radius_km=5&sort=distance HTTP/1.1" 200 151
+INFO 2026-07-16 08:48:56,375 basehttp 21824 19440 "GET /api/items/search?lat=-17.776539224145054&lng=31.07151911039387&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:48:56,473 basehttp 21824 20208 "GET /api/items/search/?lat=-17.776539224145054&lng=31.07151911039387&radius_km=5&sort=distance HTTP/1.1" 200 150
+INFO 2026-07-16 08:48:56,671 basehttp 21824 20208 "GET /api/items/search?lat=-17.776753772243726&lng=31.0719295609953&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:48:56,995 basehttp 21824 19336 "GET /api/items/search/?lat=-17.776753772243726&lng=31.0719295609953&radius_km=5&sort=distance HTTP/1.1" 200 149
+INFO 2026-07-16 08:49:00,607 basehttp 21824 19336 "GET /api/items/search?lat=-17.76888684021901&lng=31.059639274336547&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:49:00,624 basehttp 21824 12324 "GET /api/items/search/?lat=-17.76888684021901&lng=31.059639274336547&radius_km=5&sort=distance HTTP/1.1" 200 150
+INFO 2026-07-16 08:49:03,409 basehttp 21824 12324 "GET /api/items/search?lat=-17.763553476421666&lng=31.054769256154703&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:49:03,751 basehttp 21824 13860 "GET /api/items/search/?lat=-17.763553476421666&lng=31.054769256154703&radius_km=5&sort=distance HTTP/1.1" 200 151
+INFO 2026-07-16 08:49:06,531 basehttp 21824 13860 "GET /api/items/search?lat=-17.75591075450805&lng=31.04691715635494&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:49:06,596 basehttp 21824 21212 "GET /api/items/search/?lat=-17.75591075450805&lng=31.04691715635494&radius_km=5&sort=distance HTTP/1.1" 200 149
+INFO 2026-07-16 08:49:09,466 basehttp 21824 21212 "GET /api/items/search?lat=-17.746918899007436&lng=31.045136488914&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:49:09,796 basehttp 21824 11404 "GET /api/items/search/?lat=-17.746918899007436&lng=31.045136488914&radius_km=5&sort=distance HTTP/1.1" 200 148
+INFO 2026-07-16 08:49:18,801 basehttp 21824 11404 "GET /api/items/search?lat=-17.747981596377752&lng=31.04726041754837&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:49:18,827 basehttp 21824 5172 "GET /api/items/search/?lat=-17.747981596377752&lng=31.04726041754837&radius_km=5&sort=distance HTTP/1.1" 200 150
+INFO 2026-07-16 08:49:20,818 basehttp 21824 5172 "GET /api/items/search?lat=-17.756421641824545&lng=31.043977982386128&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:49:21,179 basehttp 21824 18756 "GET /api/items/search/?lat=-17.756421641824545&lng=31.043977982386128&radius_km=5&sort=distance HTTP/1.1" 200 151
+INFO 2026-07-16 08:49:23,803 basehttp 21824 18756 "GET /api/items/search?lat=-17.763246956427423&lng=31.043205644700922&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:49:23,856 basehttp 21824 10608 "GET /api/items/search/?lat=-17.763246956427423&lng=31.043205644700922&radius_km=5&sort=distance HTTP/1.1" 200 151
+INFO 2026-07-16 08:49:25,517 basehttp 21824 10608 "GET /api/items/search?lat=-17.7716658479652&lng=31.04783967081228&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:49:25,856 basehttp 21824 14404 "GET /api/items/search/?lat=-17.7716658479652&lng=31.04783967081228&radius_km=5&sort=distance HTTP/1.1" 200 148
+INFO 2026-07-16 08:49:27,284 basehttp 21824 14404 "GET /api/items/search?lat=-17.77699896975536&lng=31.05146536716791&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:49:27,304 basehttp 21824 22088 "GET /api/items/search/?lat=-17.77699896975536&lng=31.05146536716791&radius_km=5&sort=distance HTTP/1.1" 200 149
+INFO 2026-07-16 08:49:29,243 basehttp 21824 22088 "GET /api/items/search?lat=-17.784661222441528&lng=31.051014836851536&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:49:29,585 basehttp 21824 22444 "GET /api/items/search/?lat=-17.784661222441528&lng=31.051014836851536&radius_km=5&sort=distance HTTP/1.1" 200 151
+INFO 2026-07-16 08:49:31,494 basehttp 21824 22444 "GET /api/items/search?lat=-17.785238432166086&lng=31.051667420180554&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:49:31,621 basehttp 21824 18548 "GET /api/items/search/?lat=-17.785238432166086&lng=31.051667420180554&radius_km=5&sort=distance HTTP/1.1" 200 151
+INFO 2026-07-16 08:49:31,784 basehttp 21824 18548 "GET /api/items/search?lat=-17.785527036328865&lng=31.05199371184504&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:49:32,120 basehttp 21824 21960 "GET /api/items/search/?lat=-17.785527036328865&lng=31.05199371184504&radius_km=5&sort=distance HTTP/1.1" 200 150
+INFO 2026-07-16 08:50:01,161 basehttp 21824 21960 "GET /api/items/search?lat=-17.78681425629679&lng=31.051708459854126&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:50:01,179 basehttp 21824 19652 "GET /api/items/search/?lat=-17.78681425629679&lng=31.051708459854126&radius_km=5&sort=distance HTTP/1.1" 200 150
+INFO 2026-07-16 08:50:05,014 basehttp 21824 19652 "GET /api/items/search?lat=-17.787128397856826&lng=31.050099134445194&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:50:05,382 basehttp 21824 22392 "GET /api/items/search/?lat=-17.787128397856826&lng=31.050099134445194&radius_km=5&sort=distance HTTP/1.1" 200 151
+INFO 2026-07-16 08:50:05,438 basehttp 21824 22392 "GET /api/items/search?lat=-17.787746463378134&lng=31.046869754791263&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-16 08:50:05,620 basehttp 21824 21012 "GET /api/items/search/?lat=-17.787746463378134&lng=31.046869754791263&radius_km=5&sort=distance HTTP/1.1" 200 151
+INFO 2026-07-16 08:56:05,433 basehttp 21824 7468 "OPTIONS /api/auth/register HTTP/1.1" 200 0
+INFO 2026-07-16 08:56:06,015 basehttp 21824 7468 "POST /api/auth/register HTTP/1.1" 201 70
+INFO 2026-07-16 08:57:12,992 basehttp 21824 7468 "OPTIONS /api/auth/verify-id HTTP/1.1" 200 0
+WARNING 2026-07-16 08:57:13,060 log 21824 7468 Bad Request: /api/auth/verify-id
+WARNING 2026-07-16 08:57:13,064 basehttp 21824 7468 "POST /api/auth/verify-id HTTP/1.1" 400 149
+WARNING 2026-07-16 08:57:40,192 log 21824 7468 Bad Request: /api/auth/verify-id
+WARNING 2026-07-16 08:57:40,205 basehttp 21824 7468 "POST /api/auth/verify-id HTTP/1.1" 400 149
+WARNING 2026-07-16 08:57:41,248 log 21824 7468 Bad Request: /api/auth/verify-id
+WARNING 2026-07-16 08:57:41,253 basehttp 21824 7468 "POST /api/auth/verify-id HTTP/1.1" 400 149
+INFO 2026-07-16 08:58:37,609 basehttp 21824 7468 "POST /api/auth/register HTTP/1.1" 201 70
+WARNING 2026-07-16 08:59:10,650 log 21824 7468 Bad Request: /api/auth/verify-id
+WARNING 2026-07-16 08:59:10,653 basehttp 21824 7468 "POST /api/auth/verify-id HTTP/1.1" 400 149
+WARNING 2026-07-16 09:04:21,287 log 21824 20344 Bad Request: /api/auth/register
+WARNING 2026-07-16 09:04:21,288 basehttp 21824 20344 "POST /api/auth/register HTTP/1.1" 400 115
+WARNING 2026-07-16 09:13:42,932 log 21824 11708 Unauthorized: /api/items/categories/
+WARNING 2026-07-16 09:13:42,936 basehttp 21824 11708 "GET /api/items/categories/ HTTP/1.1" 401 149
+WARNING 2026-07-16 09:13:42,967 log 21824 320 Unauthorized: /api/items/categories/
+INFO 2026-07-16 09:13:42,967 basehttp 21824 11708 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+WARNING 2026-07-16 09:13:42,981 basehttp 21824 320 "GET /api/items/categories/ HTTP/1.1" 401 149
+INFO 2026-07-16 09:13:43,052 basehttp 21824 11708 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+WARNING 2026-07-16 09:13:47,097 log 21824 11708 Unauthorized: /api/items/categories/
+WARNING 2026-07-16 09:13:47,102 basehttp 21824 11708 "GET /api/items/categories/ HTTP/1.1" 401 149
+WARNING 2026-07-16 09:13:47,222 log 21824 11708 Unauthorized: /api/items/categories/
+WARNING 2026-07-16 09:13:47,226 basehttp 21824 11708 "GET /api/items/categories/ HTTP/1.1" 401 149
+INFO 2026-07-16 09:13:47,240 basehttp 21824 320 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-16 09:13:47,275 basehttp 21824 320 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+WARNING 2026-07-16 09:13:53,392 log 21824 320 Unauthorized: /api/items/categories/
+WARNING 2026-07-16 09:13:53,422 basehttp 21824 320 "GET /api/items/categories/ HTTP/1.1" 401 149
+WARNING 2026-07-16 09:13:53,442 log 21824 320 Unauthorized: /api/items/categories/
+INFO 2026-07-16 09:13:53,451 basehttp 21824 11708 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+WARNING 2026-07-16 09:13:53,459 basehttp 21824 320 "GET /api/items/categories/ HTTP/1.1" 401 149
+INFO 2026-07-16 09:13:53,495 basehttp 21824 19108 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+WARNING 2026-07-16 09:14:04,568 log 21824 19108 Unauthorized: /api/items/categories/
+WARNING 2026-07-16 09:14:04,571 basehttp 21824 19108 "GET /api/items/categories/ HTTP/1.1" 401 149
+WARNING 2026-07-16 09:14:04,592 log 21824 19108 Unauthorized: /api/items/categories/
+WARNING 2026-07-16 09:14:04,608 basehttp 21824 19108 "GET /api/items/categories/ HTTP/1.1" 401 149
+INFO 2026-07-16 09:14:04,617 basehttp 21824 320 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-16 09:14:04,664 basehttp 21824 320 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
