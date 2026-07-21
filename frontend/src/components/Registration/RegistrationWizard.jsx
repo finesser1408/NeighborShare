@@ -150,7 +150,7 @@ export default function RegistrationWizard() {
                 {...step1Methods.register('full_name')}
                 type="text"
                 className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${step1Methods.formState.errors.full_name ? 'border-red-500' : 'border-gray-300'}`}
-                placeholder="John Doe"
+                placeholder="Tinaye Gogwe"
               />
               {step1Methods.formState.errors.full_name && (
                 <p className="mt-1 text-sm text-red-600">{step1Methods.formState.errors.full_name.message}</p>
@@ -162,7 +162,7 @@ export default function RegistrationWizard() {
                 {...step1Methods.register('email')}
                 type="email"
                 className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${step1Methods.formState.errors.email ? 'border-red-500' : 'border-gray-300'}`}
-                placeholder="john@example.com"
+                placeholder="tinaye@example.com"
               />
               {step1Methods.formState.errors.email && (
                 <p className="mt-1 text-sm text-red-600">{step1Methods.formState.errors.email.message}</p>

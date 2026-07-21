@@ -236,3 +236,18 @@ INFO 2026-07-16 22:02:02,763 basehttp 19284 10052 "GET /api/items/search/?lat=-1
 INFO 2026-07-16 22:02:02,764 basehttp 19284 15300 "GET /api/items/categories/ HTTP/1.1" 200 985
 INFO 2026-07-16 22:02:02,804 basehttp 19284 10052 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
 INFO 2026-07-16 22:02:02,830 basehttp 19284 15300 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-21 14:56:49,604 autoreload 776 1672 Watching for file changes with StatReloader
+INFO 2026-07-21 14:57:08,671 basehttp 776 25352 "GET /api/items/search?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 14:57:08,702 basehttp 776 21936 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-21 14:57:31,409 basehttp 776 21936 "OPTIONS /api/auth/login HTTP/1.1" 200 0
+INFO 2026-07-21 14:57:34,986 basehttp 776 21936 "POST /api/auth/login HTTP/1.1" 200 839
+INFO 2026-07-21 14:57:35,101 basehttp 776 21936 "OPTIONS /api/items/search?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 14:57:35,121 basehttp 776 21936 "OPTIONS /api/items/categories/ HTTP/1.1" 200 0
+INFO 2026-07-21 14:57:35,199 basehttp 776 21936 "OPTIONS /api/items/search?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 14:57:35,225 basehttp 776 21936 "OPTIONS /api/items/categories/ HTTP/1.1" 200 0
+INFO 2026-07-21 14:57:35,263 basehttp 776 21936 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-21 14:57:35,287 basehttp 776 21936 "OPTIONS /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 14:57:35,305 basehttp 776 21936 "OPTIONS /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 14:57:35,334 basehttp 776 21936 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-21 14:57:35,365 basehttp 776 21936 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-21 14:57:35,414 basehttp 776 21936 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
