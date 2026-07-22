@@ -30,7 +30,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
         user = self.request.user
         return Transaction.objects.filter(
             models.Q(borrower=user) | models.Q(item__owner=user)
-        ).select_related('borrower', 'item', 'item__owner').prefetch_related('events', 'ratings')
+        ).select_related('borrower', 'item', 'item__owner').prefetch_related('events', 'ratings').order_by('-created_at')
 
     @action(detail=False, methods=['post'], url_path='borrow-request')
     def borrow_request(self, request):

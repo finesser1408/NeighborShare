@@ -50,11 +50,16 @@ export default function Profile() {
 
   const handleSave = async () => {
     try {
+      console.log('Saving profile with data:', formData);
       const response = await usersApi.updateProfile(user.id, formData);
+      console.log('Profile save response:', response.data);
+      console.log('Phone number in response:', response.data.phone_number);
       updateUser(response.data);
+      setProfile(response.data);
       setEditing(false);
     } catch (err) {
-      console.error(err);
+      console.error('Error saving profile:', err);
+      console.error('Error response:', err.response?.data);
     }
   };
 

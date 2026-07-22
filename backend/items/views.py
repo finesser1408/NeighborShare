@@ -1,5 +1,5 @@
 from rest_framework import viewsets, status, filters
-from rest_framework.decorators import action
+from rest_framework.decorators import action, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.gis.geos import Point
@@ -20,7 +20,7 @@ class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.select_related('owner', 'owner__profile').prefetch_related('images')
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
-    filterset_fields = ['category', 'is_available']
+    filterset_fields = ['category', 'is_available', 'owner']
     search_fields = ['title', 'description']
     ordering_fields = ['created_at', 'daily_rate_usd', 'deposit_amount_usd']
     ordering = ['-created_at']
@@ -39,11 +39,13 @@ class ItemViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if self.action == 'list' and self.request.user.is_authenticated:
+        # Only filter by is_available if not filtering by owner (for "My Listings")
+        if self.action == 'list' and self.request.user.is_authenticated and 'owner' not in self.request.query_params:
             queryset = queryset.filter(is_available=True)
         return queryset
 
     @action(detail=False, methods=['get'], url_path='search')
+    @permission_classes([AllowAny])
     def search(self, request):
         lat = request.query_params.get('lat')
         lng = request.query_params.get('lng')
@@ -104,19 +106,30 @@ class ItemViewSet(viewsets.ModelViewSet):
 
         widen_suggestion = len(data) == 0 and radius_km < 10
 
+        # Build features from queryset (model instances) to access location
+        features = []
+        for item in queryset:
+            # Handle location - might be MockPoint, Point, or None
+            if item.location and hasattr(item.location, 'x') and hasattr(item.location, 'y'):
+                coords = [item.location.x, item.location.y]
+            elif item.location and isinstance(item.location, (list, tuple)) and len(item.location) == 2:
+                coords = item.location
+            else:
+                # Skip items without valid location
+                continue
+            
+            features.append({
+                'type': 'Feature',
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': coords,
+                },
+                'properties': next((d for d in data if d['id'] == str(item.id)), {}),
+            })
+
         return Response({
             'type': 'FeatureCollection',
-            'features': [
-                {
-                    'type': 'Feature',
-                    'geometry': {
-                        'type': 'Point',
-                        'coordinates': [item.location.x, item.location.y],
-                    },
-                    'properties': item,
-                }
-                for item in data
-            ],
+            'features': features,
             'widen_suggestion': widen_suggestion,
             'search_center': {'lat': lat, 'lng': lng},
             'radius_km': radius_km,

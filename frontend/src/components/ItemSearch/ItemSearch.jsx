@@ -38,29 +38,34 @@ function MapComponent({ items, selectedItem, onItemClick, center, zoom, onMapMov
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {items.map((item) => (
-        <Marker
-          key={item.id}
-          position={[item.location.coordinates[1], item.location.coordinates[0]]}
-          eventHandlers={{ click: () => onItemClick(item) }}
-        >
-          <Popup>
-            <div className="p-1 min-w-[200px]">
-              <h4 className="font-medium text-gray-900 truncate">{item.properties.title}</h4>
-              <p className="text-sm text-gray-500">${item.properties.daily_rate_usd}/day</p>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onItemClick(item);
-                }}
-                className="mt-2 w-full text-xs bg-blue-600 text-white py-1 rounded hover:bg-blue-700"
-              >
-                View Details
-              </button>
-            </div>
-          </Popup>
-        </Marker>
-      ))}
+      {items.map((item) => {
+        // Handle both old format (item.location.coordinates) and new format (item.geometry.coordinates)
+        const coords = item.geometry?.coordinates || item.location?.coordinates;
+        if (!coords) return null;
+        return (
+          <Marker
+            key={item.id || item.properties?.id}
+            position={[coords[1], coords[0]]}
+            eventHandlers={{ click: () => onItemClick(item) }}
+          >
+            <Popup>
+              <div className="p-1 min-w-[200px]">
+                <h4 className="font-medium text-gray-900 truncate">{item.properties?.title || item.title}</h4>
+                <p className="text-sm text-gray-500">${item.properties?.daily_rate_usd || item.daily_rate_usd}/day</p>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onItemClick(item);
+                  }}
+                  className="mt-2 w-full text-xs bg-blue-600 text-white py-1 rounded hover:bg-blue-700"
+                >
+                  View Details
+                </button>
+              </div>
+            </Popup>
+          </Marker>
+        );
+      })}
       <MapMoveHandler onMove={onMapMove} />
     </MapContainer>
   );
@@ -109,10 +114,10 @@ function ItemList({ items, selectedItem, onItemClick, loading, widenSuggestion, 
     <div className="space-y-4" role="list" aria-label="Available items">
       {items.map((item) => (
         <ItemCard
-          key={item.id}
-          item={item.properties}
-          distance={item.properties.distance_km}
-          selected={selectedItem?.id === item.id}
+          key={item.properties?.id || item.id}
+          item={item.properties || item}
+          distance={item.properties?.distance_km || item.distance_km}
+          selected={selectedItem?.id === (item.properties?.id || item.id)}
           onClick={() => onItemClick(item)}
         />
       ))}

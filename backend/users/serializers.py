@@ -66,22 +66,45 @@ class Step3Serializer(serializers.Serializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
     email = serializers.EmailField(source='user.email', read_only=True)
-    phone_number = serializers.CharField(source='user.phone_number', read_only=True)
-    profile_photo = serializers.ImageField(source='user.profile_photo', read_only=True)
+    first_name = serializers.CharField(source='user.first_name', required=False)
+    last_name = serializers.CharField(source='user.last_name', required=False)
+    phone_number = serializers.CharField(source='user.phone_number', required=False)
+    profile_photo = serializers.ImageField(source='user.profile_photo', required=False)
     home_location = serializers.SerializerMethodField()
     trust_score_display = serializers.SerializerMethodField()
 
     class Meta:
         model = UserProfile
         fields = [
-            'id', 'full_name', 'email', 'phone_number', 'profile_photo',
+            'id', 'full_name', 'email', 'first_name', 'last_name', 'phone_number', 'profile_photo',
             'home_address', 'home_location', 'trust_score', 'trust_score_display',
             'national_id_verified', 'is_active', 'created_at',
         ]
-        read_only_fields = fields
+        read_only_fields = ['id', 'email', 'home_location', 'trust_score', 'trust_score_display',
+                           'national_id_verified', 'is_active', 'created_at']
 
     def get_full_name(self, obj):
         return f"{obj.user.first_name} {obj.user.last_name}".strip()
+
+    def update(self, instance, validated_data):
+        # Handle User model fields
+        user_fields = ['first_name', 'last_name', 'phone_number', 'profile_photo']
+        user_data = {}
+        for field in user_fields:
+            if field in validated_data:
+                user_data[field] = validated_data.pop(field)
+        
+        if user_data:
+            for attr, value in user_data.items():
+                setattr(instance.user, attr, value)
+            instance.user.save()
+        
+        # Handle UserProfile fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        
+        return instance
 
     def get_home_location(self, obj):
         if obj.home_location:

@@ -24,11 +24,11 @@ class ItemSerializer(serializers.ModelSerializer):
         model = Item
         fields = [
             'id', 'title', 'description', 'category', 'daily_rate_usd',
-            'deposit_amount_usd', 'is_available', 'location', 'location_display',
+            'deposit_amount_usd', 'is_available', 'location_display',
             'availability_calendar', 'images', 'owner_name', 'owner_trust_score',
             'distance_km', 'created_at', 'updated_at',
         ]
-        read_only_fields = ['id', 'owner', 'location', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'owner', 'created_at', 'updated_at']
 
     def get_owner_name(self, obj):
         return f"{obj.owner.first_name} {obj.owner.last_name}".strip()
@@ -41,7 +41,11 @@ class ItemSerializer(serializers.ModelSerializer):
 
     def get_distance_km(self, obj):
         if hasattr(obj, 'distance'):
-            return round(obj.distance.km, 2)
+            # Handle both Distance objects (with .km) and floats (dev mode fallback)
+            if hasattr(obj.distance, 'km'):
+                return round(obj.distance.km, 2)
+            else:
+                return round(obj.distance, 2)
         return None
 
     def get_location_display(self, obj):
@@ -87,6 +91,8 @@ class ItemCreateSerializer(serializers.ModelSerializer):
         images = validated_data.pop('images', [])
         validated_data['owner'] = self.context['request'].user
         validated_data['location'] = self.context['request'].user.profile.home_location
+        # Ensure new listings are available by default
+        validated_data.setdefault('is_available', True)
         item = Item.objects.create(**validated_data)
 
         for idx, img in enumerate(images):

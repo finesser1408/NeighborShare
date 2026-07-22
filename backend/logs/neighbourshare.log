@@ -251,3 +251,530 @@ INFO 2026-07-21 14:57:35,305 basehttp 776 21936 "OPTIONS /api/items/search/?lat=
 INFO 2026-07-21 14:57:35,334 basehttp 776 21936 "GET /api/items/categories/ HTTP/1.1" 200 985
 INFO 2026-07-21 14:57:35,365 basehttp 776 21936 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
 INFO 2026-07-21 14:57:35,414 basehttp 776 21936 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-21 15:07:58,365 basehttp 776 24104 "OPTIONS /api/users/3/profile/ HTTP/1.1" 200 0
+INFO 2026-07-21 15:07:58,398 basehttp 776 24176 "OPTIONS /api/items/?owner=3 HTTP/1.1" 200 0
+INFO 2026-07-21 15:07:58,466 basehttp 776 23080 "OPTIONS /api/transactions/?user_id=3 HTTP/1.1" 200 0
+INFO 2026-07-21 15:07:58,489 basehttp 776 23120 "OPTIONS /api/users/3/profile/ HTTP/1.1" 200 0
+INFO 2026-07-21 15:07:58,522 basehttp 776 26672 "OPTIONS /api/items/?owner=3 HTTP/1.1" 200 0
+INFO 2026-07-21 15:07:58,522 basehttp 776 24104 "GET /api/users/3/profile/ HTTP/1.1" 200 259
+INFO 2026-07-21 15:07:58,537 basehttp 776 25116 "OPTIONS /api/transactions/?user_id=3 HTTP/1.1" 200 0
+INFO 2026-07-21 15:07:58,716 basehttp 776 24104 "GET /api/users/3/profile/ HTTP/1.1" 200 259
+INFO 2026-07-21 15:07:58,761 basehttp 776 24176 "GET /api/items/?owner=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:07:58,806 basehttp 776 24104 "GET /api/items/?owner=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:07:58,856 basehttp 776 23080 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:07:58,915 basehttp 776 23080 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:08:07,233 basehttp 776 24104 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-21 15:08:07,248 basehttp 776 23080 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-21 15:08:07,307 basehttp 776 24104 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-21 15:08:07,327 basehttp 776 23080 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-21 15:08:24,124 basehttp 776 23080 "OPTIONS /api/items/search?lat=-17.811537805219217&lng=31.051482877274754&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:24,204 basehttp 776 23080 "GET /api/items/search?lat=-17.811537805219217&lng=31.051482877274754&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:08:24,212 basehttp 776 24104 "OPTIONS /api/items/search/?lat=-17.811537805219217&lng=31.051482877274754&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:24,247 basehttp 776 24104 "GET /api/items/search/?lat=-17.811537805219217&lng=31.051482877274754&radius_km=5&sort=distance HTTP/1.1" 200 151
+INFO 2026-07-21 15:08:27,088 basehttp 776 24104 "OPTIONS /api/items/search?lat=-17.81157866353255&lng=31.051483015785795&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:27,167 basehttp 776 24104 "GET /api/items/search?lat=-17.81157866353255&lng=31.051483015785795&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:08:27,180 basehttp 776 24176 "OPTIONS /api/items/search/?lat=-17.81157866353255&lng=31.051483015785795&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:27,235 basehttp 776 24176 "GET /api/items/search/?lat=-17.81157866353255&lng=31.051483015785795&radius_km=5&sort=distance HTTP/1.1" 200 150
+INFO 2026-07-21 15:08:27,883 basehttp 776 24176 "OPTIONS /api/items/search?lat=-17.8115990926857&lng=31.051483085041358&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:27,981 basehttp 776 24176 "GET /api/items/search?lat=-17.8115990926857&lng=31.051483085041358&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:08:27,989 basehttp 776 25116 "OPTIONS /api/items/search/?lat=-17.8115990926857&lng=31.051483085041358&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:28,028 basehttp 776 25116 "GET /api/items/search/?lat=-17.8115990926857&lng=31.051483085041358&radius_km=5&sort=distance HTTP/1.1" 200 149
+INFO 2026-07-21 15:08:29,766 basehttp 776 25116 "OPTIONS /api/items/search?lat=-17.793252770869458&lng=31.05255577627084&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:29,895 basehttp 776 25116 "GET /api/items/search?lat=-17.793252770869458&lng=31.05255577627084&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:08:29,902 basehttp 776 26672 "OPTIONS /api/items/search/?lat=-17.793252770869458&lng=31.05255577627084&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:29,938 basehttp 776 26672 "GET /api/items/search/?lat=-17.793252770869458&lng=31.05255577627084&radius_km=5&sort=distance HTTP/1.1" 200 150
+INFO 2026-07-21 15:08:31,599 basehttp 776 26672 "OPTIONS /api/items/search?lat=-17.791087044954033&lng=31.052469960972452&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:31,664 basehttp 776 26672 "GET /api/items/search?lat=-17.791087044954033&lng=31.052469960972452&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:08:31,673 basehttp 776 23120 "OPTIONS /api/items/search/?lat=-17.791087044954033&lng=31.052469960972452&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:31,716 basehttp 776 23120 "GET /api/items/search/?lat=-17.791087044954033&lng=31.052469960972452&radius_km=5&sort=distance HTTP/1.1" 200 151
+INFO 2026-07-21 15:08:34,102 basehttp 776 23120 "OPTIONS /api/items/search?lat=-17.791097260703975&lng=31.052470084093407&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:34,156 basehttp 776 23120 "GET /api/items/search?lat=-17.791097260703975&lng=31.052470084093407&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:08:34,468 basehttp 776 18080 "OPTIONS /api/items/search/?lat=-17.791097260703975&lng=31.052470084093407&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:34,500 basehttp 776 18080 "GET /api/items/search/?lat=-17.791097260703975&lng=31.052470084093407&radius_km=5&sort=distance HTTP/1.1" 200 151
+INFO 2026-07-21 15:08:34,954 basehttp 776 18080 "OPTIONS /api/items/search?lat=-17.791102368578738&lng=31.05247014565388&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:35,074 basehttp 776 18080 "GET /api/items/search?lat=-17.791102368578738&lng=31.05247014565388&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:08:35,087 basehttp 776 27548 "OPTIONS /api/items/search/?lat=-17.791102368578738&lng=31.05247014565388&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:35,123 basehttp 776 27548 "GET /api/items/search/?lat=-17.791102368578738&lng=31.05247014565388&radius_km=5&sort=distance HTTP/1.1" 200 150
+INFO 2026-07-21 15:08:36,677 basehttp 776 27548 "OPTIONS /api/items/search?lat=-17.786443926105814&lng=31.05180507709162&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:36,738 basehttp 776 27548 "GET /api/items/search?lat=-17.786443926105814&lng=31.05180507709162&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:08:37,056 basehttp 776 21276 "OPTIONS /api/items/search/?lat=-17.786443926105814&lng=31.05180507709162&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:37,087 basehttp 776 21276 "GET /api/items/search/?lat=-17.786443926105814&lng=31.05180507709162&radius_km=5&sort=distance HTTP/1.1" 200 150
+INFO 2026-07-21 15:08:38,269 basehttp 776 21276 "OPTIONS /api/items/search?lat=-17.786385184004953&lng=31.052277117021763&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:38,329 basehttp 776 21276 "GET /api/items/search?lat=-17.786385184004953&lng=31.052277117021763&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:08:38,337 basehttp 776 4116 "OPTIONS /api/items/search/?lat=-17.786385184004953&lng=31.052277117021763&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:38,394 basehttp 776 4116 "GET /api/items/search/?lat=-17.786385184004953&lng=31.052277117021763&radius_km=5&sort=distance HTTP/1.1" 200 151
+INFO 2026-07-21 15:08:44,317 basehttp 776 4116 "OPTIONS /api/items/search?lat=-17.78638263000013&lng=31.05227714587824&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:44,483 basehttp 776 4116 "GET /api/items/search?lat=-17.78638263000013&lng=31.05227714587824&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:08:44,825 basehttp 776 4896 "OPTIONS /api/items/search/?lat=-17.78638263000013&lng=31.05227714587824&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:44,935 basehttp 776 4896 "GET /api/items/search/?lat=-17.78638263000013&lng=31.05227714587824&radius_km=5&sort=distance HTTP/1.1" 200 149
+INFO 2026-07-21 15:08:44,967 basehttp 776 4896 "OPTIONS /api/items/search?lat=-17.78637752199037&lng=31.052277203591157&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:45,061 basehttp 776 4896 "GET /api/items/search?lat=-17.78637752199037&lng=31.052277203591157&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:08:45,072 basehttp 776 1812 "OPTIONS /api/items/search/?lat=-17.78637752199037&lng=31.052277203591157&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:45,099 basehttp 776 1812 "GET /api/items/search/?lat=-17.78637752199037&lng=31.052277203591157&radius_km=5&sort=distance HTTP/1.1" 200 150
+INFO 2026-07-21 15:08:45,880 basehttp 776 1812 "OPTIONS /api/items/search?lat=-17.78638773800974&lng=31.052255861344943&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:45,933 basehttp 776 1812 "GET /api/items/search?lat=-17.78638773800974&lng=31.052255861344943&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:08:45,945 basehttp 776 22232 "OPTIONS /api/items/search/?lat=-17.78638773800974&lng=31.052255861344943&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:45,975 basehttp 776 22232 "GET /api/items/search/?lat=-17.78638773800974&lng=31.052255861344943&radius_km=5&sort=distance HTTP/1.1" 200 150
+INFO 2026-07-21 15:08:50,140 basehttp 776 22232 "OPTIONS /api/items/search?lat=-17.78745020083319&lng=31.04431794624679&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:50,185 basehttp 776 22232 "GET /api/items/search?lat=-17.78745020083319&lng=31.04431794624679&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:08:50,504 basehttp 776 27476 "OPTIONS /api/items/search/?lat=-17.78745020083319&lng=31.04431794624679&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:50,537 basehttp 776 27476 "GET /api/items/search/?lat=-17.78745020083319&lng=31.04431794624679&radius_km=5&sort=distance HTTP/1.1" 200 149
+INFO 2026-07-21 15:08:52,324 basehttp 776 27476 "OPTIONS /api/items/search?lat=-17.787470632748615&lng=31.044276685340222&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:52,377 basehttp 776 27476 "GET /api/items/search?lat=-17.787470632748615&lng=31.044276685340222&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:08:52,386 basehttp 776 3628 "OPTIONS /api/items/search/?lat=-17.787470632748615&lng=31.044276685340222&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:52,426 basehttp 776 3628 "GET /api/items/search/?lat=-17.787470632748615&lng=31.044276685340222&radius_km=5&sort=distance HTTP/1.1" 200 151
+INFO 2026-07-21 15:08:53,506 basehttp 776 3628 "OPTIONS /api/items/search?lat=-17.787511496572463&lng=31.04427999421564&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:53,811 basehttp 776 3628 "GET /api/items/search?lat=-17.787511496572463&lng=31.04427999421564&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:08:54,140 basehttp 776 8908 "OPTIONS /api/items/search/?lat=-17.787511496572463&lng=31.04427999421564&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:54,171 basehttp 776 8908 "GET /api/items/search/?lat=-17.787511496572463&lng=31.04427999421564&radius_km=5&sort=distance HTTP/1.1" 200 150
+INFO 2026-07-21 15:08:56,767 basehttp 776 8908 "OPTIONS /api/items/search?lat=-17.787429768915416&lng=31.044286611966385&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:56,826 basehttp 776 8908 "GET /api/items/search?lat=-17.787429768915416&lng=31.044286611966385&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:08:56,832 basehttp 776 24124 "OPTIONS /api/items/search/?lat=-17.787429768915416&lng=31.044286611966385&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:08:56,862 basehttp 776 24124 "GET /api/items/search/?lat=-17.787429768915416&lng=31.044286611966385&radius_km=5&sort=distance HTTP/1.1" 200 151
+INFO 2026-07-21 15:09:03,113 basehttp 776 24124 "OPTIONS /api/items/search?lat=-17.783179879214295&lng=30.999319395626554&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:09:03,153 basehttp 776 24124 "GET /api/items/search?lat=-17.783179879214295&lng=30.999319395626554&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:09:03,471 basehttp 776 20920 "OPTIONS /api/items/search/?lat=-17.783179879214295&lng=30.999319395626554&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:09:03,487 basehttp 776 20920 "GET /api/items/search/?lat=-17.783179879214295&lng=30.999319395626554&radius_km=5&sort=distance HTTP/1.1" 200 151
+INFO 2026-07-21 15:09:04,303 basehttp 776 20920 "OPTIONS /api/items/search?lat=-17.79037194100535&lng=31.055270970156286&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:09:04,345 basehttp 776 20920 "GET /api/items/search?lat=-17.79037194100535&lng=31.055270970156286&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:09:04,352 basehttp 776 8060 "OPTIONS /api/items/search/?lat=-17.79037194100535&lng=31.055270970156286&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:09:04,374 basehttp 776 8060 "GET /api/items/search/?lat=-17.79037194100535&lng=31.055270970156286&radius_km=5&sort=distance HTTP/1.1" 200 150
+INFO 2026-07-21 15:09:06,230 basehttp 776 8060 "OPTIONS /api/items/search?lat=-17.790453667315866&lng=31.05526533737305&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:09:06,272 basehttp 776 8060 "GET /api/items/search?lat=-17.790453667315866&lng=31.05526533737305&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:09:06,584 basehttp 776 15808 "OPTIONS /api/items/search/?lat=-17.790453667315866&lng=31.05526533737305&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:09:06,603 basehttp 776 15808 "GET /api/items/search/?lat=-17.790453667315866&lng=31.05526533737305&radius_km=5&sort=distance HTTP/1.1" 200 150
+INFO 2026-07-21 15:09:07,985 basehttp 776 15808 "OPTIONS /api/items/search?lat=-17.790453667315866&lng=31.05526533737305&radius_km=10&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:09:08,027 basehttp 776 15808 "GET /api/items/search?lat=-17.790453667315866&lng=31.05526533737305&radius_km=10&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:09:08,036 basehttp 776 13756 "OPTIONS /api/items/search/?lat=-17.790453667315866&lng=31.05526533737305&radius_km=10&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:09:08,057 basehttp 776 13756 "GET /api/items/search/?lat=-17.790453667315866&lng=31.05526533737305&radius_km=10&sort=distance HTTP/1.1" 200 152
+INFO 2026-07-21 15:11:36,302 basehttp 776 13756 "OPTIONS /api/items/ HTTP/1.1" 200 0
+INFO 2026-07-21 15:11:36,349 basehttp 776 13756 "POST /api/items/ HTTP/1.1" 201 243
+INFO 2026-07-21 15:11:36,458 basehttp 776 13756 "GET /api/items/?owner=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:11:36,489 basehttp 776 13756 "GET /api/items/?owner=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:11:41,234 basehttp 776 13756 "GET /api/items/?owner=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:11:41,276 basehttp 776 13756 "GET /api/items/?owner=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:12:05,188 basehttp 776 13756 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-21 15:12:05,236 basehttp 776 13756 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-21 15:12:05,276 basehttp 776 13756 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-21 15:12:05,309 basehttp 776 13756 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-21 15:12:11,641 basehttp 776 13756 "OPTIONS /api/items/search?lat=-17.7833&lng=31.05&radius_km=10&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:12:11,680 basehttp 776 13756 "GET /api/items/search?lat=-17.7833&lng=31.05&radius_km=10&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:12:11,688 basehttp 776 20432 "OPTIONS /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:12:11,710 basehttp 776 20432 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=distance HTTP/1.1" 200 129
+WARNING 2026-07-21 15:14:48,518 log 776 20432 Unauthorized: /api/users/3/profile/
+WARNING 2026-07-21 15:14:48,521 basehttp 776 20432 "GET /api/users/3/profile/ HTTP/1.1" 401 269
+WARNING 2026-07-21 15:14:48,530 log 776 20432 Unauthorized: /api/items/
+WARNING 2026-07-21 15:14:48,532 basehttp 776 20432 "GET /api/items/?owner=3 HTTP/1.1" 401 269
+WARNING 2026-07-21 15:14:48,542 log 776 20432 Unauthorized: /api/transactions/
+WARNING 2026-07-21 15:14:48,550 basehttp 776 20432 "GET /api/transactions/?user_id=3 HTTP/1.1" 401 269
+WARNING 2026-07-21 15:14:48,567 log 776 20432 Unauthorized: /api/users/3/profile/
+WARNING 2026-07-21 15:14:48,571 basehttp 776 20432 "GET /api/users/3/profile/ HTTP/1.1" 401 269
+INFO 2026-07-21 15:14:48,581 basehttp 776 20432 "OPTIONS /api/auth/refresh/ HTTP/1.1" 200 0
+WARNING 2026-07-21 15:14:48,591 log 776 20432 Unauthorized: /api/items/
+WARNING 2026-07-21 15:14:48,595 basehttp 776 20432 "GET /api/items/?owner=3 HTTP/1.1" 401 269
+WARNING 2026-07-21 15:14:48,606 log 776 20432 Unauthorized: /api/transactions/
+WARNING 2026-07-21 15:14:48,609 basehttp 776 20432 "GET /api/transactions/?user_id=3 HTTP/1.1" 401 269
+INFO 2026-07-21 15:14:48,625 basehttp 776 20432 "OPTIONS /api/auth/refresh/ HTTP/1.1" 200 0
+INFO 2026-07-21 15:14:48,636 basehttp 776 20432 "OPTIONS /api/auth/refresh/ HTTP/1.1" 200 0
+WARNING 2026-07-21 15:14:48,697 log 776 20432 Not Found: /api/auth/refresh/
+WARNING 2026-07-21 15:14:48,703 basehttp 776 20432 "POST /api/auth/refresh/ HTTP/1.1" 404 3904
+WARNING 2026-07-21 15:14:48,754 log 776 20432 Not Found: /api/auth/refresh/
+WARNING 2026-07-21 15:14:48,761 basehttp 776 20432 "POST /api/auth/refresh/ HTTP/1.1" 404 3904
+WARNING 2026-07-21 15:14:48,869 log 776 10948 Not Found: /api/auth/refresh/
+WARNING 2026-07-21 15:14:48,876 log 776 20432 Not Found: /api/auth/refresh/
+WARNING 2026-07-21 15:14:48,881 basehttp 776 10948 "POST /api/auth/refresh/ HTTP/1.1" 404 3904
+WARNING 2026-07-21 15:14:48,889 basehttp 776 20432 "POST /api/auth/refresh/ HTTP/1.1" 404 3904
+INFO 2026-07-21 15:14:53,586 basehttp 776 20432 "POST /api/auth/login HTTP/1.1" 200 839
+INFO 2026-07-21 15:14:53,794 basehttp 776 20432 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-21 15:14:53,949 basehttp 776 10948 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-21 15:14:54,027 basehttp 776 20432 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-21 15:14:54,061 basehttp 776 10948 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-21 15:14:56,917 basehttp 776 1948 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:14:56,963 basehttp 776 20432 "GET /api/items/?owner=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:14:56,990 basehttp 776 10948 "GET /api/users/3/profile/ HTTP/1.1" 200 259
+INFO 2026-07-21 15:14:57,018 basehttp 776 1948 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:14:57,019 basehttp 776 2940 "GET /api/items/?owner=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:14:57,080 basehttp 776 10948 "GET /api/users/3/profile/ HTTP/1.1" 200 259
+INFO 2026-07-21 15:15:22,215 basehttp 776 10948 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-21 15:15:22,220 basehttp 776 2940 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-21 15:15:22,226 basehttp 776 1948 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-21 15:15:22,272 basehttp 776 2940 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-21 15:15:29,616 basehttp 776 1948 "GET /api/items/?owner=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:15:29,649 basehttp 776 2940 "GET /api/users/3/profile/ HTTP/1.1" 200 259
+INFO 2026-07-21 15:15:29,657 basehttp 776 10948 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:15:29,708 basehttp 776 1948 "GET /api/items/?owner=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:15:29,762 basehttp 776 2940 "GET /api/users/3/profile/ HTTP/1.1" 200 259
+INFO 2026-07-21 15:15:29,829 basehttp 776 10948 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+WARNING 2026-07-21 15:18:58,473 log 776 10948 Bad Request: /api/items/
+WARNING 2026-07-21 15:18:58,476 basehttp 776 10948 "POST /api/items/ HTTP/1.1" 400 275
+INFO 2026-07-21 15:22:00,696 basehttp 776 10948 "POST /api/items/ HTTP/1.1" 201 245
+INFO 2026-07-21 15:22:01,351 basehttp 776 10948 "GET /api/items/?owner=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:22:01,408 basehttp 776 10948 "GET /api/items/?owner=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:22:08,643 basehttp 776 10948 "GET /api/items/?owner=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:22:08,691 basehttp 776 10948 "GET /api/items/?owner=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:22:53,348 basehttp 776 10948 "GET /api/items/?owner=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:23:44,989 autoreload 776 1672 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\views.py changed, reloading.
+INFO 2026-07-21 15:23:57,302 autoreload 13848 22356 Watching for file changes with StatReloader
+INFO 2026-07-21 15:24:18,992 autoreload 13848 22356 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\views.py changed, reloading.
+INFO 2026-07-21 15:24:31,449 autoreload 27128 24200 Watching for file changes with StatReloader
+ERROR 2026-07-21 15:25:18,738 log 27128 14492 Internal Server Error: /api/items/
+Traceback (most recent call last):
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\response.py", line 70, in rendered_content
+    ret = renderer.render(self.data, accepted_media_type, context)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\renderers.py", line 99, in render
+    ret = json.dumps(
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\utils\json.py", line 25, in dumps
+    return json.dumps(*args, **kwargs)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\json\__init__.py", line 234, in dumps
+    return cls(
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\json\encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\json\encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\utils\encoders.py", line 67, in default
+    return super().default(obj)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\json\encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type MockPoint is not JSON serializable
+ERROR 2026-07-21 15:25:18,756 basehttp 27128 14492 "GET /api/items/?owner=3 HTTP/1.1" 500 131501
+ERROR 2026-07-21 15:25:19,012 log 27128 11116 Internal Server Error: /api/items/
+Traceback (most recent call last):
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\response.py", line 70, in rendered_content
+    ret = renderer.render(self.data, accepted_media_type, context)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\renderers.py", line 99, in render
+    ret = json.dumps(
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\utils\json.py", line 25, in dumps
+    return json.dumps(*args, **kwargs)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\json\__init__.py", line 234, in dumps
+    return cls(
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\json\encoder.py", line 199, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\json\encoder.py", line 257, in iterencode
+    return _iterencode(o, 0)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\utils\encoders.py", line 67, in default
+    return super().default(obj)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\json\encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type MockPoint is not JSON serializable
+ERROR 2026-07-21 15:25:19,020 basehttp 27128 11116 "GET /api/items/?owner=3 HTTP/1.1" 500 131515
+INFO 2026-07-21 15:25:53,295 autoreload 27128 24200 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\serializers.py changed, reloading.
+INFO 2026-07-21 15:26:03,312 autoreload 18552 25784 Watching for file changes with StatReloader
+INFO 2026-07-21 15:26:17,380 basehttp 18552 21128 "GET /api/items/?owner=3 HTTP/1.1" 200 1181
+INFO 2026-07-21 15:26:17,461 basehttp 18552 21128 "GET /api/items/?owner=3 HTTP/1.1" 200 1181
+INFO 2026-07-21 15:26:20,747 basehttp 18552 18088 "GET /media/items/2026/07/WhatsApp_Image_2026-07-20_at_13.25.34.jpg HTTP/1.1" 200 52397
+INFO 2026-07-21 15:26:26,636 basehttp 18552 21128 "OPTIONS /api/items/64bed48e-48be-42e7-9622-c159b67d91ef/ HTTP/1.1" 200 0
+INFO 2026-07-21 15:26:26,636 basehttp 18552 12928 "OPTIONS /api/items/64bed48e-48be-42e7-9622-c159b67d91ef/ HTTP/1.1" 200 0
+INFO 2026-07-21 15:26:26,688 basehttp 18552 12928 "GET /api/items/64bed48e-48be-42e7-9622-c159b67d91ef/ HTTP/1.1" 200 621
+INFO 2026-07-21 15:26:26,784 basehttp 18552 12928 "GET /api/items/64bed48e-48be-42e7-9622-c159b67d91ef/ HTTP/1.1" 200 621
+INFO 2026-07-21 15:26:39,097 basehttp 18552 12928 "GET /api/items/?owner=3 HTTP/1.1" 200 1181
+INFO 2026-07-21 15:26:39,153 basehttp 18552 12928 "GET /api/items/?owner=3 HTTP/1.1" 200 1181
+INFO 2026-07-21 15:27:11,804 basehttp 18552 12928 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-21 15:27:11,857 basehttp 18552 12928 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-21 15:27:11,907 basehttp 18552 21128 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-21 15:27:12,014 basehttp 18552 21128 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-21 15:27:18,286 basehttp 18552 21128 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=distance HTTP/1.1" 200 129
+INFO 2026-07-21 15:27:23,065 basehttp 18552 21128 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-21 15:27:23,170 basehttp 18552 12928 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-21 15:27:23,184 basehttp 18552 21128 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-21 15:27:23,228 basehttp 18552 12928 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-21 15:27:26,933 basehttp 18552 12928 "GET /api/users/3/profile/ HTTP/1.1" 200 259
+INFO 2026-07-21 15:27:26,955 basehttp 18552 21128 "GET /api/items/?owner=3 HTTP/1.1" 200 1181
+INFO 2026-07-21 15:27:27,011 basehttp 18552 21128 "GET /api/users/3/profile/ HTTP/1.1" 200 259
+INFO 2026-07-21 15:27:27,011 basehttp 18552 12928 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:27:27,110 basehttp 18552 21128 "GET /api/items/?owner=3 HTTP/1.1" 200 1181
+INFO 2026-07-21 15:27:27,111 basehttp 18552 12928 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:27:28,553 basehttp 18552 18088 "GET /media/items/2026/07/WhatsApp_Image_2026-07-20_at_13.25.34.jpg HTTP/1.1" 304 0
+INFO 2026-07-21 15:28:36,172 autoreload 18552 25784 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\transactions\views.py changed, reloading.
+INFO 2026-07-21 15:28:45,712 autoreload 15488 16136 Watching for file changes with StatReloader
+INFO 2026-07-21 15:29:29,316 basehttp 15488 6992 "GET /api/users/3/profile/ HTTP/1.1" 200 259
+INFO 2026-07-21 15:29:29,344 basehttp 15488 18132 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:29:29,368 basehttp 15488 20112 "GET /api/items/?owner=3 HTTP/1.1" 200 1181
+INFO 2026-07-21 15:29:29,438 basehttp 15488 18284 "GET /api/users/3/profile/ HTTP/1.1" 200 259
+INFO 2026-07-21 15:29:29,476 basehttp 15488 6992 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:29:29,506 basehttp 15488 20112 "GET /api/items/?owner=3 HTTP/1.1" 200 1181
+INFO 2026-07-21 15:29:32,251 basehttp 15488 10516 "GET /media/items/2026/07/WhatsApp_Image_2026-07-20_at_13.25.34.jpg HTTP/1.1" 304 0
+INFO 2026-07-21 15:30:19,317 autoreload 15488 16136 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\serializers.py changed, reloading.
+INFO 2026-07-21 15:30:28,565 autoreload 21728 23692 Watching for file changes with StatReloader
+INFO 2026-07-21 15:31:08,791 basehttp 21728 21168 "OPTIONS /api/auth/refresh HTTP/1.1" 200 0
+INFO 2026-07-21 15:31:08,792 basehttp 21728 17652 "OPTIONS /api/auth/refresh HTTP/1.1" 200 0
+WARNING 2026-07-21 15:31:09,009 log 21728 17652 Unauthorized: /api/auth/refresh
+WARNING 2026-07-21 15:31:09,011 log 21728 21168 Unauthorized: /api/auth/refresh
+WARNING 2026-07-21 15:31:09,014 basehttp 21728 17652 "POST /api/auth/refresh HTTP/1.1" 401 269
+WARNING 2026-07-21 15:31:09,017 basehttp 21728 21168 "POST /api/auth/refresh HTTP/1.1" 401 269
+WARNING 2026-07-21 15:31:09,121 log 21728 17652 Not Found: /api/auth/refresh/
+WARNING 2026-07-21 15:31:09,128 log 21728 21168 Not Found: /api/auth/refresh/
+WARNING 2026-07-21 15:31:09,128 basehttp 21728 17652 "POST /api/auth/refresh/ HTTP/1.1" 404 3904
+WARNING 2026-07-21 15:31:09,135 basehttp 21728 21168 "POST /api/auth/refresh/ HTTP/1.1" 404 3904
+INFO 2026-07-21 15:31:12,454 basehttp 21728 21168 "POST /api/auth/login HTTP/1.1" 200 839
+INFO 2026-07-21 15:31:12,580 basehttp 21728 21168 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-21 15:31:12,612 basehttp 21728 17652 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-21 15:31:12,660 basehttp 21728 21168 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-21 15:31:12,679 basehttp 21728 17652 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-21 15:31:18,670 basehttp 21728 17652 "GET /api/users/3/profile/ HTTP/1.1" 200 259
+INFO 2026-07-21 15:31:18,716 basehttp 21728 22020 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:31:18,723 basehttp 21728 21168 "GET /api/items/?owner=3 HTTP/1.1" 200 1181
+INFO 2026-07-21 15:31:18,768 basehttp 21728 17652 "GET /api/users/3/profile/ HTTP/1.1" 200 259
+INFO 2026-07-21 15:31:18,827 basehttp 21728 22020 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:31:18,837 basehttp 21728 21168 "GET /api/items/?owner=3 HTTP/1.1" 200 1181
+INFO 2026-07-21 15:31:20,706 basehttp 21728 24204 "GET /media/items/2026/07/WhatsApp_Image_2026-07-20_at_13.25.34.jpg HTTP/1.1" 304 0
+INFO 2026-07-21 15:31:25,373 basehttp 21728 21168 "OPTIONS /api/items/33757a7b-39a7-455e-9ab4-2297496d1a28/ HTTP/1.1" 200 0
+INFO 2026-07-21 15:31:25,374 basehttp 21728 22020 "OPTIONS /api/items/33757a7b-39a7-455e-9ab4-2297496d1a28/ HTTP/1.1" 200 0
+INFO 2026-07-21 15:31:25,472 basehttp 21728 22020 "GET /api/items/33757a7b-39a7-455e-9ab4-2297496d1a28/ HTTP/1.1" 200 507
+INFO 2026-07-21 15:31:25,538 basehttp 21728 22020 "GET /api/items/33757a7b-39a7-455e-9ab4-2297496d1a28/ HTTP/1.1" 200 507
+INFO 2026-07-21 15:31:33,462 basehttp 21728 17652 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:31:33,497 basehttp 21728 21168 "GET /api/items/?owner=3 HTTP/1.1" 200 1181
+INFO 2026-07-21 15:31:33,526 basehttp 21728 22020 "GET /api/users/3/profile/ HTTP/1.1" 200 259
+INFO 2026-07-21 15:31:33,534 basehttp 21728 17652 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:31:33,601 basehttp 21728 21168 "GET /api/items/?owner=3 HTTP/1.1" 200 1181
+INFO 2026-07-21 15:31:33,631 basehttp 21728 22020 "GET /api/users/3/profile/ HTTP/1.1" 200 259
+INFO 2026-07-21 15:34:28,525 basehttp 21728 17652 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:34:28,581 basehttp 21728 21168 "GET /api/items/?owner=3 HTTP/1.1" 200 1179
+INFO 2026-07-21 15:34:28,582 basehttp 21728 22020 "GET /api/users/3/profile/ HTTP/1.1" 200 259
+INFO 2026-07-21 15:34:28,634 basehttp 21728 17652 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:34:28,706 basehttp 21728 21168 "GET /api/items/?owner=3 HTTP/1.1" 200 1179
+INFO 2026-07-21 15:34:28,706 basehttp 21728 22020 "GET /api/users/3/profile/ HTTP/1.1" 200 259
+INFO 2026-07-21 15:34:31,343 basehttp 21728 24204 "GET /media/items/2026/07/WhatsApp_Image_2026-07-20_at_13.25.34.jpg HTTP/1.1" 304 0
+INFO 2026-07-21 15:34:58,514 basehttp 21728 22020 "OPTIONS /api/users/me/ HTTP/1.1" 200 0
+WARNING 2026-07-21 15:34:58,542 log 21728 22020 Method Not Allowed: /api/users/me/
+WARNING 2026-07-21 15:34:58,544 basehttp 21728 22020 "PATCH /api/users/me/ HTTP/1.1" 405 117
+WARNING 2026-07-21 15:35:01,697 log 21728 22020 Method Not Allowed: /api/users/me/
+WARNING 2026-07-21 15:35:01,701 basehttp 21728 22020 "PATCH /api/users/me/ HTTP/1.1" 405 117
+WARNING 2026-07-21 15:35:02,220 log 21728 22020 Method Not Allowed: /api/users/me/
+WARNING 2026-07-21 15:35:02,222 basehttp 21728 22020 "PATCH /api/users/me/ HTTP/1.1" 405 117
+WARNING 2026-07-21 15:35:02,437 log 21728 22020 Method Not Allowed: /api/users/me/
+WARNING 2026-07-21 15:35:02,442 basehttp 21728 22020 "PATCH /api/users/me/ HTTP/1.1" 405 117
+WARNING 2026-07-21 15:35:04,036 log 21728 22020 Method Not Allowed: /api/users/me/
+WARNING 2026-07-21 15:35:04,040 basehttp 21728 22020 "PATCH /api/users/me/ HTTP/1.1" 405 117
+WARNING 2026-07-21 15:35:04,251 log 21728 22020 Method Not Allowed: /api/users/me/
+WARNING 2026-07-21 15:35:04,254 basehttp 21728 22020 "PATCH /api/users/me/ HTTP/1.1" 405 117
+WARNING 2026-07-21 15:35:04,432 log 21728 22020 Method Not Allowed: /api/users/me/
+WARNING 2026-07-21 15:35:04,434 basehttp 21728 22020 "PATCH /api/users/me/ HTTP/1.1" 405 117
+WARNING 2026-07-21 15:35:06,349 log 21728 22020 Method Not Allowed: /api/users/me/
+WARNING 2026-07-21 15:35:06,351 basehttp 21728 22020 "PATCH /api/users/me/ HTTP/1.1" 405 117
+WARNING 2026-07-21 15:35:06,570 log 21728 22020 Method Not Allowed: /api/users/me/
+WARNING 2026-07-21 15:35:06,573 basehttp 21728 22020 "PATCH /api/users/me/ HTTP/1.1" 405 117
+WARNING 2026-07-21 15:35:06,738 log 21728 22020 Method Not Allowed: /api/users/me/
+WARNING 2026-07-21 15:35:06,739 basehttp 21728 22020 "PATCH /api/users/me/ HTTP/1.1" 405 117
+WARNING 2026-07-21 15:35:07,594 log 21728 22020 Method Not Allowed: /api/users/me/
+WARNING 2026-07-21 15:35:07,598 basehttp 21728 22020 "PATCH /api/users/me/ HTTP/1.1" 405 117
+WARNING 2026-07-21 15:35:07,802 log 21728 22020 Method Not Allowed: /api/users/me/
+WARNING 2026-07-21 15:35:07,804 basehttp 21728 22020 "PATCH /api/users/me/ HTTP/1.1" 405 117
+WARNING 2026-07-21 15:35:08,379 log 21728 22020 Method Not Allowed: /api/users/me/
+WARNING 2026-07-21 15:35:08,381 basehttp 21728 22020 "PATCH /api/users/me/ HTTP/1.1" 405 117
+WARNING 2026-07-21 15:35:08,578 log 21728 22020 Method Not Allowed: /api/users/me/
+WARNING 2026-07-21 15:35:08,582 basehttp 21728 22020 "PATCH /api/users/me/ HTTP/1.1" 405 117
+WARNING 2026-07-21 15:35:11,362 log 21728 22020 Method Not Allowed: /api/users/me/
+WARNING 2026-07-21 15:35:11,366 basehttp 21728 22020 "PATCH /api/users/me/ HTTP/1.1" 405 117
+WARNING 2026-07-21 15:35:11,877 log 21728 22020 Method Not Allowed: /api/users/me/
+WARNING 2026-07-21 15:35:11,880 basehttp 21728 22020 "PATCH /api/users/me/ HTTP/1.1" 405 117
+WARNING 2026-07-21 15:35:13,437 log 21728 22020 Method Not Allowed: /api/users/me/
+WARNING 2026-07-21 15:35:13,440 basehttp 21728 22020 "PATCH /api/users/me/ HTTP/1.1" 405 117
+INFO 2026-07-21 15:36:59,428 basehttp 21728 22020 "GET /api/users/3/profile/ HTTP/1.1" 200 259
+INFO 2026-07-21 15:36:59,450 basehttp 21728 17652 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:36:59,460 basehttp 21728 21168 "GET /api/items/?owner=3 HTTP/1.1" 200 1179
+INFO 2026-07-21 15:37:34,621 autoreload 21728 23692 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\users\views.py changed, reloading.
+INFO 2026-07-21 15:37:44,227 autoreload 22904 18868 Watching for file changes with StatReloader
+WARNING 2026-07-21 15:38:09,470 log 22904 21460 Method Not Allowed: /api/users/me/
+WARNING 2026-07-21 15:38:09,471 basehttp 22904 21460 "PATCH /api/users/me/ HTTP/1.1" 405 117
+WARNING 2026-07-21 15:38:11,433 log 22904 21460 Method Not Allowed: /api/users/me/
+WARNING 2026-07-21 15:38:11,437 basehttp 22904 21460 "PATCH /api/users/me/ HTTP/1.1" 405 117
+INFO 2026-07-21 15:39:02,117 autoreload 22904 18868 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\users\profile_urls.py changed, reloading.
+INFO 2026-07-21 15:39:11,305 autoreload 2116 22168 Watching for file changes with StatReloader
+INFO 2026-07-21 15:39:19,361 autoreload 2116 22168 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\users\profile_urls.py changed, reloading.
+INFO 2026-07-21 15:39:28,823 autoreload 23080 5712 Watching for file changes with StatReloader
+INFO 2026-07-21 15:39:42,851 basehttp 23080 23988 "PATCH /api/users/me/ HTTP/1.1" 200 348
+INFO 2026-07-21 15:39:42,948 basehttp 23080 23988 "GET /api/users/3/profile/ HTTP/1.1" 200 259
+INFO 2026-07-21 15:39:42,983 basehttp 23080 18120 "GET /api/items/?owner=3 HTTP/1.1" 200 1179
+INFO 2026-07-21 15:39:43,001 basehttp 23080 23988 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:39:49,164 basehttp 23080 23988 "PATCH /api/users/me/ HTTP/1.1" 200 348
+INFO 2026-07-21 15:39:49,250 basehttp 23080 23988 "GET /api/users/3/profile/ HTTP/1.1" 200 259
+INFO 2026-07-21 15:39:49,256 basehttp 23080 23920 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:39:49,274 basehttp 23080 18120 "GET /api/items/?owner=3 HTTP/1.1" 200 1179
+INFO 2026-07-21 15:40:45,818 autoreload 23080 5712 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\users\serializers.py changed, reloading.
+INFO 2026-07-21 15:40:55,321 autoreload 23928 13664 Watching for file changes with StatReloader
+INFO 2026-07-21 15:41:04,391 autoreload 23928 13664 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\users\serializers.py changed, reloading.
+INFO 2026-07-21 15:41:13,392 autoreload 17860 18684 Watching for file changes with StatReloader
+INFO 2026-07-21 15:41:33,495 autoreload 17860 18684 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\users\serializers.py changed, reloading.
+INFO 2026-07-21 15:41:44,026 autoreload 18068 11704 Watching for file changes with StatReloader
+INFO 2026-07-21 15:42:00,508 basehttp 18068 17076 "GET /api/users/3/profile/ HTTP/1.1" 200 304
+INFO 2026-07-21 15:42:00,527 basehttp 18068 21992 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:42:00,560 basehttp 18068 18596 "GET /api/users/3/profile/ HTTP/1.1" 200 304
+INFO 2026-07-21 15:42:00,564 basehttp 18068 18332 "GET /api/items/?owner=3 HTTP/1.1" 200 1179
+INFO 2026-07-21 15:42:00,643 basehttp 18068 17076 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:42:00,673 basehttp 18068 18332 "GET /api/items/?owner=3 HTTP/1.1" 200 1179
+INFO 2026-07-21 15:44:55,387 basehttp 18068 18332 "GET /api/users/3/profile/ HTTP/1.1" 200 304
+INFO 2026-07-21 15:44:55,417 basehttp 18068 18596 "GET /api/transactions/?user_id=3 HTTP/1.1" 200 52
+INFO 2026-07-21 15:44:55,436 basehttp 18068 17076 "GET /api/items/?owner=3 HTTP/1.1" 200 1179
+WARNING 2026-07-21 15:48:20,230 log 18068 17076 Unauthorized: /api/auth/refresh
+WARNING 2026-07-21 15:48:20,232 log 18068 18596 Unauthorized: /api/auth/refresh
+WARNING 2026-07-21 15:48:20,235 basehttp 18068 17076 "POST /api/auth/refresh HTTP/1.1" 401 269
+WARNING 2026-07-21 15:48:20,247 basehttp 18068 18596 "POST /api/auth/refresh HTTP/1.1" 401 269
+WARNING 2026-07-21 15:48:20,426 log 18068 17076 Not Found: /api/auth/refresh/
+WARNING 2026-07-21 15:48:20,437 log 18068 18596 Not Found: /api/auth/refresh/
+WARNING 2026-07-21 15:48:20,439 basehttp 18068 17076 "POST /api/auth/refresh/ HTTP/1.1" 404 3904
+WARNING 2026-07-21 15:48:20,447 basehttp 18068 18596 "POST /api/auth/refresh/ HTTP/1.1" 404 3904
+INFO 2026-07-21 15:48:24,614 basehttp 18068 18596 "POST /api/auth/login HTTP/1.1" 200 884
+INFO 2026-07-21 15:48:24,796 basehttp 18068 18596 "GET /api/items/categories/ HTTP/1.1" 200 985
+ERROR 2026-07-21 15:48:24,819 exceptions 18068 17076 Unhandled exception
+Traceback (most recent call last):
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\views.py", line 104, in search
+    data = serializer.data
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 768, in data
+    ret = super().data
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 686, in to_representation
+    return [
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 687, in <listcomp>
+    self.child.to_representation(item) for item in iterable
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\serializers.py", line 44, in get_distance_km
+    return round(obj.distance.km, 2)
+AttributeError: 'float' object has no attribute 'km'
+INFO 2026-07-21 15:48:24,824 basehttp 18068 18596 "GET /api/items/categories/ HTTP/1.1" 200 985
+ERROR 2026-07-21 15:48:25,176 log 18068 17076 Internal Server Error: /api/items/search/
+ERROR 2026-07-21 15:48:25,184 basehttp 18068 17076 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 500 68
+ERROR 2026-07-21 15:48:25,227 exceptions 18068 17076 Unhandled exception
+Traceback (most recent call last):
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\views.py", line 104, in search
+    data = serializer.data
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 768, in data
+    ret = super().data
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 686, in to_representation
+    return [
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 687, in <listcomp>
+    self.child.to_representation(item) for item in iterable
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\serializers.py", line 44, in get_distance_km
+    return round(obj.distance.km, 2)
+AttributeError: 'float' object has no attribute 'km'
+ERROR 2026-07-21 15:48:25,241 log 18068 17076 Internal Server Error: /api/items/search/
+ERROR 2026-07-21 15:48:25,245 basehttp 18068 17076 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 500 68
+ERROR 2026-07-21 15:49:43,230 exceptions 18068 17076 Unhandled exception
+Traceback (most recent call last):
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\views.py", line 104, in search
+    data = serializer.data
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 768, in data
+    ret = super().data
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 686, in to_representation
+    return [
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 687, in <listcomp>
+    self.child.to_representation(item) for item in iterable
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\serializers.py", line 44, in get_distance_km
+    return round(obj.distance.km, 2)
+AttributeError: 'float' object has no attribute 'km'
+ERROR 2026-07-21 15:49:43,236 log 18068 17076 Internal Server Error: /api/items/search/
+ERROR 2026-07-21 15:49:43,239 basehttp 18068 17076 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 500 68
+INFO 2026-07-21 15:50:43,307 autoreload 18068 11704 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\serializers.py changed, reloading.
+INFO 2026-07-21 15:50:52,175 autoreload 27488 27168 Watching for file changes with StatReloader
+ERROR 2026-07-21 15:51:17,213 exceptions 27488 19824 Unhandled exception
+Traceback (most recent call last):
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\views.py", line 110, in search
+    'features': [
+  File "C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\views.py", line 115, in <listcomp>
+    'coordinates': [item.location.x, item.location.y],
+AttributeError: 'collections.OrderedDict' object has no attribute 'location'
+ERROR 2026-07-21 15:51:17,222 log 27488 19824 Internal Server Error: /api/items/search/
+ERROR 2026-07-21 15:51:17,228 basehttp 27488 19824 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 500 68
+INFO 2026-07-21 15:51:49,804 autoreload 27488 27168 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\views.py changed, reloading.
+INFO 2026-07-21 15:51:59,197 autoreload 16980 15568 Watching for file changes with StatReloader
+INFO 2026-07-21 15:52:25,101 basehttp 16980 22808 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 1451
+INFO 2026-07-21 15:52:25,485 basehttp 16980 17132 "GET /media/items/2026/07/WhatsApp_Image_2026-07-20_at_13.25.34.jpg HTTP/1.1" 304 0
+INFO 2026-07-21 15:56:09,319 autoreload 16980 15568 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\views.py changed, reloading.
+INFO 2026-07-21 15:56:19,997 autoreload 18836 20520 Watching for file changes with StatReloader
+INFO 2026-07-21 15:56:41,873 basehttp 18836 24332 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-21 15:56:41,928 basehttp 18836 21816 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 1451
+INFO 2026-07-21 15:56:41,968 basehttp 18836 24332 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-21 15:56:41,995 basehttp 18836 21816 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 1451
+INFO 2026-07-21 15:56:42,381 basehttp 18836 16116 "GET /media/items/2026/07/WhatsApp_Image_2026-07-20_at_13.25.34.jpg HTTP/1.1" 304 0
+INFO 2026-07-21 15:56:59,758 basehttp 18836 21816 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-21 15:56:59,886 basehttp 18836 21816 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 1451
+INFO 2026-07-21 15:57:34,957 basehttp 18836 21816 "OPTIONS /api/items/search?lat=-17.78334333838028&lng=31.050109863281254&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:57:35,066 basehttp 18836 21816 "GET /api/items/search?lat=-17.78334333838028&lng=31.050109863281254&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:57:35,077 basehttp 18836 24332 "OPTIONS /api/items/search/?lat=-17.78334333838028&lng=31.050109863281254&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:57:35,162 basehttp 18836 24332 "GET /api/items/search/?lat=-17.78334333838028&lng=31.050109863281254&radius_km=5&sort=distance HTTP/1.1" 200 1474
+INFO 2026-07-21 15:57:36,773 basehttp 18836 24332 "OPTIONS /api/items/search?lat=-17.783261608815994&lng=31.050109863281254&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:57:36,839 basehttp 18836 24332 "GET /api/items/search?lat=-17.783261608815994&lng=31.050109863281254&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-21 15:57:36,852 basehttp 18836 23084 "OPTIONS /api/items/search/?lat=-17.783261608815994&lng=31.050109863281254&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-21 15:57:36,941 basehttp 18836 23084 "GET /api/items/search/?lat=-17.783261608815994&lng=31.050109863281254&radius_km=5&sort=distance HTTP/1.1" 200 1475
+INFO 2026-07-22 07:28:06,950 basehttp 18836 22604 "OPTIONS /api/items/search?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-22 07:28:06,982 basehttp 18836 22604 "OPTIONS /api/auth/refresh HTTP/1.1" 200 0
+INFO 2026-07-22 07:28:06,999 basehttp 18836 22788 "OPTIONS /api/items/categories/ HTTP/1.1" 200 0
+INFO 2026-07-22 07:28:07,040 basehttp 18836 27076 "OPTIONS /api/items/search?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 0
+WARNING 2026-07-22 07:28:07,073 log 18836 22604 Unauthorized: /api/auth/refresh
+INFO 2026-07-22 07:28:07,074 basehttp 18836 9892 "OPTIONS /api/items/categories/ HTTP/1.1" 200 0
+WARNING 2026-07-22 07:28:07,077 log 18836 22788 Unauthorized: /api/items/categories/
+INFO 2026-07-22 07:28:07,094 basehttp 18836 15804 "OPTIONS /api/auth/refresh HTTP/1.1" 200 0
+WARNING 2026-07-22 07:28:07,097 basehttp 18836 22604 "POST /api/auth/refresh HTTP/1.1" 401 269
+INFO 2026-07-22 07:28:07,112 basehttp 18836 27076 "OPTIONS /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 0
+WARNING 2026-07-22 07:28:07,131 basehttp 18836 22788 "GET /api/items/categories/ HTTP/1.1" 401 269
+WARNING 2026-07-22 07:28:07,150 log 18836 15804 Unauthorized: /api/auth/refresh
+INFO 2026-07-22 07:28:07,150 basehttp 18836 8276 "OPTIONS /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-22 07:28:07,161 basehttp 18836 22604 "OPTIONS /api/auth/refresh/ HTTP/1.1" 200 0
+WARNING 2026-07-22 07:28:07,177 log 18836 27076 Unauthorized: /api/items/search/
+WARNING 2026-07-22 07:28:07,235 log 18836 22788 Unauthorized: /api/items/categories/
+WARNING 2026-07-22 07:28:07,240 basehttp 18836 15804 "POST /api/auth/refresh HTTP/1.1" 401 269
+WARNING 2026-07-22 07:28:07,280 basehttp 18836 27076 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 401 269
+WARNING 2026-07-22 07:28:07,299 basehttp 18836 22788 "GET /api/items/categories/ HTTP/1.1" 401 269
+WARNING 2026-07-22 07:28:07,409 log 18836 27076 Unauthorized: /api/items/search/
+WARNING 2026-07-22 07:28:07,464 basehttp 18836 27076 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 401 269
+WARNING 2026-07-22 07:28:07,513 log 18836 22604 Not Found: /api/auth/refresh/
+WARNING 2026-07-22 07:28:07,517 log 18836 15804 Not Found: /api/auth/refresh/
+WARNING 2026-07-22 07:28:07,531 basehttp 18836 22604 "POST /api/auth/refresh/ HTTP/1.1" 404 3904
+WARNING 2026-07-22 07:28:07,544 basehttp 18836 15804 "POST /api/auth/refresh/ HTTP/1.1" 404 3904
+INFO 2026-07-22 07:29:15,096 basehttp 18836 15804 "OPTIONS /api/auth/login HTTP/1.1" 200 0
+INFO 2026-07-22 07:29:15,728 basehttp 18836 15804 "POST /api/auth/login HTTP/1.1" 200 884
+INFO 2026-07-22 07:29:15,878 basehttp 18836 15804 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-22 07:29:15,906 basehttp 18836 22604 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 1451
+INFO 2026-07-22 07:29:15,945 basehttp 18836 15804 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-22 07:29:15,987 basehttp 18836 22604 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 1451
+INFO 2026-07-22 07:29:16,255 basehttp 18836 30628 "GET /media/items/2026/07/WhatsApp_Image_2026-07-20_at_13.25.34.jpg HTTP/1.1" 304 0
+INFO 2026-07-22 07:56:19,614 basehttp 18836 27268 "OPTIONS /api/items/search?lat=-17.809168007029808&lng=31.015461905788772&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-22 07:56:20,155 basehttp 18836 27268 "GET /api/items/search?lat=-17.809168007029808&lng=31.015461905788772&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-22 07:56:20,181 basehttp 18836 29968 "OPTIONS /api/items/search/?lat=-17.809168007029808&lng=31.015461905788772&radius_km=5&sort=distance HTTP/1.1" 200 0
+WARNING 2026-07-22 07:56:20,248 log 18836 29968 Unauthorized: /api/items/search/
+WARNING 2026-07-22 07:56:20,259 basehttp 18836 29968 "GET /api/items/search/?lat=-17.809168007029808&lng=31.015461905788772&radius_km=5&sort=distance HTTP/1.1" 401 269
+INFO 2026-07-22 07:56:20,749 basehttp 18836 29968 "OPTIONS /api/items/search?lat=-17.774761529990364&lng=31.049910561252254&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-22 07:56:20,847 basehttp 18836 29968 "GET /api/items/search?lat=-17.774761529990364&lng=31.049910561252254&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-22 07:56:21,169 basehttp 18836 13264 "OPTIONS /api/items/search/?lat=-17.774761529990364&lng=31.049910561252254&radius_km=5&sort=distance HTTP/1.1" 200 0
+WARNING 2026-07-22 07:56:21,184 log 18836 13264 Unauthorized: /api/items/search/
+WARNING 2026-07-22 07:56:21,189 basehttp 18836 13264 "GET /api/items/search/?lat=-17.774761529990364&lng=31.049910561252254&radius_km=5&sort=distance HTTP/1.1" 401 269
+WARNING 2026-07-22 07:56:34,931 log 18836 13264 Unauthorized: /api/items/search/
+WARNING 2026-07-22 07:56:34,935 basehttp 18836 13264 "GET /api/items/search/?lat=-17.774761529990364&lng=31.049910561252254&radius_km=5&sort=distance HTTP/1.1" 401 269
+WARNING 2026-07-22 07:56:35,886 log 18836 13264 Unauthorized: /api/items/search/
+WARNING 2026-07-22 07:56:35,899 basehttp 18836 13264 "GET /api/items/search/?lat=-17.774761529990364&lng=31.049910561252254&radius_km=5&sort=distance HTTP/1.1" 401 269
+INFO 2026-07-22 07:57:46,498 autoreload 18836 20520 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\views.py changed, reloading.

@@ -20,9 +20,14 @@ export default function MyListings() {
 
   const fetchListings = async () => {
     try {
+      console.log('Fetching listings for user:', user.id);
       const response = await itemsApi.list({ owner: user.id });
-      setListings(response.data.results || response.data);
+      console.log('API response:', response.data);
+      const listings = response.data.results || response.data;
+      console.log('Listings with is_available:', listings.map(l => ({ id: l.id, title: l.title, is_available: l.is_available })));
+      setListings(listings);
     } catch (err) {
+      console.error('Error fetching listings:', err);
       setError('Failed to load your listings');
     } finally {
       setLoading(false);

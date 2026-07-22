@@ -118,19 +118,20 @@ export default function CreateItem() {
     setLoading(true);
     setError(null);
     try {
-      const formData = new FormData();
-      Object.keys(data).forEach(key => {
-        formData.append(key, data[key]);
-      });
-      images.forEach(img => formData.append('images', img));
-
+      // Pass data with images to API layer which handles FormData conversion
+      const payload = { ...data, images };
+      console.log('Creating item with payload:', payload);
+      
       if (isEditing) {
-        await itemsApi.update(id, data);
+        const response = await itemsApi.update(id, payload);
+        console.log('Update response:', response.data);
       } else {
-        await itemsApi.create(data);
+        const response = await itemsApi.create(payload);
+        console.log('Create response:', response.data);
       }
       navigate('/my-listings');
     } catch (err) {
+      console.error('Error saving item:', err);
       setError(err.response?.data?.error?.message || 'Failed to save item');
     } finally {
       setLoading(false);

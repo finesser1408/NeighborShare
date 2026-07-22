@@ -156,15 +156,20 @@ class LoginViewSet(viewsets.GenericViewSet):
         return view(request._request)
 
 
-class UserProfileViewSet(viewsets.ReadOnlyModelViewSet):
+class UserProfileViewSet(viewsets.ModelViewSet):
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return UserProfile.objects.select_related('user').filter(user=self.request.user)
 
-    @action(detail=False, methods=['get'], url_path='me')
+    @action(detail=False, methods=['get', 'patch'], url_path='me')
     def me(self, request):
+        if request.method == 'PATCH':
+            serializer = self.get_serializer(request.user.profile, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
         serializer = self.get_serializer(request.user.profile)
         return Response(serializer.data)
 
