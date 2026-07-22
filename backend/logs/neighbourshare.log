@@ -778,3 +778,46 @@ WARNING 2026-07-22 07:56:34,935 basehttp 18836 13264 "GET /api/items/search/?lat
 WARNING 2026-07-22 07:56:35,886 log 18836 13264 Unauthorized: /api/items/search/
 WARNING 2026-07-22 07:56:35,899 basehttp 18836 13264 "GET /api/items/search/?lat=-17.774761529990364&lng=31.049910561252254&radius_km=5&sort=distance HTTP/1.1" 401 269
 INFO 2026-07-22 07:57:46,498 autoreload 18836 20520 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\views.py changed, reloading.
+INFO 2026-07-22 07:58:58,666 autoreload 28048 28992 Watching for file changes with StatReloader
+INFO 2026-07-22 08:00:41,345 autoreload 28048 28992 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\views.py changed, reloading.
+INFO 2026-07-22 08:00:53,309 autoreload 21156 18332 Watching for file changes with StatReloader
+INFO 2026-07-22 08:02:12,668 autoreload 21156 18332 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\views.py changed, reloading.
+INFO 2026-07-22 08:02:22,474 autoreload 22460 20140 Watching for file changes with StatReloader
+WARNING 2026-07-22 08:09:31,887 log 22460 23760 Unauthorized: /api/items/categories/
+WARNING 2026-07-22 08:09:31,889 log 22460 27472 Unauthorized: /api/items/search/
+WARNING 2026-07-22 08:09:31,891 basehttp 22460 23760 "GET /api/items/categories/ HTTP/1.1" 401 269
+WARNING 2026-07-22 08:09:31,893 basehttp 22460 27472 "GET /api/items/search/?lat=-17.774761529990364&lng=31.049910561252254&radius_km=5&sort=distance HTTP/1.1" 401 269
+INFO 2026-07-22 10:03:44,281 basehttp 22460 28048 "OPTIONS /api/items/search?lat=-17.774843263442754&lng=31.0499382019043&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-22 10:03:44,717 basehttp 22460 28048 "OPTIONS /api/items/search?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-22 10:03:44,718 basehttp 22460 30516 "OPTIONS /api/items/categories/ HTTP/1.1" 200 0
+INFO 2026-07-22 10:03:44,750 basehttp 22460 28048 "OPTIONS /api/items/search?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-22 10:03:44,750 basehttp 22460 30516 "OPTIONS /api/auth/refresh HTTP/1.1" 200 0
+INFO 2026-07-22 10:03:44,773 basehttp 22460 28048 "OPTIONS /api/items/categories/ HTTP/1.1" 200 0
+INFO 2026-07-22 10:03:44,773 basehttp 22460 30516 "OPTIONS /api/auth/refresh HTTP/1.1" 200 0
+WARNING 2026-07-22 10:03:44,786 log 22460 28048 Unauthorized: /api/items/categories/
+WARNING 2026-07-22 10:03:44,801 log 22460 30516 Unauthorized: /api/auth/refresh
+WARNING 2026-07-22 10:03:44,826 basehttp 22460 28048 "GET /api/items/categories/ HTTP/1.1" 401 269
+WARNING 2026-07-22 10:03:44,827 basehttp 22460 30516 "POST /api/auth/refresh HTTP/1.1" 401 269
+WARNING 2026-07-22 10:03:44,843 log 22460 28048 Unauthorized: /api/auth/refresh
+INFO 2026-07-22 10:03:44,848 basehttp 22460 30516 "OPTIONS /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 0
+WARNING 2026-07-22 10:03:44,875 basehttp 22460 28048 "POST /api/auth/refresh HTTP/1.1" 401 269
+INFO 2026-07-22 10:03:44,876 basehttp 22460 30516 "OPTIONS /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 0
+WARNING 2026-07-22 10:03:44,897 log 22460 28048 Unauthorized: /api/items/categories/
+INFO 2026-07-22 10:03:44,898 basehttp 22460 30516 "OPTIONS /api/auth/refresh/ HTTP/1.1" 200 0
+WARNING 2026-07-22 10:03:44,905 basehttp 22460 28048 "GET /api/items/categories/ HTTP/1.1" 401 269
+WARNING 2026-07-22 10:03:44,912 log 22460 30516 Unauthorized: /api/items/search/
+WARNING 2026-07-22 10:03:44,935 basehttp 22460 30516 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 401 269
+INFO 2026-07-22 10:03:44,942 basehttp 22460 28048 "OPTIONS /api/auth/refresh/ HTTP/1.1" 200 0
+WARNING 2026-07-22 10:03:44,965 log 22460 28048 Unauthorized: /api/items/search/
+WARNING 2026-07-22 10:03:44,984 basehttp 22460 28048 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 401 269
+WARNING 2026-07-22 10:03:45,517 log 22460 30516 Not Found: /api/auth/refresh/
+WARNING 2026-07-22 10:03:45,525 basehttp 22460 30516 "POST /api/auth/refresh/ HTTP/1.1" 404 3904
+WARNING 2026-07-22 10:03:45,534 log 22460 28048 Not Found: /api/auth/refresh/
+WARNING 2026-07-22 10:03:45,536 basehttp 22460 28048 "POST /api/auth/refresh/ HTTP/1.1" 404 3904
+INFO 2026-07-22 10:03:50,755 basehttp 22460 21772 "OPTIONS /api/auth/login HTTP/1.1" 200 0
+INFO 2026-07-22 10:03:51,286 basehttp 22460 21772 "POST /api/auth/login HTTP/1.1" 200 884
+INFO 2026-07-22 10:03:51,500 basehttp 22460 21772 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-22 10:03:51,646 basehttp 22460 21772 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-22 10:03:51,901 basehttp 22460 8296 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 1451
+INFO 2026-07-22 10:03:52,029 basehttp 22460 8296 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 1451
+INFO 2026-07-22 10:03:52,234 basehttp 22460 16144 "GET /media/items/2026/07/WhatsApp_Image_2026-07-20_at_13.25.34.jpg HTTP/1.1" 304 0

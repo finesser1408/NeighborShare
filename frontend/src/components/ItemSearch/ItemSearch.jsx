@@ -151,11 +151,14 @@ export default function ItemSearch({ initialLat, initialLng }) {
         category: category || undefined,
         sort,
       });
-      setItems(response.data.features || []);
+      console.log('Search API response:', response.data);
+      const features = response.data.features || [];
+      console.log('Features count:', features.length);
+      setItems(features);
       setWidenSuggestion(response.data.widen_suggestion || false);
     } catch (err) {
       setError('Failed to load items. Please try again.');
-      console.error(err);
+      console.error('Search error:', err);
     } finally {
       setLoading(false);
     }

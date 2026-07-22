@@ -1,5 +1,5 @@
 from rest_framework import viewsets, status, filters
-from rest_framework.decorators import action, permission_classes
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.gis.geos import Point
@@ -44,8 +44,7 @@ class ItemViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(is_available=True)
         return queryset
 
-    @action(detail=False, methods=['get'], url_path='search')
-    @permission_classes([AllowAny])
+    @action(detail=False, methods=['get'], url_path='search', permission_classes=[AllowAny])
     def search(self, request):
         lat = request.query_params.get('lat')
         lng = request.query_params.get('lng')
@@ -77,7 +76,9 @@ class ItemViewSet(viewsets.ModelViewSet):
 
         if not gdal_available:
             # Fallback for local development when GDAL is not installed
+            # Return all available items (no distance filtering in dev mode)
             queryset = Item.objects.filter(is_available=True).select_related('owner', 'owner__profile').prefetch_related('images')
+            print(f"[SEARCH] Dev mode - returning {queryset.count()} available items")
             # Mock distance attribute for serializers/responses
             for item in queryset:
                 item.distance = 0.0
@@ -88,6 +89,7 @@ class ItemViewSet(viewsets.ModelViewSet):
             ).annotate(
                 distance=Distance('location', point)
             ).select_related('owner', 'owner__profile').prefetch_related('images')
+            print(f"[SEARCH] GDAL mode - found {queryset.count()} items within {radius_km}km")
 
         if category:
             queryset = queryset.filter(category=category)
