@@ -5,6 +5,23 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 import uuid
 
 
+class ListingType(models.TextChoices):
+    ITEM = 'item', 'Physical Item'
+    SERVICE = 'service', 'Skill/Service'
+
+
+class ItemTier(models.TextChoices):
+    TIER_1 = 'tier_1', 'Tier 1 (Small Exchanges)'
+    TIER_2 = 'tier_2', 'Tier 2 (Medium Exchanges)'
+    TIER_3 = 'tier_3', 'Tier 3 (Large Exchanges)'
+
+
+class TradeType(models.TextChoices):
+    SPECIFIC_TRADE = 'specific_trade', 'Specific Trade Request'
+    OPEN_OFFER = 'open_offer', 'Open to Offers'
+    COMMUNITY_CREDIT = 'community_credit', 'Community Credit Only'
+
+
 class Category(models.TextChoices):
     TOOLS = 'tools', 'Tools'
     GARDEN_EQUIPMENT = 'garden_equipment', 'Garden Equipment'
@@ -32,8 +49,11 @@ class Item(models.Model):
     title = models.CharField(max_length=120)
     description = models.TextField()
     category = models.CharField(max_length=30, choices=Category.choices)
-    daily_rate_usd = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
-    deposit_amount_usd = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
+    listing_type = models.CharField(max_length=10, choices=ListingType.choices, default=ListingType.ITEM)
+    tier = models.CharField(max_length=10, choices=ItemTier.choices, default=ItemTier.TIER_1)
+    trade_type = models.CharField(max_length=20, choices=TradeType.choices, default=TradeType.OPEN_OFFER)
+    trade_request_details = models.TextField(blank=True, help_text='Description of what you want in return for specific trades')
+    time_credits_per_day = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
     is_available = models.BooleanField(default=True)
     location = gis_models.PointField(geography=True, srid=4326)
     availability_calendar = models.JSONField(default=list, blank=True)
@@ -46,10 +66,12 @@ class Item(models.Model):
             gis_models.Index(fields=['location'], name='item_location_gist'),
             models.Index(fields=['category', 'is_available']),
             models.Index(fields=['owner', 'is_available']),
+            models.Index(fields=['tier', 'is_available']),
+            models.Index(fields=['trade_type', 'is_available']),
         ]
 
     def __str__(self):
-        return self.title
+        return f"{self.title} ({self.owner.email})"
 
     def save(self, *args, **kwargs):
         if not self.location and self.owner.profile.home_location:

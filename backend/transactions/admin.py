@@ -9,11 +9,10 @@ class TransactionEventInline(admin.TabularInline):
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'borrower', 'item', 'state', 'requested_from', 'requested_to', 'total_cost', 'created_at')
+    list_display = ('id', 'borrower', 'item', 'state', 'requested_from', 'requested_to', 'total_time_credits', 'created_at')
     list_filter = ('state', 'requested_from', 'requested_to', 'created_at')
-    search_fields = ('id', 'borrower__email', 'item__title', 'escrow_reference')
+    search_fields = ('id', 'borrower__email', 'item__title')
     inlines = [TransactionEventInline]
-    readonly_fields = ('escrow_reference',)
 
 @admin.register(TransactionEvent)
 class TransactionEventAdmin(admin.ModelAdmin):

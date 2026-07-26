@@ -194,14 +194,18 @@ export default function ItemDetail() {
                 <h1 className="text-2xl font-bold text-gray-900 mb-2">{item.title}</h1>
                 <p className="text-gray-600 mb-6">{item.description}</p>
 
-                <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="grid grid-cols-3 gap-4 mb-6">
                   <div>
-                    <p className="text-sm text-gray-500">Daily Rate</p>
-                    <p className="text-2xl font-bold text-gray-900">${item.daily_rate_usd}</p>
+                    <p className="text-sm text-gray-500">Tier</p>
+                    <p className="text-xl font-bold text-gray-900 capitalize">{item.tier?.replace('_', ' ')}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Deposit</p>
-                    <p className="text-2xl font-bold text-gray-900">${item.deposit_amount_usd}</p>
+                    <p className="text-sm text-gray-500">Trade Type</p>
+                    <p className="text-xl font-bold text-gray-900 capitalize">{item.trade_type?.replace('_', ' ')}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Credits / Day</p>
+                    <p className="text-xl font-bold text-gray-900">{item.time_credits_per_day}</p>
                   </div>
                 </div>
 
@@ -314,18 +318,14 @@ export default function ItemDetail() {
                   </div>
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Daily Rate</span>
-                      <span className="font-medium">${item.daily_rate_usd}</span>
-                    </div>
-                    <div className="flex justify-between text-sm mt-1">
-                      <span className="text-gray-600">Deposit</span>
-                      <span className="font-medium">${item.deposit_amount_usd}</span>
+                      <span className="text-gray-600">Credits / Day</span>
+                      <span className="font-medium">{item.time_credits_per_day}</span>
                     </div>
                     <div className="flex justify-between text-sm mt-1 border-t border-gray-200 pt-2">
-                      <span className="font-medium text-gray-900">Estimated Total</span>
+                      <span className="font-medium text-gray-900">Total Credits</span>
                       <span className="font-bold text-blue-600">
-                        ${borrowDates.from && borrowDates.to
-                          ? (item.daily_rate_usd * (new Date(borrowDates.to) - new Date(borrowDates.from)) / (1000 * 60 * 60 * 24) + item.deposit_amount_usd).toFixed(2)
+                        {borrowDates.from && borrowDates.to
+                          ? item.time_credits_per_day * (Math.max(1, (new Date(borrowDates.to) - new Date(borrowDates.from)) / (1000 * 60 * 60 * 24) + 1))
                           : 'Select dates'}
                       </span>
                     </div>
@@ -393,7 +393,7 @@ export default function ItemDetail() {
               <QRCode value={qrToken} size={200} level="M" includeMargin={true} />
             </div>
             <p className="text-sm text-gray-600 text-center mb-4">
-              Both parties must scan this code to confirm {transaction?.state === 'DEPOSIT_HELD' ? 'hand-off' : 'return'}.
+              Both parties must scan this code to confirm {transaction?.state === 'AGREED' ? 'hand-off' : 'return'}.
             </p>
             <button
               onClick={handleScanQR}
@@ -411,18 +411,18 @@ export default function ItemDetail() {
 function TransactionPanel({ transaction, item, isOwner, qrToken, showQR, onGenerateQR, onScanQR, onCloseQR }) {
   const stateLabels = {
     PENDING: 'Pending Approval',
-    ACCEPTED: 'Accepted - Awaiting Deposit',
-    DEPOSIT_HELD: 'Deposit Held - Ready for Hand-off',
+    AGREED: 'Agreed - Ready for Hand-off',
+    ACTIVE: 'Active - Hand-off Complete',
     ITEM_OUT: 'Item Out with Borrower',
-    ITEM_RETURNED: 'Item Returned - Awaiting Deposit Release',
+    ITEM_RETURNED: 'Item Returned - Completed',
     CLOSED: 'Completed',
     DISPUTED: 'Disputed',
   };
 
   const stateColors = {
     PENDING: 'bg-yellow-50 text-yellow-700',
-    ACCEPTED: 'bg-blue-50 text-blue-700',
-    DEPOSIT_HELD: 'bg-purple-50 text-purple-700',
+    AGREED: 'bg-blue-50 text-blue-700',
+    ACTIVE: 'bg-purple-50 text-purple-700',
     ITEM_OUT: 'bg-orange-50 text-orange-700',
     ITEM_RETURNED: 'bg-green-50 text-green-700',
     CLOSED: 'bg-gray-50 text-gray-700',
@@ -448,12 +448,12 @@ function TransactionPanel({ transaction, item, isOwner, qrToken, showQR, onGener
             <p className="font-medium">{transaction.requested_from} to {transaction.requested_to}</p>
           </div>
           <div>
-            <p className="text-gray-500">Daily Rate</p>
-            <p className="font-medium">${transaction.daily_rate}</p>
+            <p className="text-gray-500">Credits / Day</p>
+            <p className="font-medium">{transaction.time_credits_per_day}</p>
           </div>
           <div>
-            <p className="text-gray-500">Deposit</p>
-            <p className="font-medium">${transaction.deposit_amount}</p>
+            <p className="text-gray-500">Total Credits</p>
+            <p className="font-medium">{transaction.total_time_credits}</p>
           </div>
         </div>
       </div>
@@ -473,33 +473,33 @@ function TransactionPanel({ transaction, item, isOwner, qrToken, showQR, onGener
           </button>
         )}
 
-        {transaction.state === 'ACCEPTED' && (
+        {transaction.state === 'AGREED' && !isOwner && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-blue-800 mb-2">Deposit payment required to proceed.</p>
+            <p className="text-blue-800 mb-2">Terms agreed. Please activate the transaction to proceed to hand-off.</p>
             <button
               onClick={async () => {
                 try {
-                  const provider = new (await import('../../api')).MockEcoCashProvider();
-                  const result = await provider.hold_deposit(
-                    transaction.deposit_amount,
-                    transaction.borrower?.phone_number,
-                    transaction.escrow_reference
-                  );
-                  await transactionsApi.holdDeposit(transaction.id, result.transaction_id);
+                  await transactionsApi.activate(transaction.id);
                   window.location.reload();
                 } catch (e) { console.error(e); }
               }}
               className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700"
             >
-              Process Deposit (Mock)
+              Activate Transaction
             </button>
           </div>
         )}
 
-        {(transaction.state === 'DEPOSIT_HELD' || transaction.state === 'ITEM_OUT') && (
+        {transaction.state === 'AGREED' && isOwner && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p className="text-blue-800 mb-2">Waiting for the borrower to confirm terms and activate the transaction.</p>
+          </div>
+        )}
+
+        {(transaction.state === 'ACTIVE' || transaction.state === 'ITEM_OUT') && (
           <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
             <p className="text-purple-800 mb-3">
-              {transaction.state === 'DEPOSIT_HELD'
+              {transaction.state === 'ACTIVE'
                 ? 'Both parties must scan the QR code to confirm hand-off.'
                 : 'Both parties must scan the QR code to confirm return.'}
             </p>
@@ -526,19 +526,17 @@ function TransactionPanel({ transaction, item, isOwner, qrToken, showQR, onGener
 
         {transaction.state === 'ITEM_RETURNED' && isOwner && (
           <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-            <p className="text-green-800 mb-2">Item returned. Release deposit to complete transaction.</p>
+            <p className="text-green-800 mb-2">Item returned. Close transaction to finalize Time Credits.</p>
             <button
               onClick={async () => {
                 try {
-                  const provider = new (await import('../../api')).MockEcoCashProvider();
-                  await provider.release_deposit(transaction.escrow_reference);
                   await transactionsApi.close(transaction.id);
                   window.location.reload();
                 } catch (e) { console.error(e); }
               }}
               className="w-full py-2 px-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700"
             >
-              Release Deposit & Close
+              Confirm & Close
             </button>
           </div>
         )}

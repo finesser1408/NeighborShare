@@ -72,19 +72,20 @@ class UserProfileSerializer(serializers.ModelSerializer):
     profile_photo = serializers.ImageField(source='user.profile_photo', required=False)
     home_location = serializers.SerializerMethodField()
     trust_score_display = serializers.SerializerMethodField()
+    vouching_components = serializers.SerializerMethodField()
 
     class Meta:
         model = UserProfile
         fields = [
             'id', 'full_name', 'email', 'first_name', 'last_name', 'phone_number', 'profile_photo',
-            'home_address', 'home_location', 'trust_score', 'trust_score_display',
+            'home_address', 'home_location', 'trust_score', 'trust_score_display', 'vouching_components',
             'national_id_verified', 'is_active', 'created_at',
         ]
-        read_only_fields = ['id', 'email', 'home_location', 'trust_score', 'trust_score_display',
+        read_only_fields = ['id', 'email', 'home_location', 'trust_score', 'trust_score_display', 'vouching_components',
                            'national_id_verified', 'is_active', 'created_at']
 
     def get_full_name(self, obj):
-        return f"{obj.user.first_name} {obj.user.last_name}".strip()
+        return f"{obj.user.first_name} {obj.user.last_name}".strip() if obj.user else ""
 
     def update(self, instance, validated_data):
         # Handle User model fields
@@ -113,6 +114,38 @@ class UserProfileSerializer(serializers.ModelSerializer):
                 'lng': obj.home_location.x,
             }
         return None
+
+    def get_vouching_components(self, obj):
+        """Break down trust score into component averages for transparency"""
+        from transactions.models import Rating
+        
+        ratings_received = Rating.objects.filter(
+            ratee=obj.user,
+            is_visible=True
+        )
+        
+        if not ratings_received.exists():
+            return None
+        
+        # Calculate averages for each component
+        item_condition_avg = ratings_received.aggregate(
+            avg=models.Avg('item_condition')
+        )['avg'] or 0
+        
+        communication_avg = ratings_received.aggregate(
+            avg=models.Avg('communication')
+        )['avg'] or 0
+        
+        punctuality_avg = ratings_received.aggregate(
+            avg=models.Avg('punctuality')
+        )['avg'] or 0
+        
+        return {
+            'item_condition': round(item_condition_avg, 1),
+            'communication': round(communication_avg, 1),
+            'punctuality': round(punctuality_avg, 1),
+            'total_ratings': ratings_received.count(),
+        }
 
     def get_trust_score_display(self, obj):
         if obj.trust_score == 0 and not obj.national_id_verified:

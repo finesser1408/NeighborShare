@@ -2,37 +2,54 @@ from celery import shared_task
 from django.utils import timezone
 from django.conf import settings
 from datetime import timedelta
+from django.db import transaction
 from transactions.models import Transaction, TransactionState, TransactionEvent, Rating
-from transactions.escrow import EcoCashProvider, MockEcoCashProvider
 import logging
 
 logger = logging.getLogger(__name__)
 
 
 @shared_task(bind=True, max_retries=3, default_retry_delay=60)
-def release_deposit(self, transaction_id: str):
+def award_time_credits(self, transaction_id: str):
+    """
+    Award Community Time Credits to both parties upon successful transaction completion.
+    This replaces the monetary deposit release mechanism.
+    """
     try:
-        transaction = Transaction.objects.get(id=transaction_id)
+        txn = Transaction.objects.select_for_update().get(id=transaction_id)
     except Transaction.DoesNotExist:
-        logger.error(f"Transaction {transaction_id} not found for deposit release")
+        logger.error(f"Transaction {transaction_id} not found for time credit award")
         return
 
-    if transaction.state != TransactionState.CLOSED:
-        logger.warning(f"Transaction {transaction_id} not in CLOSED state, skipping release")
+    if txn.state != TransactionState.CLOSED:
+        logger.warning(f"Transaction {transaction_id} not in CLOSED state, skipping time credit award")
         return
-
-    provider = MockEcoCashProvider() if settings.DEBUG else EcoCashProvider()
 
     try:
-        result = provider.release_deposit(transaction.escrow_reference)
-        TransactionEvent.objects.create(
-            transaction=transaction,
-            event_type='PAYMENT',
-            detail={'action': 'release', 'result': result},
-        )
-        logger.info(f"Deposit released for transaction {transaction_id}")
+        with transaction.atomic():
+            # Award time credits to lender (for sharing)
+            lender = txn.item.owner
+            lender.trust_score += txn.total_time_credits * 0.5
+            lender.save(update_fields=['trust_score'])
+
+            # Award time credits to borrower (for responsible borrowing)
+            borrower = txn.borrower
+            borrower.trust_score += txn.total_time_credits * 0.3
+            borrower.save(update_fields=['trust_score'])
+
+            TransactionEvent.objects.create(
+                transaction=txn,
+                event_type='TIME_CREDIT',
+                detail={
+                    'action': 'awarded',
+                    'lender_credits': txn.total_time_credits * 0.5,
+                    'borrower_credits': txn.total_time_credits * 0.3,
+                    'total_credits': txn.total_time_credits,
+                },
+            )
+            logger.info(f"Time credits awarded for transaction {transaction_id}")
     except Exception as e:
-        logger.error(f"Failed to release deposit for {transaction_id}: {e}")
+        logger.error(f"Failed to award time credits for {transaction_id}: {e}")
         raise self.retry(exc=e)
 
 
@@ -78,41 +95,6 @@ def check_expired_transactions():
 
 
 @shared_task
-def check_pending_ecocash_transactions():
-    pending = Transaction.objects.filter(
-        state=TransactionState.ACCEPTED,
-        escrow_reference__isnull=False,
-    )
-    for txn in pending:
-        logger.info(f"Checking EcoCash status for {txn.id}")
-
-
-@shared_task(bind=True, max_retries=3)
-def retry_ecocash_operation(self, transaction_id: str, operation: str):
-    try:
-        transaction = Transaction.objects.get(id=transaction_id)
-    except Transaction.DoesNotExist:
-        return
-
-    provider = MockEcoCashProvider() if settings.DEBUG else EcoCashProvider()
-
-    try:
-        if operation == 'hold':
-            provider.hold_deposit(
-                float(transaction.deposit_amount),
-                transaction.borrower.profile.phone_number,
-                transaction.escrow_reference,
-            )
-        elif operation == 'release':
-            provider.release_deposit(transaction.escrow_reference)
-        elif operation == 'refund':
-            provider.refund_deposit(transaction.escrow_reference)
-    except Exception as e:
-        logger.error(f"EcoCash {operation} retry failed for {transaction_id}: {e}")
-        raise self.retry(exc=e, countdown=60 * (2 ** self.request.retries))
-
-
-@shared_task
 def reveal_rating_after_delay(rating_id: str):
     """
     Task triggered if only one party has submitted a rating.
@@ -131,4 +113,4 @@ def reveal_rating_after_delay(rating_id: str):
                 other.save(update_fields=['is_visible'])
             logger.info(f"Revealed rating {rating_id} after delay.")
     except Rating.DoesNotExist:
-        logger.error(f"Rating {rating_id} not found for delay reveal")
+        logger.error(f"Rating {rating_id} not found for delay reveal")

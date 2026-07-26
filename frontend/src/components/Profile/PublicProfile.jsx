@@ -122,7 +122,7 @@ export default function PublicProfile() {
                   </div>
                   <div className="p-4">
                     <h3 className="font-semibold text-gray-900 truncate">{item.title}</h3>
-                    <p className="text-sm text-gray-500 mt-1">${item.daily_rate_usd}/day</p>
+                    <p className="text-sm text-gray-500 mt-1">{item.time_credits_per_day} Credits/day</p>
                     <a href={`/items/${item.id}`} className="mt-3 inline-block text-sm text-blue-600 hover:underline">View Item</a>
                   </div>
                 </div>

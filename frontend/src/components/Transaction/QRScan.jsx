@@ -37,6 +37,16 @@ export default function QRScan() {
   };
 
   const handleGenerateQR = async (type) => {
+    // Request camera permission before opening QR scanner (iOS Safari fix)
+    try {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        await navigator.mediaDevices.getUserMedia({ video: false });
+      }
+    } catch (err) {
+      console.warn('Camera permission check failed:', err);
+      // Continue anyway - permission will be requested when scanner opens
+    }
+
     try {
       const response = await transactionsApi.generateQr(id);
       setQrToken(response.data.token);
@@ -125,10 +135,10 @@ export default function QRScan() {
             <span className={`px-3 py-1 text-sm font-medium rounded-full ${
               transaction.state === 'CLOSED' ? 'bg-gray-100 text-gray-800' :
               transaction.state === 'DISPUTED' ? 'bg-red-100 text-red-800' :
-              transaction.state === 'DEPOSIT_HELD' ? 'bg-purple-100 text-purple-800' :
+              transaction.state === 'ACTIVE' ? 'bg-purple-100 text-purple-800' :
               transaction.state === 'ITEM_OUT' ? 'bg-orange-100 text-orange-800' :
               transaction.state === 'ITEM_RETURNED' ? 'bg-green-100 text-green-800' :
-              transaction.state === 'ACCEPTED' ? 'bg-blue-100 text-blue-800' :
+              transaction.state === 'AGREED' ? 'bg-blue-100 text-blue-800' :
               'bg-yellow-100 text-yellow-800'
             }`}>
               {transaction.state.replace('_', ' ')}
@@ -149,21 +159,21 @@ export default function QRScan() {
               <p className="font-medium text-gray-900">{transaction.requested_from} to {transaction.requested_to}</p>
             </div>
             <div>
-              <p className="text-gray-500">Deposit</p>
-              <p className="font-medium text-gray-900">${transaction.deposit_amount}</p>
+              <p className="text-gray-500">Total Credits</p>
+              <p className="font-medium text-gray-900">{transaction.total_time_credits} credits</p>
             </div>
           </div>
 
-          {(transaction.state === 'DEPOSIT_HELD' || transaction.state === 'ITEM_OUT') && (
+          {(transaction.state === 'ACTIVE' || transaction.state === 'ITEM_OUT') && (
             <div className="space-y-4">
               <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
                 <p className="text-purple-800 mb-3">
-                  {transaction.state === 'DEPOSIT_HELD'
+                  {transaction.state === 'ACTIVE'
                     ? 'Both parties must scan the QR code to confirm hand-off.'
                     : 'Both parties must scan the QR code to confirm return.'}
                 </p>
                 <button
-                  onClick={() => handleGenerateQR(transaction.state === 'DEPOSIT_HELD' ? 'handoff' : 'return')}
+                  onClick={() => handleGenerateQR(transaction.state === 'ACTIVE' ? 'handoff' : 'return')}
                   className="w-full py-3 px-4 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700"
                 >
                   Generate QR Code
@@ -232,15 +242,15 @@ export default function QRScan() {
             </div>
           )}
 
-          {transaction.state === 'ACCEPTED' && (
+          {transaction.state === 'AGREED' && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-blue-800">Deposit payment required before hand-off can proceed.</p>
+              <p className="text-blue-800">Transaction accepted. Ready for hand-off.</p>
             </div>
           )}
 
           {transaction.state === 'ITEM_RETURNED' && (
             <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <p className="text-green-800">Item returned. Waiting for lender to release deposit.</p>
+              <p className="text-green-800">Item returned. Waiting for lender to close transaction.</p>
             </div>
           )}
 

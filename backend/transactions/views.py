@@ -15,8 +15,7 @@ from .serializers import (
 )
 from .state import TransactionStateMachine, InvalidTransitionError
 from .qr import generate_handshake_token, verify_handshake_token, parse_token
-from .escrow import MockEcoCashProvider, EcoCashProvider
-from .tasks import release_deposit, flag_for_admin_review
+from .tasks import award_time_credits, flag_for_admin_review
 from items.models import Item
 from users.models import UserProfile
 from django.conf import settings
@@ -43,7 +42,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
 
         if Transaction.objects.filter(
             item=item,
-            state__in=[TransactionState.PENDING, TransactionState.ACCEPTED, TransactionState.DEPOSIT_HELD, TransactionState.ITEM_OUT]
+            state__in=[TransactionState.PENDING, TransactionState.ACCEPTED, TransactionState.ACTIVE, TransactionState.ITEM_OUT]
         ).exists():
             return Response({'error': 'Item already has an active transaction'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -53,9 +52,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
             state=TransactionState.PENDING,
             requested_from=serializer.validated_data['requested_from'],
             requested_to=serializer.validated_data['requested_to'],
-            deposit_amount=item.deposit_amount_usd,
-            daily_rate=item.daily_rate_usd,
-            escrow_reference=f'NS-{uuid.uuid4().hex[:12].upper()}',
+            time_credits_per_day=item.time_credits_per_day,
         )
 
         TransactionEvent.objects.create(
@@ -80,6 +77,20 @@ class TransactionViewSet(viewsets.ModelViewSet):
 
         return Response(TransactionSerializer(txn, context={'request': request}).data)
 
+    @action(detail=True, methods=['post'], url_path='activate')
+    def activate_transaction(self, request, pk=None):
+        txn = self.get_object()
+        if txn.borrower != request.user:
+            return Response({'error': 'Only the borrower can confirm terms and activate'}, status=status.HTTP_403_FORBIDDEN)
+
+        machine = TransactionStateMachine(txn)
+        try:
+            machine.activate(request.user)
+        except InvalidTransitionError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(TransactionSerializer(txn, context={'request': request}).data)
+
     @action(detail=True, methods=['post'], url_path='decline')
     def decline(self, request, pk=None):
         txn = self.get_object()
@@ -98,26 +109,6 @@ class TransactionViewSet(viewsets.ModelViewSet):
         )
         return Response(TransactionSerializer(txn, context={'request': request}).data)
 
-    @action(detail=True, methods=['post'], url_path='hold-deposit')
-    def hold_deposit(self, request, pk=None):
-        """
-        Mock endpoint to transition ACCEPTED → DEPOSIT_HELD.
-        In production this would verify the EcoCash payment callback.
-        """
-        txn = self.get_object()
-        if txn.borrower != request.user and txn.item.owner != request.user:
-            return Response({'error': 'Not authorized'}, status=status.HTTP_403_FORBIDDEN)
-
-        machine = TransactionStateMachine(txn)
-        try:
-            TransactionStateMachine.transition(txn, TransactionState.DEPOSIT_HELD, request.user, {
-                'action': 'deposit_held',
-                'escrow_transaction_id': request.data.get('escrow_transaction_id', 'mock'),
-            })
-        except InvalidTransitionError as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response(TransactionSerializer(txn, context={'request': request}).data)
 
     @action(detail=True, methods=['post'], url_path='close')
     def close_transaction(self, request, pk=None):
@@ -145,7 +136,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
         if txn.item.owner != request.user and txn.borrower != request.user:
             return Response({'error': 'Not authorized'}, status=status.HTTP_403_FORBIDDEN)
 
-        if txn.state not in [TransactionState.DEPOSIT_HELD, TransactionState.ITEM_OUT]:
+        if txn.state not in [TransactionState.ACTIVE, TransactionState.ITEM_OUT]:
             return Response({'error': 'QR can only be generated for handoff or return'}, status=status.HTTP_400_BAD_REQUEST)
 
         token = generate_handshake_token(str(txn.id))
@@ -171,7 +162,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
         if not is_lender and not is_borrower:
             return Response({'error': 'Not a party to this transaction'}, status=status.HTTP_403_FORBIDDEN)
 
-        if txn.state == TransactionState.DEPOSIT_HELD:
+        if txn.state == TransactionState.ACTIVE:
             if is_lender:
                 txn.lender_scanned_handoff = True
             else:
@@ -289,17 +280,8 @@ class AdminTransactionViewSet(viewsets.ReadOnlyModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         resolution = serializer.validated_data['resolution']
-        provider = MockEcoCashProvider() if settings.DEBUG else EcoCashProvider()
 
         try:
-            if resolution == 'lender':
-                provider.release_deposit(txn.escrow_reference)
-            elif resolution == 'borrower':
-                provider.refund_deposit(txn.escrow_reference)
-            else:
-                total = float(txn.deposit_amount)
-                provider.split_deposit(txn.escrow_reference, total / 2, total / 2)
-
             machine = TransactionStateMachine(txn)
             machine.resolve_dispute(request.user, resolution)
 

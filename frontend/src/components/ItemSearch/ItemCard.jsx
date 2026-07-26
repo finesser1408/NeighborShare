@@ -105,12 +105,12 @@ export default function ItemCard({ item, distance, selected, onClick, onClose })
 
       <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
         <div className="flex items-baseline gap-2">
-          <span className="text-xl font-bold text-gray-900">${item.daily_rate_usd}</span>
-          <span className="text-sm text-gray-500">/ day</span>
+          <span className="text-xl font-bold text-gray-900">{item.time_credits_per_day}</span>
+          <span className="text-sm text-gray-500">Credits / day</span>
         </div>
         <div className="text-right text-sm text-gray-500">
-          <p>Deposit: <span className="font-medium text-gray-900">${item.deposit_amount_usd}</span></p>
-          <p className="text-xs">~${(item.daily_rate_usd * 7).toFixed(2)}/week</p>
+          <p className="font-medium text-gray-900 capitalize">{item.tier?.replace('_', ' ')}</p>
+          <p className="text-xs capitalize">{item.trade_type?.replace('_', ' ')}</p>
         </div>
       </div>
     </article>

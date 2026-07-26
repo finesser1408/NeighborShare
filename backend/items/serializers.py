@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.gis.geos import Point
-from .models import Item, ItemImage, Category
+from .models import Item, ItemImage, Category, ItemTier, TradeType, ListingType
 from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
@@ -23,8 +23,8 @@ class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = [
-            'id', 'title', 'description', 'category', 'daily_rate_usd',
-            'deposit_amount_usd', 'is_available', 'location_display',
+            'id', 'title', 'description', 'category', 'listing_type', 'tier', 'trade_type', 'trade_request_details',
+            'time_credits_per_day', 'is_available', 'location_display',
             'availability_calendar', 'images', 'owner_name', 'owner_trust_score',
             'distance_km', 'created_at', 'updated_at',
         ]
@@ -65,18 +65,15 @@ class ItemCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = [
-            'title', 'description', 'category', 'daily_rate_usd',
-            'deposit_amount_usd', 'is_available', 'availability_calendar', 'images',
+            'title', 'description', 'category', 'listing_type', 'tier', 'trade_type', 'trade_request_details',
+            'time_credits_per_day', 'is_available', 'availability_calendar', 'images',
         ]
 
-    def validate_deposit_amount_usd(self, value):
-        from django.conf import settings
-        limit = getattr(settings, 'ECOCASH_WALLET_LIMIT', 50000)
-        if value > limit:
-            raise serializers.ValidationError(
-                f'Deposit amount exceeds EcoCash wallet limit of ZWL {limit:,}. '
-                'This listing will be flagged for admin review.'
-            )
+    def validate_time_credits_per_day(self, value):
+        if value < 1:
+            raise serializers.ValidationError('Time credits per day must be at least 1.')
+        if value > 100:
+            raise serializers.ValidationError('Time credits per day cannot exceed 100.')
         return value
 
     def validate_images(self, images):
@@ -129,9 +126,16 @@ class ItemUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = [
-            'title', 'description', 'category', 'daily_rate_usd',
-            'deposit_amount_usd', 'is_available', 'availability_calendar', 'images',
+            'title', 'description', 'category', 'listing_type', 'tier', 'trade_type', 'trade_request_details',
+            'time_credits_per_day', 'is_available', 'availability_calendar', 'images',
         ]
+
+    def validate_time_credits_per_day(self, value):
+        if value < 1:
+            raise serializers.ValidationError('Time credits per day must be at least 1.')
+        if value > 100:
+            raise serializers.ValidationError('Time credits per day cannot exceed 100.')
+        return value
 
     def validate_images(self, images):
         if len(images) > 6:
@@ -179,3 +183,15 @@ class CategorySerializer(serializers.Serializer):
     @classmethod
     def get_all(cls):
         return [{'value': c.value, 'label': c.label} for c in Category]
+
+    @classmethod
+    def get_tiers(cls):
+        return [{'value': t.value, 'label': t.label} for t in ItemTier]
+
+    @classmethod
+    def get_trade_types(cls):
+        return [{'value': t.value, 'label': t.label} for t in TradeType]
+
+    @classmethod
+    def get_listing_types(cls):
+        return [{'value': l.value, 'label': l.label} for l in ListingType]

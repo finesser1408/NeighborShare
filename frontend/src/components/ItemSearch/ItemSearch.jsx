@@ -51,7 +51,7 @@ function MapComponent({ items, selectedItem, onItemClick, center, zoom, onMapMov
             <Popup>
               <div className="p-1 min-w-[200px]">
                 <h4 className="font-medium text-gray-900 truncate">{item.properties?.title || item.title}</h4>
-                <p className="text-sm text-gray-500">${item.properties?.daily_rate_usd || item.daily_rate_usd}/day</p>
+                <p className="text-sm text-gray-500">{item.properties?.time_credits_per_day || item.time_credits_per_day} Credits/day</p>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -228,8 +228,8 @@ export default function ItemSearch({ initialLat, initialLng }) {
           >
             <option value="distance">Distance</option>
             <option value="newest">Newest</option>
-            <option value="price_asc">Price: Low to High</option>
-            <option value="price_desc">Price: High to Low</option>
+            <option value="credits_asc">Time Credits: Low to High</option>
+            <option value="credits_desc">Time Credits: High to Low</option>
           </select>
         </div>
 

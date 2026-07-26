@@ -111,10 +111,13 @@ export default function MyListings() {
 
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-baseline gap-1">
-                      <span className="text-xl font-bold text-gray-900">${item.daily_rate_usd}</span>
-                      <span className="text-sm text-gray-500">/day</span>
+                      <span className="text-xl font-bold text-gray-900">{item.time_credits_per_day}</span>
+                      <span className="text-sm text-gray-500">Credits/day</span>
                     </div>
-                    <span className="text-sm text-gray-500">Deposit: ${item.deposit_amount_usd}</span>
+                    <div className="text-right">
+                      <span className="text-sm font-medium text-gray-900 capitalize block">{item.tier?.replace('_', ' ')}</span>
+                      <span className="text-xs text-gray-500 capitalize">{item.trade_type?.replace('_', ' ')}</span>
+                    </div>
                   </div>
 
                   <div className="flex items-center justify-between pt-3 border-t border-gray-100">

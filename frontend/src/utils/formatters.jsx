@@ -25,18 +25,18 @@ export const CATEGORY_LABELS = {
 
 export const TRANSACTION_STATE_LABELS = {
   PENDING: 'Pending Approval',
-  ACCEPTED: 'Accepted – Awaiting Deposit',
-  DEPOSIT_HELD: 'Deposit Held – Ready for Hand-off',
+  AGREED: 'Agreed - Ready for Hand-off',
+  ACTIVE: 'Active - Hand-off Complete',
   ITEM_OUT: 'Item Out with Borrower',
-  ITEM_RETURNED: 'Item Returned – Awaiting Deposit Release',
+  ITEM_RETURNED: 'Item Returned - Completed',
   CLOSED: 'Completed',
   DISPUTED: 'Disputed',
 };
 
 export const TRANSACTION_STATE_COLORS = {
   PENDING: 'bg-yellow-100 text-yellow-800',
-  ACCEPTED: 'bg-blue-100 text-blue-800',
-  DEPOSIT_HELD: 'bg-purple-100 text-purple-800',
+  AGREED: 'bg-blue-100 text-blue-800',
+  ACTIVE: 'bg-purple-100 text-purple-800',
   ITEM_OUT: 'bg-orange-100 text-orange-800',
   ITEM_RETURNED: 'bg-green-100 text-green-800',
   CLOSED: 'bg-gray-100 text-gray-800',

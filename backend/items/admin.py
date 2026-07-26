@@ -8,7 +8,7 @@ class ItemImageInline(admin.TabularInline):
 
 @admin.register(Item)
 class ItemAdmin(gis_admin.GISModelAdmin):
-    list_display = ('title', 'owner', 'category', 'daily_rate_usd', 'deposit_amount_usd', 'is_available', 'created_at')
+    list_display = ('title', 'owner', 'category', 'tier', 'trade_type', 'time_credits_per_day', 'is_available', 'created_at')
     list_filter = ('category', 'is_available', 'created_at')
     search_fields = ('title', 'description', 'owner__email')
     inlines = [ItemImageInline]

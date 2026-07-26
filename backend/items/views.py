@@ -20,9 +20,9 @@ class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.select_related('owner', 'owner__profile').prefetch_related('images')
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
-    filterset_fields = ['category', 'is_available', 'owner']
+    filterset_fields = ['category', 'is_available', 'owner', 'tier', 'trade_type', 'listing_type']
     search_fields = ['title', 'description']
-    ordering_fields = ['created_at', 'daily_rate_usd', 'deposit_amount_usd']
+    ordering_fields = ['created_at', 'time_credits_per_day']
     ordering = ['-created_at']
 
     def get_serializer_class(self):
@@ -73,15 +73,36 @@ class ItemViewSet(viewsets.ModelViewSet):
         point = Point(lng, lat, srid=4326)
 
         from neighbourshare.gis_mock import gdal_available
+        import math
 
         if not gdal_available:
             # Fallback for local development when GDAL is not installed
-            # Return all available items (no distance filtering in dev mode)
+            # Use Haversine formula for distance filtering
             queryset = Item.objects.filter(is_available=True).select_related('owner', 'owner__profile').prefetch_related('images')
-            print(f"[SEARCH] Dev mode - returning {queryset.count()} available items")
-            # Mock distance attribute for serializers/responses
+            
+            def haversine_distance(lat1, lon1, lat2, lon2):
+                """Calculate distance between two points in kilometers using Haversine formula"""
+                R = 6371  # Earth's radius in km
+                dlat = math.radians(lat2 - lat1)
+                dlon = math.radians(lon2 - lon1)
+                a = math.sin(dlat/2) * math.sin(dlat/2) + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon/2) * math.sin(dlon/2)
+                c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+                return R * c
+            
+            filtered_items = []
             for item in queryset:
-                item.distance = 0.0
+                if item.location and hasattr(item.location, 'y') and hasattr(item.location, 'x'):
+                    item_lat = item.location.y
+                    item_lng = item.location.x
+                    distance = haversine_distance(lat, lng, item_lat, item_lng)
+                    if distance <= radius_km:
+                        item.distance = distance
+                        filtered_items.append(item)
+            
+            # Convert filtered list back to queryset-like structure
+            # Note: This is a limitation of the fallback - we can't maintain queryset methods
+            queryset = filtered_items
+            print(f"[SEARCH] Dev mode - found {len(queryset)} items within {radius_km}km using Haversine")
         else:
             queryset = Item.objects.filter(
                 is_available=True,
@@ -91,17 +112,28 @@ class ItemViewSet(viewsets.ModelViewSet):
             ).select_related('owner', 'owner__profile').prefetch_related('images')
             print(f"[SEARCH] GDAL mode - found {queryset.count()} items within {radius_km}km")
 
-        if category:
-            queryset = queryset.filter(category=category)
-
-        if sort == 'distance' and gdal_available:
-            queryset = queryset.order_by('distance')
-        elif sort == 'newest':
-            queryset = queryset.order_by('-created_at')
-        elif sort == 'price_asc':
-            queryset = queryset.order_by('daily_rate_usd')
-        elif sort == 'price_desc':
-            queryset = queryset.order_by('-daily_rate_usd')
+        if not gdal_available:
+            if category:
+                queryset = [item for item in queryset if item.category == category]
+            if sort == 'distance':
+                queryset.sort(key=lambda x: getattr(x, 'distance', 9999))
+            elif sort == 'newest':
+                queryset.sort(key=lambda x: x.created_at, reverse=True)
+            elif sort == 'credits_asc':
+                queryset.sort(key=lambda x: x.time_credits_per_day)
+            elif sort == 'credits_desc':
+                queryset.sort(key=lambda x: x.time_credits_per_day, reverse=True)
+        else:
+            if category:
+                queryset = queryset.filter(category=category)
+            if sort == 'distance':
+                queryset = queryset.order_by('distance')
+            elif sort == 'newest':
+                queryset = queryset.order_by('-created_at')
+            elif sort == 'credits_asc':
+                queryset = queryset.order_by('time_credits_per_day')
+            elif sort == 'credits_desc':
+                queryset = queryset.order_by('-time_credits_per_day')
 
         serializer = ItemSerializer(queryset, many=True, context={'request': request})
         data = serializer.data
@@ -109,22 +141,20 @@ class ItemViewSet(viewsets.ModelViewSet):
         widen_suggestion = len(data) == 0 and radius_km < 10
 
         # Build features from queryset (model instances) to access location
+        # NOTE: We do NOT include precise coordinates in the response for privacy
+        # Only neighborhood-level location_display is exposed via serializer
         features = []
         for item in queryset:
-            # Handle location - might be MockPoint, Point, or None
-            if item.location and hasattr(item.location, 'x') and hasattr(item.location, 'y'):
-                coords = [item.location.x, item.location.y]
-            elif item.location and isinstance(item.location, (list, tuple)) and len(item.location) == 2:
-                coords = item.location
-            else:
-                # Skip items without valid location
+            # Skip items without valid location
+            if not item.location:
                 continue
             
             features.append({
                 'type': 'Feature',
                 'geometry': {
                     'type': 'Point',
-                    'coordinates': coords,
+                    # Coordinates are obfuscated - only used for map rendering at neighborhood level
+                    'coordinates': [0, 0],  # Placeholder - actual coords never exposed
                 },
                 'properties': next((d for d in data if d['id'] == str(item.id)), {}),
             })
@@ -161,6 +191,18 @@ class ItemViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'], url_path='categories')
     def categories(self, request):
         return Response(CategorySerializer.get_all())
+
+    @action(detail=False, methods=['get'], url_path='tiers')
+    def tiers(self, request):
+        return Response(CategorySerializer.get_tiers())
+
+    @action(detail=False, methods=['get'], url_path='trade-types')
+    def trade_types(self, request):
+        return Response(CategorySerializer.get_trade_types())
+
+    @action(detail=False, methods=['get'], url_path='listing-types')
+    def listing_types(self, request):
+        return Response(CategorySerializer.get_listing_types())
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):

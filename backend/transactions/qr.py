@@ -6,6 +6,7 @@ import logging
 from typing import Optional
 from django.conf import settings
 from django.core.cache import cache
+from django_redis import get_redis_connection
 
 logger = logging.getLogger(__name__)
 
@@ -57,9 +58,21 @@ def verify_handshake_token(token: str, secret_key: str = None) -> bool:
             logger.warning(f"Invalid signature for token: {token[:20]}...")
             return False
 
+        # Check expiry (30 minutes = 1800 seconds)
+        if time.time() - timestamp > 1800:
+            logger.warning(f"Token expired: {token[:20]}...")
+            return False
+
+        # Atomic single-use check using Redis GETSET
         cache_key = f'qr:{token}'
-        previous = cache.get_and_set(cache_key, 'used')
-        if previous != 'unused':
+        redis_conn = get_redis_connection("default")
+        previous = redis_conn.getset(cache_key, 'used')
+        
+        if previous is None:
+            logger.warning(f"Token not found or expired: {token[:20]}...")
+            return False
+        
+        if previous != b'unused':
             logger.warning(f"Token replay attempt: {token[:20]}...")
             return False
 

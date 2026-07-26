@@ -32,7 +32,7 @@ export default function MyTransactions() {
 
   const filteredTransactions = transactions.filter(txn => {
     if (activeFilter === 'all') return true;
-    if (activeFilter === 'active') return ['PENDING', 'ACCEPTED', 'DEPOSIT_HELD', 'ITEM_OUT'].includes(txn.state);
+    if (activeFilter === 'active') return ['PENDING', 'AGREED', 'ACTIVE', 'ITEM_OUT'].includes(txn.state);
     if (activeFilter === 'completed') return txn.state === 'CLOSED';
     if (activeFilter === 'disputed') return txn.state === 'DISPUTED';
     return true;
@@ -40,18 +40,18 @@ export default function MyTransactions() {
 
   const stateLabels = {
     PENDING: 'Pending Approval',
-    ACCEPTED: 'Accepted - Awaiting Deposit',
-    DEPOSIT_HELD: 'Deposit Held - Ready for Hand-off',
+    AGREED: 'Agreed - Ready for Hand-off',
+    ACTIVE: 'Active - Hand-off Complete',
     ITEM_OUT: 'Item Out with Borrower',
-    ITEM_RETURNED: 'Item Returned - Awaiting Deposit Release',
+    ITEM_RETURNED: 'Item Returned - Completed',
     CLOSED: 'Completed',
     DISPUTED: 'Disputed',
   };
 
   const stateColors = {
     PENDING: 'bg-yellow-100 text-yellow-800',
-    ACCEPTED: 'bg-blue-100 text-blue-800',
-    DEPOSIT_HELD: 'bg-purple-100 text-purple-800',
+    AGREED: 'bg-blue-100 text-blue-800',
+    ACTIVE: 'bg-purple-100 text-purple-800',
     ITEM_OUT: 'bg-orange-100 text-orange-800',
     ITEM_RETURNED: 'bg-green-100 text-green-800',
     CLOSED: 'bg-gray-100 text-gray-800',
@@ -114,7 +114,7 @@ export default function MyTransactions() {
                       </span>
                     </div>
                     <p className="text-sm text-gray-500">
-                      {txn.requested_from} to {txn.requested_to} • ${txn.daily_rate}/day
+                      {txn.requested_from} to {txn.requested_to} • {txn.time_credits_per_day} Credits/day
                     </p>
                     <p className="text-sm text-gray-500 mt-1">
                       {txn.item?.owner?.id === user.id ? 'You are the lender' : 'You are the borrower'}
@@ -123,8 +123,8 @@ export default function MyTransactions() {
 
                   <div className="flex items-center gap-4">
                     <div className="text-right">
-                      <p className="text-lg font-bold text-gray-900">${txn.deposit_amount}</p>
-                      <p className="text-sm text-gray-500">Deposit</p>
+                      <p className="text-lg font-bold text-gray-900">{txn.total_time_credits}</p>
+                      <p className="text-sm text-gray-500">Total Credits</p>
                     </div>
                     <button
                       onClick={() => navigate(`/transactions/${txn.id}`)}
@@ -149,9 +149,9 @@ export default function MyTransactions() {
                   </div>
                 )}
 
-                {txn.state === 'DEPOSIT_HELD' && (
+                {txn.state === 'AGREED' && (
                   <div className="mt-4 pt-4 border-t border-gray-100 bg-purple-50 rounded-lg p-4">
-                    <p className="text-sm text-purple-800 mb-2">Both parties must scan the QR code to confirm hand-off.</p>
+                    <p className="text-sm text-purple-800 mb-2">Terms agreed. Proceed to generate QR code for hand-off.</p>
                     <button
                       onClick={() => navigate(`/transactions/${txn.id}/scan`)}
                       className="px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700"
@@ -161,7 +161,7 @@ export default function MyTransactions() {
                   </div>
                 )}
 
-                {txn.state === 'ITEM_OUT' && (
+                {(txn.state === 'ACTIVE' || txn.state === 'ITEM_OUT') && (
                   <div className="mt-4 pt-4 border-t border-gray-100 bg-orange-50 rounded-lg p-4">
                     <p className="text-sm text-orange-800 mb-2">Item is with the borrower. Scan QR code to confirm return.</p>
                     <button
@@ -175,9 +175,9 @@ export default function MyTransactions() {
 
                 {txn.state === 'ITEM_RETURNED' && txn.item?.owner?.id === user.id && (
                   <div className="mt-4 pt-4 border-t border-gray-100 bg-green-50 rounded-lg p-4">
-                    <p className="text-sm text-green-800 mb-2">Item returned. Release deposit to complete transaction.</p>
+                    <p className="text-sm text-green-800 mb-2">Item returned. Close transaction to finalize Time Credits.</p>
                     <button className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700">
-                      Release Deposit & Close
+                      Confirm & Close
                     </button>
                   </div>
                 )}

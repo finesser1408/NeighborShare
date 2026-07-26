@@ -8,9 +8,9 @@ class InvalidTransitionError(Exception):
 
 class TransactionStateMachine:
     ALLOWED_TRANSITIONS = {
-        TransactionState.PENDING: [TransactionState.ACCEPTED, TransactionState.DISPUTED],
-        TransactionState.ACCEPTED: [TransactionState.DEPOSIT_HELD, TransactionState.DISPUTED],
-        TransactionState.DEPOSIT_HELD: [TransactionState.ITEM_OUT, TransactionState.DISPUTED],
+        TransactionState.PENDING: [TransactionState.AGREED, TransactionState.DISPUTED],
+        TransactionState.AGREED: [TransactionState.ACTIVE, TransactionState.DISPUTED],
+        TransactionState.ACTIVE: [TransactionState.ITEM_OUT, TransactionState.DISPUTED],
         TransactionState.ITEM_OUT: [TransactionState.ITEM_RETURNED, TransactionState.DISPUTED],
         TransactionState.ITEM_RETURNED: [TransactionState.CLOSED, TransactionState.DISPUTED],
         TransactionState.CLOSED: [],
@@ -47,8 +47,8 @@ class TransactionStateMachine:
         )
 
         if new_state == TransactionState.CLOSED:
-            from transactions.tasks import release_deposit
-            release_deposit.delay(str(transaction.id))
+            from transactions.tasks import award_time_credits
+            award_time_credits.delay(str(transaction.id))
         elif new_state == TransactionState.DISPUTED:
             from transactions.tasks import flag_for_admin_review
             flag_for_admin_review.delay(str(transaction.id))
@@ -57,7 +57,10 @@ class TransactionStateMachine:
 
     # Convenience instance methods used by views
     def accept(self, user):
-        return self.transition(self.transaction, TransactionState.ACCEPTED, user, {'action': 'accepted'})
+        return self.transition(self.transaction, TransactionState.AGREED, user, {'action': 'accepted'})
+
+    def activate(self, user):
+        return self.transition(self.transaction, TransactionState.ACTIVE, user, {'action': 'activated'})
 
     def handoff(self, user):
         return self.transition(self.transaction, TransactionState.ITEM_OUT, user, {'action': 'handoff_confirmed'})

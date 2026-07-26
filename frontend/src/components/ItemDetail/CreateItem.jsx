@@ -10,8 +10,15 @@ const itemSchema = yup.object().shape({
   title: yup.string().required('Title is required').min(3).max(120),
   description: yup.string().required('Description is required').min(10),
   category: yup.string().required('Category is required'),
-  daily_rate_usd: yup.number().required('Daily rate is required').min(0.01),
-  deposit_amount_usd: yup.number().required('Deposit is required').min(0),
+  listing_type: yup.string().required('Listing type is required'),
+  tier: yup.string().required('Tier is required'),
+  trade_type: yup.string().required('Trade type is required'),
+  trade_request_details: yup.string().when('trade_type', {
+    is: 'specific_trade',
+    then: yup.string().required('Trade request details are required for specific trades'),
+    otherwise: yup.string(),
+  }),
+  time_credits_per_day: yup.number().required('Time credits per day is required').min(1).max(100),
 });
 
 const CATEGORIES = [
@@ -35,6 +42,23 @@ const CATEGORIES = [
   { value: 'other', label: 'Other' },
 ];
 
+const TIERS = [
+  { value: 'tier_1', label: 'Tier 1 - Small Exchanges (under 30 min)' },
+  { value: 'tier_2', label: 'Tier 2 - Medium Exchanges (1-2 hours)' },
+  { value: 'tier_3', label: 'Tier 3 - Large Exchanges (specialized/heavy)' },
+];
+
+const TRADE_TYPES = [
+  { value: 'specific_trade', label: 'Specific Trade Request' },
+  { value: 'open_offer', label: 'Open to Offers' },
+  { value: 'community_credit', label: 'Community Credit Only' },
+];
+
+const LISTING_TYPES = [
+  { value: 'item', label: 'Physical Item' },
+  { value: 'service', label: 'Skill/Service' },
+];
+
 export default function CreateItem() {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
@@ -56,8 +80,10 @@ export default function CreateItem() {
     resolver: yupResolver(itemSchema),
     defaultValues: {
       category: 'tools',
-      daily_rate_usd: 1,
-      deposit_amount_usd: 10,
+      listing_type: 'item',
+      tier: 'tier_1',
+      trade_type: 'open_offer',
+      time_credits_per_day: 1,
     },
   });
 
@@ -80,8 +106,11 @@ export default function CreateItem() {
         title: item.title,
         description: item.description,
         category: item.category,
-        daily_rate_usd: item.daily_rate_usd,
-        deposit_amount_usd: item.deposit_amount_usd,
+        listing_type: item.listing_type,
+        tier: item.tier,
+        trade_type: item.trade_type,
+        trade_request_details: item.trade_request_details,
+        time_credits_per_day: item.time_credits_per_day,
       });
       if (item.images) {
         setImagePreviews(item.images.map(img => img.image));
@@ -188,29 +217,71 @@ export default function CreateItem() {
             {errors.category && <p className="mt-1 text-sm text-red-600">{errors.category.message}</p>}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Listing Type *</label>
+            <select
+              {...register('listing_type')}
+              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.listing_type ? 'border-red-500' : 'border-gray-300'}`}
+            >
+              {LISTING_TYPES.map(type => (
+                <option key={type.value} value={type.value}>{type.label}</option>
+              ))}
+            </select>
+            {errors.listing_type && <p className="mt-1 text-sm text-red-600">{errors.listing_type.message}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tier *</label>
+            <select
+              {...register('tier')}
+              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.tier ? 'border-red-500' : 'border-gray-300'}`}
+            >
+              {TIERS.map(tier => (
+                <option key={tier.value} value={tier.value}>{tier.label}</option>
+              ))}
+            </select>
+            <p className="mt-1 text-xs text-gray-500">Tier 1: Small items/favours (under 30min) | Tier 2: Medium items/work (1-2hrs) | Tier 3: Large/specialized items</p>
+            {errors.tier && <p className="mt-1 text-sm text-red-600">{errors.tier.message}</p>}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Trade Type *</label>
+            <select
+              {...register('trade_type')}
+              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.trade_type ? 'border-red-500' : 'border-gray-300'}`}
+            >
+              {TRADE_TYPES.map(type => (
+                <option key={type.value} value={type.value}>{type.label}</option>
+              ))}
+            </select>
+            {errors.trade_type && <p className="mt-1 text-sm text-red-600">{errors.trade_type.message}</p>}
+          </div>
+
+          {watch('trade_type') === 'specific_trade' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Daily Rate (USD) *</label>
-              <input
-                {...register('daily_rate_usd', { valueAsNumber: true })}
-                type="number"
-                step="0.01"
-                min="0.01"
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.daily_rate_usd ? 'border-red-500' : 'border-gray-300'}`}
+              <label className="block text-sm font-medium text-gray-700 mb-1">Trade Request Details *</label>
+              <textarea
+                {...register('trade_request_details')}
+                rows={3}
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.trade_request_details ? 'border-red-500' : 'border-gray-300'}`}
+                placeholder="Describe exactly what you want in return (e.g., 'Looking for lawn mowing in exchange for these clothes')"
               />
-              {errors.daily_rate_usd && <p className="mt-1 text-sm text-red-600">{errors.daily_rate_usd.message}</p>}
+              {errors.trade_request_details && <p className="mt-1 text-sm text-red-600">{errors.trade_request_details.message}</p>}
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Deposit Amount (USD) *</label>
-              <input
-                {...register('deposit_amount_usd', { valueAsNumber: true })}
-                type="number"
-                step="0.01"
-                min="0"
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.deposit_amount_usd ? 'border-red-500' : 'border-gray-300'}`}
-              />
-              {errors.deposit_amount_usd && <p className="mt-1 text-sm text-red-600">{errors.deposit_amount_usd.message}</p>}
-            </div>
+          )}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Time Credits Per Day *</label>
+            <input
+              {...register('time_credits_per_day', { valueAsNumber: true })}
+              type="number"
+              step="1"
+              min="1"
+              max="100"
+              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.time_credits_per_day ? 'border-red-500' : 'border-gray-300'}`}
+            />
+            <p className="mt-1 text-xs text-gray-500">Community Time Credits earned per day of lending (1-100)</p>
+            {errors.time_credits_per_day && <p className="mt-1 text-sm text-red-600">{errors.time_credits_per_day.message}</p>}
           </div>
 
           <div>

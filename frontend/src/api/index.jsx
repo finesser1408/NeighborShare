@@ -115,13 +115,7 @@ export const transactionsApi = {
   borrowRequest: (data) => api.post('/transactions/borrow-request', data),
   accept: (id) => api.post(`/transactions/${id}/accept/`),
   decline: (id) => api.post(`/transactions/${id}/decline/`),
-  /**
-   * Trigger deposit hold via the backend (mock EcoCash flow).
-   * The backend's ACCEPTED → DEPOSIT_HELD transition is initiated by
-   * calling the escrow hold endpoint then moving state.
-   */
-  holdDeposit: (id, escrowTxnId) =>
-    api.post(`/transactions/${id}/hold-deposit/`, { escrow_transaction_id: escrowTxnId }),
+  activate: (id) => api.post(`/transactions/${id}/activate/`),
   /**
    * Close a transaction after item has been returned and deposit released.
    */

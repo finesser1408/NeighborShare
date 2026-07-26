@@ -6,6 +6,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.gis.geos import Point
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from django_ratelimit.decorators import ratelimit
+from django.utils.decorators import method_decorator
 import requests
 import logging
 
@@ -25,6 +27,7 @@ class RegistrationViewSet(viewsets.GenericViewSet):
     permission_classes = [AllowAny]
 
     @action(detail=False, methods=['post'], url_path='register')
+    @method_decorator(ratelimit(key='ip', rate='5/h', method='POST'))
     def register_step1(self, request):
         serializer = Step1Serializer(data=request.data)
         if not serializer.is_valid():
@@ -37,6 +40,7 @@ class RegistrationViewSet(viewsets.GenericViewSet):
         }, status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=['post'], url_path='verify-id')
+    @method_decorator(ratelimit(key='ip', rate='10/h', method='POST'))
     def verify_id_step2(self, request):
         serializer = Step2Serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -74,6 +78,7 @@ class RegistrationViewSet(viewsets.GenericViewSet):
         })
 
     @action(detail=False, methods=['post'], url_path='verify-address')
+    @method_decorator(ratelimit(key='ip', rate='10/h', method='POST'))
     def verify_address_step3(self, request):
         serializer = Step3Serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -124,6 +129,7 @@ class LoginViewSet(viewsets.GenericViewSet):
     permission_classes = [AllowAny]
 
     @action(detail=False, methods=['post'], url_path='login')
+    @method_decorator(ratelimit(key='ip', rate='10/m', method='POST'))
     def login(self, request):
         email = request.data.get('email')
         password = request.data.get('password')

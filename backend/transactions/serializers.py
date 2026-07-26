@@ -17,16 +17,16 @@ class TransactionSerializer(serializers.ModelSerializer):
     lender = UserProfileSerializer(source='item.owner.profile', read_only=True)
     events = TransactionEventSerializer(many=True, read_only=True)
     total_days = serializers.IntegerField(read_only=True)
-    total_cost = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    total_time_credits = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Transaction
         fields = [
             'id', 'borrower', 'item', 'lender', 'state', 'requested_from',
-            'requested_to', 'deposit_amount', 'daily_rate', 'escrow_reference',
+            'requested_to', 'time_credits_per_day', 'total_time_credits',
             'lender_scanned_handoff', 'borrower_scanned_handoff',
             'lender_scanned_return', 'borrower_scanned_return',
-            'total_days', 'total_cost', 'events', 'created_at', 'updated_at',
+            'total_days', 'events', 'created_at', 'updated_at',
         ]
         read_only_fields = fields
 

@@ -821,3 +821,201 @@ INFO 2026-07-22 10:03:51,646 basehttp 22460 21772 "GET /api/items/categories/ HT
 INFO 2026-07-22 10:03:51,901 basehttp 22460 8296 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 1451
 INFO 2026-07-22 10:03:52,029 basehttp 22460 8296 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 1451
 INFO 2026-07-22 10:03:52,234 basehttp 22460 16144 "GET /media/items/2026/07/WhatsApp_Image_2026-07-20_at_13.25.34.jpg HTTP/1.1" 304 0
+WARNING 2026-07-26 14:30:54,629 log 19240 5940 Unauthorized: /api/items/categories/
+WARNING 2026-07-26 14:30:59,044 log 19240 5940 Unauthorized: /api/items/
+WARNING 2026-07-26 14:31:32,691 log 19240 5940 Bad Request: /api/transactions/borrow-request
+ERROR 2026-07-26 14:31:34,695 exceptions 19240 5940 Unhandled exception
+Traceback (most recent call last):
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\transactions\views.py", line 67, in borrow_request
+    return Response(TransactionSerializer(txn, context={'request': request}).data, status=status.HTTP_201_CREATED)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\users\serializers.py", line 87, in get_full_name
+    return f"{obj.user.first_name} {obj.user.last_name}".strip()
+AttributeError: 'User' object has no attribute 'user'
+ERROR 2026-07-26 14:31:34,902 log 19240 5940 Internal Server Error: /api/transactions/borrow-request
+WARNING 2026-07-26 14:40:24,293 log 5884 16624 Unauthorized: /api/items/categories/
+WARNING 2026-07-26 14:40:27,782 log 5884 16624 Unauthorized: /api/items/
+WARNING 2026-07-26 14:40:57,323 log 5884 16624 Bad Request: /api/transactions/borrow-request
+ERROR 2026-07-26 14:40:59,189 exceptions 5884 16624 Unhandled exception
+Traceback (most recent call last):
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\transactions\views.py", line 67, in borrow_request
+    return Response(TransactionSerializer(txn, context={'request': request}).data, status=status.HTTP_201_CREATED)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\users\serializers.py", line 87, in get_full_name
+    return f"{obj.user.first_name} {obj.user.last_name}".strip()
+AttributeError: 'User' object has no attribute 'user'
+ERROR 2026-07-26 14:40:59,200 log 5884 16624 Internal Server Error: /api/transactions/borrow-request
+WARNING 2026-07-26 14:45:55,635 log 2956 7124 Forbidden: /api/auth/login
+WARNING 2026-07-26 14:46:00,150 log 2956 7124 Unauthorized: /api/auth/login
+ERROR 2026-07-26 14:46:06,298 views 2956 7124 Registration validation failed: {'email': [ErrorDetail(string='A user with this email already exists.', code='invalid')]}
+WARNING 2026-07-26 14:46:06,301 log 2956 7124 Bad Request: /api/auth/register
+ERROR 2026-07-26 14:46:06,311 views 2956 7124 Registration validation failed: {'email': [ErrorDetail(string='Enter a valid email address.', code='invalid')]}
+WARNING 2026-07-26 14:46:06,314 log 2956 7124 Bad Request: /api/auth/register
+ERROR 2026-07-26 14:46:06,328 views 2956 7124 Registration validation failed: {'confirm_password': [ErrorDetail(string='Passwords do not match.', code='invalid')]}
+WARNING 2026-07-26 14:46:06,341 log 2956 7124 Bad Request: /api/auth/register
+INFO 2026-07-26 14:46:10,726 verification 2956 7124 Mock verification for National ID: 12-3****
+WARNING 2026-07-26 14:46:10,798 log 2956 7124 Bad Request: /api/auth/verify-id
+WARNING 2026-07-26 14:46:12,149 log 2956 7124 Bad Request: /api/auth/verify-id
+INFO 2026-07-26 14:46:13,366 verification 2956 7124 Mock verification for National ID: 12-3****
+WARNING 2026-07-26 14:46:14,849 log 2956 7124 Bad Request: /api/auth/verify-address
+INFO 2026-07-26 14:46:22,459 verification 2956 7124 Mock verification for National ID: 12-3****
+ERROR 2026-07-26 14:46:22,470 verification 2956 7124 Nominatim geocoding failed: Network error
+WARNING 2026-07-26 14:47:10,339 log 5340 9344 Unauthorized: /api/items/categories/
+WARNING 2026-07-26 14:47:14,601 log 5340 9344 Unauthorized: /api/items/
+INFO 2026-07-26 16:30:08,653 autoreload 21756 22728 Watching for file changes with StatReloader
+INFO 2026-07-26 16:30:59,263 autoreload 21756 22728 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\admin_dashboard\views.py changed, reloading.
+INFO 2026-07-26 16:31:06,539 autoreload 17116 17820 Watching for file changes with StatReloader
+INFO 2026-07-26 16:32:14,550 autoreload 17116 17820 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\admin.py changed, reloading.
+INFO 2026-07-26 16:32:20,790 autoreload 22820 1784 Watching for file changes with StatReloader
+INFO 2026-07-26 16:32:26,034 autoreload 22820 1784 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\transactions\admin.py changed, reloading.
+INFO 2026-07-26 16:32:32,700 autoreload 11548 22136 Watching for file changes with StatReloader
+INFO 2026-07-26 16:32:50,284 basehttp 11548 21628 "GET /api/items/search?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 301 0
+ERROR 2026-07-26 16:32:50,354 exceptions 11548 12132 Unhandled exception
+Traceback (most recent call last):
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such column: items.listing_type
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\views.py", line 93, in search
+    for item in queryset:
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\db\models\query.py", line 398, in __iter__
+    self._fetch_all()
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\db\models\query.py", line 1881, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\db\models\query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\db\backends\utils.py", line 102, in execute
+    return super().execute(sql, params)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\db\backends\utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such column: items.listing_type
+ERROR 2026-07-26 16:32:50,545 log 11548 12132 Internal Server Error: /api/items/search/
+ERROR 2026-07-26 16:32:50,548 basehttp 11548 12132 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 500 68
+INFO 2026-07-26 16:34:48,483 autoreload 24304 23580 Watching for file changes with StatReloader
+ERROR 2026-07-26 16:35:01,094 exceptions 24304 10892 Unhandled exception
+Traceback (most recent call last):
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\views.py", line 105, in search
+    ItemResult = namedtuple('ItemResult', queryset[0].__dict__.keys() if queryset else ['id'])
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\collections\__init__.py", line 399, in namedtuple
+    raise ValueError('Field names cannot start with an underscore: '
+ValueError: Field names cannot start with an underscore: '_state'
+ERROR 2026-07-26 16:35:01,101 log 24304 10892 Internal Server Error: /api/items/search/
+ERROR 2026-07-26 16:35:01,105 basehttp 24304 10892 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 500 68
+INFO 2026-07-26 16:35:43,046 autoreload 24304 23580 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\views.py changed, reloading.
+INFO 2026-07-26 16:35:49,424 autoreload 9156 6876 Watching for file changes with StatReloader
+INFO 2026-07-26 16:36:10,486 autoreload 9156 6876 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\items\views.py changed, reloading.
+INFO 2026-07-26 16:36:16,365 autoreload 16284 14660 Watching for file changes with StatReloader
+INFO 2026-07-26 16:47:43,642 basehttp 16284 6872 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-26 16:47:47,183 basehttp 16284 6872 "GET /api/items/search?lat=-17.772064305093533&lng=30.98594144315347&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-26 16:47:47,208 basehttp 16284 17820 "GET /api/items/search/?lat=-17.772064305093533&lng=30.98594144315347&radius_km=5&sort=distance HTTP/1.1" 200 150
+INFO 2026-07-26 16:47:48,257 basehttp 16284 17820 "GET /api/items/search?lat=-17.783261608815994&lng=31.049905267051614&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-07-26 16:47:48,591 basehttp 16284 16052 "GET /api/items/search/?lat=-17.783261608815994&lng=31.049905267051614&radius_km=5&sort=distance HTTP/1.1" 200 151
+INFO 2026-07-26 19:35:42,105 basehttp 16284 23140 "OPTIONS /api/auth/register HTTP/1.1" 200 0
+ERROR 2026-07-26 19:35:42,119 exceptions 16284 23140 Unhandled exception
+Traceback (most recent call last):
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django_redis\cache.py", line 29, in _decorator
+    return method(self, *args, **kwargs)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django_redis\cache.py", line 89, in add
+    return self.client.add(*args, **kwargs)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django_redis\client\default.py", line 278, in add
+    return self.set(key, value, timeout, version=version, client=client, nx=True)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django_redis\client\default.py", line 224, in set
+    raise ConnectionInterrupted(connection=client) from e
+django_redis.exceptions.ConnectionInterrupted: Redis ConnectionError: Error 11001 connecting to redis:6379. getaddrinfo failed.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\rest_framework\views.py", line 506, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django\utils\decorators.py", line 46, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django_ratelimit\decorators.py", line 19, in _wrapped
+    ratelimited = is_ratelimited(request=request, group=group, fn=fn,
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django_ratelimit\core.py", line 153, in is_ratelimited
+    usage = get_usage(request, group, fn, key, rate, method, increment)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django_ratelimit\core.py", line 231, in get_usage
+    added = cache.add(cache_key, initial_value, period + EXPIRATION_FUDGE)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django_redis\cache.py", line 36, in _decorator
+    raise e.__cause__  # noqa: B904
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\django_redis\client\default.py", line 214, in set
+    return bool(client.set(nkey, nvalue, nx=nx, px=timeout, xx=xx))
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\redis\commands\core.py", line 2341, in set
+    return self.execute_command("SET", *pieces, **options)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\redis\client.py", line 533, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\redis\connection.py", line 1086, in get_connection
+    connection.connect()
+  File "C:\Users\Tavonga\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\redis\connection.py", line 270, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 11001 connecting to redis:6379. getaddrinfo failed.
+ERROR 2026-07-26 19:35:42,415 log 16284 23140 Internal Server Error: /api/auth/register
+ERROR 2026-07-26 19:35:42,417 basehttp 16284 23140 "POST /api/auth/register HTTP/1.1" 500 68
+INFO 2026-07-26 19:36:58,848 autoreload 16284 14660 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\neighbourshare\settings.py changed, reloading.
+INFO 2026-07-26 19:37:08,058 autoreload 25180 12532 Watching for file changes with StatReloader
+INFO 2026-07-26 19:37:22,646 basehttp 25180 14352 "POST /api/auth/register HTTP/1.1" 201 70
+INFO 2026-07-26 19:38:14,646 verification 25180 14352 Mock verification for National ID: 63-2****
+INFO 2026-07-26 19:38:14,667 basehttp 25180 14352 "POST /api/auth/verify-id HTTP/1.1" 200 76
+INFO 2026-07-26 19:41:25,181 basehttp 25180 23004 "OPTIONS /api/auth/verify-address HTTP/1.1" 200 0
+INFO 2026-07-26 19:41:29,234 basehttp 25180 23004 "POST /api/auth/verify-address HTTP/1.1" 200 903
+INFO 2026-07-26 19:41:29,351 basehttp 25180 22708 "OPTIONS /api/items/categories/ HTTP/1.1" 200 0
+INFO 2026-07-26 19:41:29,365 basehttp 25180 22708 "OPTIONS /api/items/search?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-26 19:41:29,377 basehttp 25180 22708 "OPTIONS /api/items/categories/ HTTP/1.1" 200 0
+INFO 2026-07-26 19:41:29,379 basehttp 25180 23004 "OPTIONS /api/items/search?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-26 19:41:29,449 basehttp 25180 23004 "OPTIONS /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-26 19:41:29,471 basehttp 25180 22708 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-26 19:41:29,495 basehttp 25180 23004 "OPTIONS /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 0
+INFO 2026-07-26 19:41:29,569 basehttp 25180 22708 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-26 19:41:29,679 basehttp 25180 23004 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-26 19:41:29,712 basehttp 25180 22708 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-26 19:41:43,415 basehttp 25180 22708 "OPTIONS /api/transactions/?user_id=4 HTTP/1.1" 200 0
+INFO 2026-07-26 19:41:43,417 basehttp 25180 23004 "OPTIONS /api/transactions/?user_id=4 HTTP/1.1" 200 0
+INFO 2026-07-26 19:41:43,473 basehttp 25180 22708 "GET /api/transactions/?user_id=4 HTTP/1.1" 200 52
+INFO 2026-07-26 19:41:43,520 basehttp 25180 22708 "GET /api/transactions/?user_id=4 HTTP/1.1" 200 52
+INFO 2026-07-26 19:42:11,935 basehttp 25180 22708 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-26 19:42:11,969 basehttp 25180 22708 "GET /api/items/categories/ HTTP/1.1" 200 985
+INFO 2026-07-26 19:42:12,085 basehttp 25180 23004 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127
+INFO 2026-07-26 19:42:12,178 basehttp 25180 23004 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 127

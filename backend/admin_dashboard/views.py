@@ -7,7 +7,6 @@ from django.conf import settings
 
 from transactions.models import Transaction, TransactionState, TransactionEvent
 from transactions.serializers import TransactionSerializer, AdminDisputeResolveSerializer
-from transactions.escrow import MockEcoCashProvider, EcoCashProvider
 from transactions.state import TransactionStateMachine
 from users.models import UserProfile
 from users.serializers import UserProfileSerializer
@@ -34,19 +33,14 @@ class AdminDisputeViewSet(viewsets.ReadOnlyModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         resolution = serializer.validated_data['resolution']
-        provider = MockEcoCashProvider() if settings.DEBUG else EcoCashProvider()
 
         try:
             if resolution == 'lender':
-                provider.release_deposit(txn.escrow_reference)
-                detail = {'resolution': 'lender', 'action': 'deposit_released_to_lender'}
+                detail = {'resolution': 'lender', 'action': 'resolved_in_favor_of_lender'}
             elif resolution == 'borrower':
-                provider.refund_deposit(txn.escrow_reference)
-                detail = {'resolution': 'borrower', 'action': 'deposit_refunded_to_borrower'}
+                detail = {'resolution': 'borrower', 'action': 'resolved_in_favor_of_borrower'}
             else:
-                total = float(txn.deposit_amount)
-                provider.split_deposit(txn.escrow_reference, total / 2, total / 2)
-                detail = {'resolution': 'split', 'action': 'deposit_split_50_50'}
+                detail = {'resolution': 'split', 'action': 'resolved_split'}
 
             machine = TransactionStateMachine(txn)
             machine.resolve_dispute(request.user, resolution)
@@ -150,7 +144,7 @@ class AdminStatsViewSet(viewsets.ViewSet):
             'total_transactions': Transaction.objects.count(),
             'pending_transactions': Transaction.objects.filter(state=TransactionState.PENDING).count(),
             'active_transactions': Transaction.objects.filter(
-                state__in=[TransactionState.ACCEPTED, TransactionState.DEPOSIT_HELD, TransactionState.ITEM_OUT]
+                state__in=[TransactionState.AGREED, TransactionState.ACTIVE, TransactionState.ITEM_OUT]
             ).count(),
             'disputed_transactions': Transaction.objects.filter(state=TransactionState.DISPUTED).count(),
             'closed_transactions': Transaction.objects.filter(state=TransactionState.CLOSED).count(),

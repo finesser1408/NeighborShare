@@ -13,10 +13,6 @@ env = environ.Env(
     POSTGRES_HOST=(str, 'db'),
     POSTGRES_PORT=(int, 5432),
     REDIS_URL=(str, 'redis://redis:6379/0'),
-    ECOCASH_API_URL=(str, 'https://sandbox.ecocash.co.zw/api/v2'),
-    ECOCASH_MERCHANT_ID=(str, ''),
-    ECOCASH_API_KEY=(str, ''),
-    ECOCASH_WALLET_LIMIT=(int, 50000),
     NOMINATIM_USER_AGENT=(str, 'NeighbourShare/1.0'),
     DJANGO_ALLOWED_HOSTS=(list, ['localhost', '127.0.0.1', '0.0.0.0']),
     CORS_ALLOWED_ORIGINS=(list, ['http://localhost:3000', 'http://localhost']),
@@ -201,30 +197,33 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_TASK_ROUTES = {
-    'transactions.tasks.release_deposit': {'queue': 'escrow'},
+    'transactions.tasks.award_time_credits': {'queue': 'credits'},
     'transactions.tasks.flag_for_admin_review': {'queue': 'disputes'},
     'transactions.tasks.process_qr_scan': {'queue': 'qr'},
-    'transactions.tasks.retry_ecocash_operation': {'queue': 'escrow'},
 }
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': env('REDIS_URL'),
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        },
-        'KEY_PREFIX': 'neighbourshare',
+if DEBUG:
+    # In local development, fall back to local memory cache (no Redis needed)
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'neighbourshare-dev',
+        }
     }
-}
-
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-SESSION_CACHE_ALIAS = 'default'
-
-ECOCASH_API_URL = env('ECOCASH_API_URL')
-ECOCASH_MERCHANT_ID = env('ECOCASH_MERCHANT_ID')
-ECOCASH_API_KEY = env('ECOCASH_API_KEY')
-ECOCASH_WALLET_LIMIT = env('ECOCASH_WALLET_LIMIT')
+    SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django_redis.cache.RedisCache',
+            'LOCATION': env('REDIS_URL'),
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            },
+            'KEY_PREFIX': 'neighbourshare',
+        }
+    }
+    SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+    SESSION_CACHE_ALIAS = 'default'
 
 NOMINATIM_USER_AGENT = env('NOMINATIM_USER_AGENT')
 NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org'

@@ -290,7 +290,7 @@ function MyListingsView({ listings, onRefresh }) {
               </div>
               <div className="p-4">
                 <h3 className="font-semibold text-gray-900 truncate">{item.title}</h3>
-                <p className="text-sm text-gray-500 mt-1">${item.daily_rate_usd}/day</p>
+                <p className="text-sm text-gray-500 mt-1">{item.time_credits_per_day} credits/day</p>
                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
                   <span className={`text-sm font-medium ${item.is_available ? 'text-green-600' : 'text-red-600'}`}>
                     {item.is_available ? 'Available' : 'Unavailable'}
@@ -319,8 +319,8 @@ function MyTransactionsView({ transactions }) {
   const navigate = useNavigate();
   const stateLabels = {
     PENDING: 'Pending',
-    ACCEPTED: 'Accepted',
-    DEPOSIT_HELD: 'Deposit Held',
+    AGREED: 'Agreed',
+    ACTIVE: 'Active',
     ITEM_OUT: 'Item Out',
     ITEM_RETURNED: 'Returned',
     CLOSED: 'Completed',
@@ -329,8 +329,8 @@ function MyTransactionsView({ transactions }) {
 
   const stateColors = {
     PENDING: 'bg-yellow-100 text-yellow-800',
-    ACCEPTED: 'bg-blue-100 text-blue-800',
-    DEPOSIT_HELD: 'bg-purple-100 text-purple-800',
+    AGREED: 'bg-blue-100 text-blue-800',
+    ACTIVE: 'bg-purple-100 text-purple-800',
     ITEM_OUT: 'bg-orange-100 text-orange-800',
     ITEM_RETURNED: 'bg-green-100 text-green-800',
     CLOSED: 'bg-gray-100 text-gray-800',
@@ -361,7 +361,7 @@ function MyTransactionsView({ transactions }) {
                     </span>
                   </div>
                   <p className="text-sm text-gray-500">{txn.requested_from} to {txn.requested_to}</p>
-                  <p className="text-sm text-gray-500 mt-1">${txn.daily_rate}/day • Deposit: ${txn.deposit_amount}</p>
+                  <p className="text-sm text-gray-500 mt-1">{txn.time_credits_per_day} credits/day • Total: {txn.total_time_credits} credits</p>
                 </div>
                 <button onClick={() => navigate(`/transactions/${txn.id}`)} className="text-sm text-blue-600 hover:underline">View Details</button>
               </div>
