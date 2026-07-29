@@ -56,7 +56,6 @@ services:
     env: static
     rootDir: frontend
     buildCommand: npm install && npm run build
-    publishPath: build
     envVars:
       - key: REACT_APP_API_URL
         value: https://neighbourshare-backend.onrender.com
