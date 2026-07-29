@@ -4,17 +4,20 @@ services:
     env: python
     region: oregon
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn neighbourshare.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --timeout 120
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --no-input
+      python manage.py migrate
+    startCommand: gunicorn neighbourshare.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
     envVars:
       - key: DEBUG
-        value: False
+        value: "False"
       - key: SECRET_KEY
         generateValue: true
       - key: DJANGO_ALLOWED_HOSTS
         value: .onrender.com
       - key: USE_SQLITE
-        value: False
+        value: "False"
       - key: POSTGRES_DB
         fromDatabase:
           name: neighbourshare-db
@@ -47,12 +50,16 @@ services:
       - key: NOMINATIM_USER_AGENT
         value: NeighbourShare/1.0
 
+  # Moved Redis service here
+  - type: redis
+    name: neighbourshare-redis
+    region: oregon
+    plan: free
+    maxmemoryPolicy: allkeys-lru
+
 databases:
   - name: neighbourshare-db
     databaseName: neighbourshare
     user: neighbourshare
     plan: free
-
-  - name: neighbourshare-redis
-    plan: free
-    maxmemoryPolicy: allkeys-lru
+    region: oregon
