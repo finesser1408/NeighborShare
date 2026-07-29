@@ -1,0 +1,58 @@
+services:
+  - type: web
+    name: neighbourshare-backend
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn neighbourshare.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --timeout 120
+    envVars:
+      - key: DEBUG
+        value: False
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DJANGO_ALLOWED_HOSTS
+        value: .onrender.com
+      - key: USE_SQLITE
+        value: False
+      - key: POSTGRES_DB
+        fromDatabase:
+          name: neighbourshare-db
+          property: database
+      - key: POSTGRES_USER
+        fromDatabase:
+          name: neighbourshare-db
+          property: user
+      - key: POSTGRES_PASSWORD
+        fromDatabase:
+          name: neighbourshare-db
+          property: password
+      - key: POSTGRES_HOST
+        fromDatabase:
+          name: neighbourshare-db
+          property: host
+      - key: POSTGRES_PORT
+        fromDatabase:
+          name: neighbourshare-db
+          property: port
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: neighbourshare-redis
+          property: connectionString
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://neighbourshare-frontend.onrender.com
+      - key: SITE_URL
+        value: https://neighbourshare-backend.onrender.com
+      - key: NOMINATIM_USER_AGENT
+        value: NeighbourShare/1.0
+
+databases:
+  - name: neighbourshare-db
+    databaseName: neighbourshare
+    user: neighbourshare
+    plan: free
+
+  - name: neighbourshare-redis
+    plan: free
+    maxmemoryPolicy: allkeys-lru

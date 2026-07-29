@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: neighbourshare-frontend
+    env: static
+    region: oregon
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishDirectory: build
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://neighbourshare-backend.onrender.com
