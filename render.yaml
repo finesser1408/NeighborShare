@@ -61,7 +61,7 @@ services:
     staticPublishPath: build
     envVars:
       - key: VITE_API_URL
-        value: https://neighbourshare-backend-7j6c.onrender.com
+        value: https://neighbourshare-backend-7j6c.onrender.com/api
 
   - type: redis
     name: neighbourshare-redis
