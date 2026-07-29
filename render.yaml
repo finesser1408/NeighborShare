@@ -54,7 +54,6 @@ services:
   - type: web
     name: neighbourshare-frontend
     env: static
-    plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
     envVars:
