@@ -32,6 +32,9 @@ if 'onrender.com' not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append('.onrender.com')
 
 CORS_ALLOWED_ORIGINS = env('CORS_ALLOWED_ORIGINS')
+# Handle both string and list inputs for CORS_ALLOWED_ORIGINS
+if isinstance(CORS_ALLOWED_ORIGINS, str):
+    CORS_ALLOWED_ORIGINS = [origin.strip() for origin in CORS_ALLOWED_ORIGINS.split(',')]
 CORS_ALLOW_CREDENTIALS = True
 SITE_URL = env('SITE_URL')
 
