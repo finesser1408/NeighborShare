@@ -4,6 +4,7 @@ services:
     env: python
     region: oregon
     plan: free
+    rootDir: backend
     buildCommand: |
       pip install -r requirements.txt
       python manage.py collectstatic --no-input
@@ -49,6 +50,18 @@ services:
         value: https://neighbourshare-backend.onrender.com
       - key: NOMINATIM_USER_AGENT
         value: NeighbourShare/1.0
+
+  - type: web
+    name: neighbourshare-frontend
+    env: static
+    region: oregon
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishDirectory: build
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://neighbourshare-backend.onrender.com
 
   - type: redis
     name: neighbourshare-redis
