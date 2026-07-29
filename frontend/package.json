@@ -2,6 +2,7 @@
   "name": "neighbourshare-frontend",
   "version": "1.0.0",
   "private": true,
+  "description": "NeighbourShare frontend - deployed on Render",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
