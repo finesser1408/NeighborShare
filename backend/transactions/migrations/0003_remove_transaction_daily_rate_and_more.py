@@ -47,11 +47,6 @@ class Migration(migrations.Migration):
             field=models.PositiveIntegerField(default=0),
         ),
         migrations.AlterField(
-            model_name='rating',
-            name='id',
-            field=models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False),
-        ),
-        migrations.AlterField(
             model_name='transaction',
             name='state',
             field=models.CharField(choices=[('PENDING', 'Pending'), ('AGREED', 'Agreed'), ('ACTIVE', 'Active'), ('ITEM_OUT', 'Item Out'), ('ITEM_RETURNED', 'Item Returned'), ('CLOSED', 'Closed'), ('DISPUTED', 'Disputed')], default='PENDING', max_length=20),
@@ -60,11 +55,6 @@ class Migration(migrations.Migration):
             model_name='transactionevent',
             name='event_type',
             field=models.CharField(choices=[('STATE_CHANGE', 'State Change'), ('QR_SCAN', 'QR Scan'), ('TIME_CREDIT', 'Time Credit'), ('DISPUTE', 'Dispute'), ('RATING', 'Rating'), ('MESSAGE', 'Message')], max_length=20),
-        ),
-        migrations.AlterField(
-            model_name='transactionevent',
-            name='id',
-            field=models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False),
         ),
         migrations.CreateModel(
             name='DisputeResolution',
