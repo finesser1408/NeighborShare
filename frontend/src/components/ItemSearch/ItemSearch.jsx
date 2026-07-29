@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { itemsApi } from '../../api';
@@ -14,6 +14,19 @@ L.Icon.Default.mergeOptions({ iconRetinaUrl, iconUrl, shadowUrl });
 
 const CENTER = [-17.7833, 31.05];
 const DEFAULT_ZOOM = 13;
+
+// Hardcoded Categories List
+const CATEGORIES = [
+  { value: 'tools', label: 'Tools & Equipment' },
+  { value: 'electronics', label: 'Electronics & Gadgets' },
+  { value: 'home_garden', label: 'Home & Garden' },
+  { value: 'sports_outdoors', label: 'Sports & Outdoors' },
+  { value: 'vehicles', label: 'Vehicles & Transport' },
+  { value: 'apparel', label: 'Clothing & Accessories' },
+  { value: 'books_media', label: 'Books & Media' },
+  { value: 'services', label: 'Services & Help' },
+  { value: 'other', label: 'Other' },
+];
 
 function MapMoveHandler({ onMove }) {
   const map = useMapEvents({
@@ -39,7 +52,6 @@ function MapComponent({ items, selectedItem, onItemClick, center, zoom, onMapMov
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       {items.map((item) => {
-        // Handle both old format (item.location.coordinates) and new format (item.geometry.coordinates)
         const coords = item.geometry?.coordinates || item.location?.coordinates;
         if (!coords) return null;
         return (
@@ -50,8 +62,12 @@ function MapComponent({ items, selectedItem, onItemClick, center, zoom, onMapMov
           >
             <Popup>
               <div className="p-1 min-w-[200px]">
-                <h4 className="font-medium text-gray-900 truncate">{item.properties?.title || item.title}</h4>
-                <p className="text-sm text-gray-500">{item.properties?.time_credits_per_day || item.time_credits_per_day} Credits/day</p>
+                <h4 className="font-medium text-gray-900 truncate">
+                  {item.properties?.title || item.title}
+                </h4>
+                <p className="text-sm text-gray-500">
+                  {item.properties?.time_credits_per_day || item.time_credits_per_day} Credits/day
+                </p>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -74,7 +90,7 @@ function MapComponent({ items, selectedItem, onItemClick, center, zoom, onMapMov
 function ItemList({ items, selectedItem, onItemClick, loading, widenSuggestion, onWidenSearch }) {
   if (loading) {
     return (
-      <div className="space-y-4" role="status" aria-label="Loading items">
+      <div className="space-y-4 p-4" role="status" aria-label="Loading items">
         {[...Array(5)].map((_, i) => (
           <div key={i} className="animate-pulse">
             <div className="h-24 bg-gray-200 rounded-lg"></div>
@@ -88,7 +104,7 @@ function ItemList({ items, selectedItem, onItemClick, loading, widenSuggestion, 
 
   if (items.length === 0) {
     return (
-      <div className="text-center py-12">
+      <div className="text-center py-12 p-4">
         <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
         </svg>
@@ -111,7 +127,7 @@ function ItemList({ items, selectedItem, onItemClick, loading, widenSuggestion, 
   }
 
   return (
-    <div className="space-y-4" role="list" aria-label="Available items">
+    <div className="space-y-4 p-4" role="list" aria-label="Available items">
       {items.map((item) => (
         <ItemCard
           key={item.properties?.id || item.id}
@@ -136,7 +152,6 @@ export default function ItemSearch({ initialLat, initialLng }) {
   const [category, setCategory] = useState('');
   const [sort, setSort] = useState('distance');
   const [widenSuggestion, setWidenSuggestion] = useState(false);
-  const [categories, setCategories] = useState([]);
   const [error, setError] = useState(null);
 
   const fetchItems = useCallback(async () => {
@@ -151,9 +166,7 @@ export default function ItemSearch({ initialLat, initialLng }) {
         category: category || undefined,
         sort,
       });
-      console.log('Search API response:', response.data);
       const features = response.data.features || [];
-      console.log('Features count:', features.length);
       setItems(features);
       setWidenSuggestion(response.data.widen_suggestion || false);
     } catch (err) {
@@ -167,10 +180,6 @@ export default function ItemSearch({ initialLat, initialLng }) {
   useEffect(() => {
     fetchItems();
   }, [fetchItems]);
-
-  useEffect(() => {
-    itemsApi.categories().then(res => setCategories(res.data));
-  }, []);
 
   const handleMapMove = ({ lat, lng, zoom: newZoom }) => {
     setCenter([lat, lng]);
@@ -196,7 +205,7 @@ export default function ItemSearch({ initialLat, initialLng }) {
           <select
             value={radius}
             onChange={(e) => setRadius(parseFloat(e.target.value))}
-            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
           >
             <option value={1}>1 km</option>
             <option value={2}>2 km</option>
@@ -210,11 +219,13 @@ export default function ItemSearch({ initialLat, initialLng }) {
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white min-w-[160px]"
           >
             <option value="">All Categories</option>
-            {categories.map((cat) => (
-              <option key={cat.value} value={cat.value}>{cat.label}</option>
+            {CATEGORIES.map((cat) => (
+              <option key={cat.value} value={cat.value}>
+                {cat.label}
+              </option>
             ))}
           </select>
         </div>
@@ -224,7 +235,7 @@ export default function ItemSearch({ initialLat, initialLng }) {
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
-            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
           >
             <option value="distance">Distance</option>
             <option value="newest">Newest</option>
@@ -236,17 +247,15 @@ export default function ItemSearch({ initialLat, initialLng }) {
         <div className="flex items-center gap-2 border-l border-gray-300 pl-4 ml-4">
           <button
             onClick={() => setViewMode('map')}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
-              viewMode === 'map' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'
-            }`}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${viewMode === 'map' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'
+              }`}
           >
             Map
           </button>
           <button
             onClick={() => setViewMode('list')}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
-              viewMode === 'list' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'
-            }`}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${viewMode === 'list' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'
+              }`}
           >
             List
           </button>
@@ -273,10 +282,10 @@ export default function ItemSearch({ initialLat, initialLng }) {
                 onMapMove={handleMapMove}
               />
               {selectedItem && (
-                <div className="absolute bottom-4 right-4 left-4 md:left-auto md:right-4 md:w-80 bg-white rounded-xl shadow-lg border p-4 z-10">
+                <div className="absolute bottom-4 right-4 left-4 md:left-auto md:right-4 md:w-80 bg-white rounded-xl shadow-lg border p-4 z-[1000]">
                   <ItemCard
-                    item={selectedItem.properties}
-                    distance={selectedItem.properties.distance_km}
+                    item={selectedItem.properties || selectedItem}
+                    distance={selectedItem.properties?.distance_km || selectedItem.distance_km}
                     onClose={() => setSelectedItem(null)}
                   />
                 </div>
@@ -294,7 +303,7 @@ export default function ItemSearch({ initialLat, initialLng }) {
             </div>
           </>
         ) : (
-          <div className="w-full h-full overflow-y-auto p-4">
+          <div className="w-full h-full overflow-y-auto">
             <ItemList
               items={items}
               selectedItem={selectedItem}
