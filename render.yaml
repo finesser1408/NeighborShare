@@ -54,7 +54,6 @@ services:
   - type: web
     name: neighbourshare-frontend
     env: static
-    region: oregon
     plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
