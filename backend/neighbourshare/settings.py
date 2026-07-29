@@ -58,7 +58,6 @@ INSTALLED_APPS = [
     'django_filters',
     'django_celery_beat',
     'django_celery_results',
-    'encrypted_model_fields',
     'users',
     'items',
     'transactions',
