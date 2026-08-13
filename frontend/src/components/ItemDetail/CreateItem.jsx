@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { ArrowLeft, ImagePlus, X, Info, UploadCloud } from 'lucide-react';
 import { itemsApi } from '../../api';
 import { useAuth } from '../../context/AuthContext';
 
@@ -72,7 +73,6 @@ export default function CreateItem() {
   const {
     register,
     handleSubmit,
-    setValue,
     watch,
     reset,
     formState: { errors },
@@ -113,7 +113,7 @@ export default function CreateItem() {
         time_credits_per_day: item.time_credits_per_day,
       });
       if (item.images) {
-        setImagePreviews(item.images.map(img => img.image));
+        setImagePreviews(item.images.map((img) => img.image));
       }
     } catch (err) {
       setError('Failed to load item');
@@ -126,37 +126,32 @@ export default function CreateItem() {
       setError('Maximum 6 images allowed');
       return;
     }
-    const validFiles = files.filter(f => f.size <= 5 * 1024 * 1024);
+    const validFiles = files.filter((f) => f.size <= 5 * 1024 * 1024);
     if (validFiles.length !== files.length) {
       setError('Some images exceed 5MB limit');
     }
-    setImages(prev => [...prev, ...validFiles]);
-    validFiles.forEach(file => {
+    setImages((prev) => [...prev, ...validFiles]);
+    validFiles.forEach((file) => {
       const reader = new FileReader();
-      reader.onloadend = () => setImagePreviews(prev => [...prev, reader.result]);
+      reader.onloadend = () => setImagePreviews((prev) => [...prev, reader.result]);
       reader.readAsDataURL(file);
     });
   };
 
   const removeImage = (index) => {
-    setImages(prev => prev.filter((_, i) => i !== index));
-    setImagePreviews(prev => prev.filter((_, i) => i !== index));
+    setImages((prev) => prev.filter((_, i) => i !== index));
+    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
   const onSubmit = async (data) => {
     setLoading(true);
     setError(null);
     try {
-      // Pass data with images to API layer which handles FormData conversion
       const payload = { ...data, images };
-      console.log('Creating item with payload:', payload);
-      
       if (isEditing) {
-        const response = await itemsApi.update(id, payload);
-        console.log('Update response:', response.data);
+        await itemsApi.update(id, payload);
       } else {
-        const response = await itemsApi.create(payload);
-        console.log('Create response:', response.data);
+        await itemsApi.create(payload);
       }
       navigate('/my-listings');
     } catch (err) {
@@ -167,165 +162,186 @@ export default function CreateItem() {
     }
   };
 
+  const fieldClass = (hasError) =>
+    `input-field ${hasError ? 'border-red-400 focus:border-red-500 focus:ring-red-500/20' : ''}`;
+
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-3xl mx-auto px-4">
+    <div className="bg-[#FAFAF8] py-10">
+      <div className="mx-auto max-w-3xl px-4">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">{isEditing ? 'Edit Item' : 'Create New Listing'}</h1>
-          <p className="text-gray-600 mt-1">Fill in the details below to {isEditing ? 'update' : 'list'} your item</p>
+          <Link to="/my-listings" className="mb-4 inline-flex items-center gap-1.5 text-sm font-semibold text-gray-600 transition hover:text-brand-700">
+            <ArrowLeft className="h-4 w-4" /> Back to my listings
+          </Link>
+          <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
+            {isEditing ? 'Edit your listing' : 'Create a new listing'}
+          </h1>
+          <p className="mt-1.5 text-gray-500">
+            {isEditing ? 'Update the details of your item below.' : 'Fill in the details below to start lending to your neighbours.'}
+          </p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700" role="alert">
+          <div className="mb-6 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700" role="alert">
+            <Info className="mt-0.5 h-4 w-4 shrink-0" />
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6" noValidate>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
-            <input
-              {...register('title')}
-              type="text"
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.title ? 'border-red-500' : 'border-gray-300'}`}
-              placeholder="e.g., Cordless Power Drill"
-            />
-            {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>}
-          </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="card space-y-8 p-6 sm:p-8" noValidate>
+          {/* Basic info */}
+          <section className="space-y-5">
+            <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-gray-400">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-600 text-xs text-white">1</span>
+              About your item
+            </h2>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description *</label>
-            <textarea
-              {...register('description')}
-              rows={4}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.description ? 'border-red-500' : 'border-gray-300'}`}
-              placeholder="Describe the item's condition, features, and any important details..."
-            />
-            {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
-            <select
-              {...register('category')}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.category ? 'border-red-500' : 'border-gray-300'}`}
-            >
-              {CATEGORIES.map(cat => (
-                <option key={cat.value} value={cat.value}>{cat.label}</option>
-              ))}
-            </select>
-            {errors.category && <p className="mt-1 text-sm text-red-600">{errors.category.message}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Listing Type *</label>
-            <select
-              {...register('listing_type')}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.listing_type ? 'border-red-500' : 'border-gray-300'}`}
-            >
-              {LISTING_TYPES.map(type => (
-                <option key={type.value} value={type.value}>{type.label}</option>
-              ))}
-            </select>
-            {errors.listing_type && <p className="mt-1 text-sm text-red-600">{errors.listing_type.message}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tier *</label>
-            <select
-              {...register('tier')}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.tier ? 'border-red-500' : 'border-gray-300'}`}
-            >
-              {TIERS.map(tier => (
-                <option key={tier.value} value={tier.value}>{tier.label}</option>
-              ))}
-            </select>
-            <p className="mt-1 text-xs text-gray-500">Tier 1: Small items/favours (under 30min) | Tier 2: Medium items/work (1-2hrs) | Tier 3: Large/specialized items</p>
-            {errors.tier && <p className="mt-1 text-sm text-red-600">{errors.tier.message}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Trade Type *</label>
-            <select
-              {...register('trade_type')}
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.trade_type ? 'border-red-500' : 'border-gray-300'}`}
-            >
-              {TRADE_TYPES.map(type => (
-                <option key={type.value} value={type.value}>{type.label}</option>
-              ))}
-            </select>
-            {errors.trade_type && <p className="mt-1 text-sm text-red-600">{errors.trade_type.message}</p>}
-          </div>
-
-          {watch('trade_type') === 'specific_trade' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Trade Request Details *</label>
-              <textarea
-                {...register('trade_request_details')}
-                rows={3}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.trade_request_details ? 'border-red-500' : 'border-gray-300'}`}
-                placeholder="Describe exactly what you want in return (e.g., 'Looking for lawn mowing in exchange for these clothes')"
+              <label className="mb-1.5 block text-sm font-semibold text-gray-700">Title *</label>
+              <input
+                {...register('title')}
+                type="text"
+                className={fieldClass(errors.title)}
+                placeholder="e.g., Cordless Power Drill"
               />
-              {errors.trade_request_details && <p className="mt-1 text-sm text-red-600">{errors.trade_request_details.message}</p>}
+              {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>}
             </div>
-          )}
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Time Credits Per Day *</label>
-            <input
-              {...register('time_credits_per_day', { valueAsNumber: true })}
-              type="number"
-              step="1"
-              min="1"
-              max="100"
-              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.time_credits_per_day ? 'border-red-500' : 'border-gray-300'}`}
-            />
-            <p className="mt-1 text-xs text-gray-500">Community Time Credits earned per day of lending (1-100)</p>
-            {errors.time_credits_per_day && <p className="mt-1 text-sm text-red-600">{errors.time_credits_per_day.message}</p>}
-          </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-semibold text-gray-700">Description *</label>
+              <textarea
+                {...register('description')}
+                rows={4}
+                className={fieldClass(errors.description)}
+                placeholder="Describe the item's condition, features, and any important details..."
+              />
+              {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>}
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Images (Max 6, 5MB each)</label>
-            <div className="flex flex-wrap gap-2 mb-2">
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div>
+                <label className="mb-1.5 block text-sm font-semibold text-gray-700">Category *</label>
+                <select {...register('category')} className={fieldClass(errors.category)}>
+                  {CATEGORIES.map((cat) => (
+                    <option key={cat.value} value={cat.value}>{cat.label}</option>
+                  ))}
+                </select>
+                {errors.category && <p className="mt-1 text-sm text-red-600">{errors.category.message}</p>}
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-sm font-semibold text-gray-700">Listing type *</label>
+                <select {...register('listing_type')} className={fieldClass(errors.listing_type)}>
+                  {LISTING_TYPES.map((type) => (
+                    <option key={type.value} value={type.value}>{type.label}</option>
+                  ))}
+                </select>
+                {errors.listing_type && <p className="mt-1 text-sm text-red-600">{errors.listing_type.message}</p>}
+              </div>
+            </div>
+          </section>
+
+          {/* Exchange details */}
+          <section className="space-y-5 border-t border-gray-100 pt-8">
+            <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-gray-400">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-600 text-xs text-white">2</span>
+              Exchange details
+            </h2>
+
+            <div>
+              <label className="mb-1.5 block text-sm font-semibold text-gray-700">Tier *</label>
+              <select {...register('tier')} className={fieldClass(errors.tier)}>
+                {TIERS.map((tier) => (
+                  <option key={tier.value} value={tier.value}>{tier.label}</option>
+                ))}
+              </select>
+              <p className="mt-1.5 flex items-start gap-1 text-xs text-gray-500">
+                <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                Tier 1: Small items/favours (under 30min) · Tier 2: Medium items/work (1–2hrs) · Tier 3: Large/specialized items
+              </p>
+              {errors.tier && <p className="mt-1 text-sm text-red-600">{errors.tier.message}</p>}
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div>
+                <label className="mb-1.5 block text-sm font-semibold text-gray-700">Trade type *</label>
+                <select {...register('trade_type')} className={fieldClass(errors.trade_type)}>
+                  {TRADE_TYPES.map((type) => (
+                    <option key={type.value} value={type.value}>{type.label}</option>
+                  ))}
+                </select>
+                {errors.trade_type && <p className="mt-1 text-sm text-red-600">{errors.trade_type.message}</p>}
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-sm font-semibold text-gray-700">Time credits per day *</label>
+                <input
+                  {...register('time_credits_per_day', { valueAsNumber: true })}
+                  type="number"
+                  step="1"
+                  min="1"
+                  max="100"
+                  className={fieldClass(errors.time_credits_per_day)}
+                />
+                <p className="mt-1.5 text-xs text-gray-500">Community Time Credits earned per day of lending (1–100)</p>
+                {errors.time_credits_per_day && <p className="mt-1 text-sm text-red-600">{errors.time_credits_per_day.message}</p>}
+              </div>
+            </div>
+
+            {watch('trade_type') === 'specific_trade' && (
+              <div>
+                <label className="mb-1.5 block text-sm font-semibold text-gray-700">Trade request details *</label>
+                <textarea
+                  {...register('trade_request_details')}
+                  rows={3}
+                  className={fieldClass(errors.trade_request_details)}
+                  placeholder="Describe exactly what you want in return (e.g., 'Looking for lawn mowing in exchange for these clothes')"
+                />
+                {errors.trade_request_details && <p className="mt-1 text-sm text-red-600">{errors.trade_request_details.message}</p>}
+              </div>
+            )}
+          </section>
+
+          {/* Photos */}
+          <section className="space-y-4 border-t border-gray-100 pt-8">
+            <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-gray-400">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-600 text-xs text-white">3</span>
+              Photos
+            </h2>
+
+            <div className="flex flex-wrap gap-3">
               {imagePreviews.map((preview, index) => (
-                <div key={index} className="relative w-20 h-20 rounded-lg overflow-hidden">
-                  <img src={preview} alt={`Preview ${index}`} className="w-full h-full object-cover" />
+                <div key={index} className="group relative h-24 w-24 overflow-hidden rounded-xl border border-gray-200">
+                  <img src={preview} alt={`Preview ${index}`} className="h-full w-full object-cover" />
                   <button
                     type="button"
                     onClick={() => removeImage(index)}
-                    className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-full hover:bg-red-700"
+                    className="absolute right-1 top-1 rounded-full bg-red-600 p-1 text-white opacity-0 transition group-hover:opacity-100"
+                    aria-label={`Remove image ${index + 1}`}
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <X className="h-3.5 w-3.5" />
                   </button>
                 </div>
               ))}
+
               {images.length < 6 && (
-                <label className="w-20 h-20 rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-blue-500 transition">
-                  <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
-                  </svg>
-                  <span className="text-xs text-gray-500 mt-1">Add</span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handleImageChange}
-                    className="sr-only"
-                  />
+                <label className="flex h-24 w-24 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-gray-300 text-gray-400 transition hover:border-brand-500 hover:bg-brand-50 hover:text-brand-600">
+                  <UploadCloud className="h-6 w-6" />
+                  <span className="text-xs font-medium">Add photo</span>
+                  <input type="file" accept="image/*" multiple onChange={handleImageChange} className="sr-only" />
                 </label>
               )}
             </div>
-            <p className="text-xs text-gray-500">Drag & drop or click to upload. Max 6 images, 5MB each.</p>
-          </div>
+            <p className="flex items-center gap-1.5 text-xs text-gray-500">
+              <ImagePlus className="h-3.5 w-3.5" />
+              Up to 6 photos, 5MB each. Good photos get more borrow requests.
+            </p>
+          </section>
 
-          <div className="pt-4 border-t border-gray-200">
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50"
-            >
+          <div className="flex flex-col-reverse gap-3 border-t border-gray-100 pt-6 sm:flex-row sm:justify-end">
+            <Link to="/my-listings" className="btn-secondary justify-center">
+              Cancel
+            </Link>
+            <button type="submit" disabled={loading} className="btn-primary justify-center py-3">
               {loading ? 'Saving...' : isEditing ? 'Update Listing' : 'Create Listing'}
             </button>
           </div>

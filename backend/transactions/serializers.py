@@ -13,7 +13,7 @@ class TransactionEventSerializer(serializers.ModelSerializer):
 
 class TransactionSerializer(serializers.ModelSerializer):
     item = ItemSerializer(read_only=True)
-    borrower = UserProfileSerializer(read_only=True)
+    borrower = UserProfileSerializer(source='borrower.profile', read_only=True)
     lender = UserProfileSerializer(source='item.owner.profile', read_only=True)
     events = TransactionEventSerializer(many=True, read_only=True)
     total_days = serializers.IntegerField(read_only=True)
@@ -78,7 +78,9 @@ class RatingSerializer(serializers.ModelSerializer):
             'item_condition', 'communication', 'punctuality',
             'submitted_at', 'is_visible',
         ]
-        read_only_fields = ['rater', 'ratee', 'submitted_at', 'is_visible']
+        # transaction/rater/ratee are set by the view in save(); the client
+        # only submits the three score fields.
+        read_only_fields = ['transaction', 'rater', 'ratee', 'submitted_at', 'is_visible']
 
     def validate(self, attrs):
         for field in ['item_condition', 'communication', 'punctuality']:

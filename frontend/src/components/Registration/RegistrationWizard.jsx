@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { Link, useNavigate } from 'react-router-dom';
+import { Check, ArrowLeft, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
 
 const step1Schema = yup.object().shape({
   full_name: yup.string().required('Full name is required').min(2, 'Name too short'),
@@ -22,7 +23,7 @@ const step3Schema = yup.object().shape({
 });
 
 const STEPS = [
-  { id: 1, title: 'Account Details', description: 'Create your account' },
+  { id: 1, title: 'Account', description: 'Create your account' },
   { id: 2, title: 'ID Verification', description: 'Verify your National ID' },
   { id: 3, title: 'Address', description: 'Confirm your Belvedere address' },
 ];
@@ -52,19 +53,12 @@ export default function RegistrationWizard() {
       console.error('Registration error:', err.response?.data);
       const errors = err.response?.data;
       if (errors) {
-        if (errors.email) {
-          setError(errors.email[0] || 'Email error');
-        } else if (errors.password) {
-          setError(errors.password[0] || 'Password error');
-        } else if (errors.confirm_password) {
-          setError(errors.confirm_password[0] || 'Password confirmation error');
-        } else if (errors.full_name) {
-          setError(errors.full_name[0] || 'Name error');
-        } else if (errors.non_field_errors) {
-          setError(errors.non_field_errors[0]);
-        } else {
-          setError('Registration failed. Please check your input.');
-        }
+        if (errors.email) setError(errors.email[0] || 'Email error');
+        else if (errors.password) setError(errors.password[0] || 'Password error');
+        else if (errors.confirm_password) setError(errors.confirm_password[0] || 'Password confirmation error');
+        else if (errors.full_name) setError(errors.full_name[0] || 'Name error');
+        else if (errors.non_field_errors) setError(errors.non_field_errors[0]);
+        else setError('Registration failed. Please check your input.');
       } else {
         setError(err.response?.data?.error?.message || 'Registration failed. Please try again.');
       }
@@ -139,119 +133,80 @@ export default function RegistrationWizard() {
     }
   };
 
+  const fieldClass = (hasError) =>
+    `input-field ${hasError ? 'border-red-400 focus:ring-red-500/20' : ''}`;
+
   const renderStep = () => {
     switch (step) {
       case 1:
         return (
-          <form onSubmit={step1Methods.handleSubmit(handleStep1Submit)} className="space-y-6">
+          <form onSubmit={step1Methods.handleSubmit(handleStep1Submit)} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-              <input
-                {...step1Methods.register('full_name')}
-                type="text"
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${step1Methods.formState.errors.full_name ? 'border-red-500' : 'border-gray-300'}`}
-                placeholder="Tinaye Gogwe"
-              />
-              {step1Methods.formState.errors.full_name && (
-                <p className="mt-1 text-sm text-red-600">{step1Methods.formState.errors.full_name.message}</p>
-              )}
+              <label className="mb-1.5 block text-sm font-semibold text-gray-700">Full Name</label>
+              <input {...step1Methods.register('full_name')} type="text" className={fieldClass(step1Methods.formState.errors.full_name)} placeholder="Tinaye Gogwe" />
+              {step1Methods.formState.errors.full_name && <p className="mt-1 text-sm text-red-600">{step1Methods.formState.errors.full_name.message}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input
-                {...step1Methods.register('email')}
-                type="email"
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${step1Methods.formState.errors.email ? 'border-red-500' : 'border-gray-300'}`}
-                placeholder="tinaye@example.com"
-              />
-              {step1Methods.formState.errors.email && (
-                <p className="mt-1 text-sm text-red-600">{step1Methods.formState.errors.email.message}</p>
-              )}
+              <label className="mb-1.5 block text-sm font-semibold text-gray-700">Email</label>
+              <input {...step1Methods.register('email')} type="email" className={fieldClass(step1Methods.formState.errors.email)} placeholder="tinaye@example.com" />
+              {step1Methods.formState.errors.email && <p className="mt-1 text-sm text-red-600">{step1Methods.formState.errors.email.message}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-              <input
-                {...step1Methods.register('password')}
-                type="password"
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${step1Methods.formState.errors.password ? 'border-red-500' : 'border-gray-300'}`}
-                placeholder="••••••••"
-              />
-              {step1Methods.formState.errors.password && (
-                <p className="mt-1 text-sm text-red-600">{step1Methods.formState.errors.password.message}</p>
-              )}
+              <label className="mb-1.5 block text-sm font-semibold text-gray-700">Password</label>
+              <input {...step1Methods.register('password')} type="password" className={fieldClass(step1Methods.formState.errors.password)} placeholder="••••••••" />
+              {step1Methods.formState.errors.password && <p className="mt-1 text-sm text-red-600">{step1Methods.formState.errors.password.message}</p>}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-              <input
-                {...step1Methods.register('confirm_password')}
-                type="password"
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${step1Methods.formState.errors.confirm_password ? 'border-red-500' : 'border-gray-300'}`}
-                placeholder="••••••••"
-              />
-              {step1Methods.formState.errors.confirm_password && (
-                <p className="mt-1 text-sm text-red-600">{step1Methods.formState.errors.confirm_password.message}</p>
-              )}
+              <label className="mb-1.5 block text-sm font-semibold text-gray-700">Confirm Password</label>
+              <input {...step1Methods.register('confirm_password')} type="password" className={fieldClass(step1Methods.formState.errors.confirm_password)} placeholder="••••••••" />
+              {step1Methods.formState.errors.confirm_password && <p className="mt-1 text-sm text-red-600">{step1Methods.formState.errors.confirm_password.message}</p>}
             </div>
           </form>
         );
       case 2:
         return (
-          <form onSubmit={step2Methods.handleSubmit(handleStep2Submit)} className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">National ID</label>
-              <input
-                {...step2Methods.register('national_id')}
-                type="text"
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${step2Methods.formState.errors.national_id ? 'border-red-500' : 'border-gray-300'}`}
-                placeholder="12-345678A90"
-              />
-              {step2Methods.formState.errors.national_id && (
-                <p className="mt-1 text-sm text-red-600">{step2Methods.formState.errors.national_id.message}</p>
-              )}
-              <p className="mt-1 text-xs text-gray-500">Format: XX-XXXXXXXA00 (e.g., 12-345678A90)</p>
+          <form onSubmit={step2Methods.handleSubmit(handleStep2Submit)} className="space-y-5">
+            <div className="flex items-start gap-2 rounded-xl bg-brand-50 p-4 text-sm text-brand-800">
+              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
+              We verify your National ID to keep the community safe. Your data stays private.
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Selfie (Optional)</label>
-              <input
-                {...step2Methods.register('selfie')}
-                type="file"
-                accept="image/*"
-                className={`w-full px-3 py-2 border rounded-lg ${step2Methods.formState.errors.selfie ? 'border-red-500' : 'border-gray-300'}`}
-              />
+              <label className="mb-1.5 block text-sm font-semibold text-gray-700">National ID</label>
+              <input {...step2Methods.register('national_id')} type="text" className={fieldClass(step2Methods.formState.errors.national_id)} placeholder="12-345678A90" />
+              {step2Methods.formState.errors.national_id && <p className="mt-1 text-sm text-red-600">{step2Methods.formState.errors.national_id.message}</p>}
+              <p className="mt-1.5 text-xs text-gray-500">Format: XX-XXXXXXXA00 (e.g., 12-345678A90)</p>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-semibold text-gray-700">Selfie (Optional)</label>
+              <input {...step2Methods.register('selfie')} type="file" accept="image/*" className={fieldClass(step2Methods.formState.errors.selfie)} />
             </div>
           </form>
         );
       case 3:
         return (
-          <form onSubmit={step3Methods.handleSubmit(handleStep3Submit)} className="space-y-6">
+          <form onSubmit={step3Methods.handleSubmit(handleStep3Submit)} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Street Address</label>
-              <input
-                {...step3Methods.register('street_address')}
-                type="text"
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${step3Methods.formState.errors.street_address ? 'border-red-500' : 'border-gray-300'}`}
-                placeholder="123 Main Street, Belvedere"
-              />
-              {step3Methods.formState.errors.street_address && (
-                <p className="mt-1 text-sm text-red-600">{step3Methods.formState.errors.street_address.message}</p>
-              )}
+              <label className="mb-1.5 block text-sm font-semibold text-gray-700">Street Address</label>
+              <input {...step3Methods.register('street_address')} type="text" className={fieldClass(step3Methods.formState.errors.street_address)} placeholder="123 Main Street, Belvedere" />
+              {step3Methods.formState.errors.street_address && <p className="mt-1 text-sm text-red-600">{step3Methods.formState.errors.street_address.message}</p>}
             </div>
 
             {showMapPreview && geocodeResult && (
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                <h4 className="font-medium text-gray-900 mb-2">Confirm Your Location</h4>
-                <p className="text-sm text-gray-600 mb-3">{geocodeResult.display_name}</p>
-                <div className="h-48 rounded-lg overflow-hidden">
+              <div className="animate-fade-up rounded-xl border border-gray-200 bg-gray-50 p-4">
+                <h4 className="font-bold text-gray-900">Confirm your location</h4>
+                <p className="mb-3 mt-1 text-sm text-gray-600">{geocodeResult.display_name}</p>
+                <div className="h-48 overflow-hidden rounded-lg">
                   <iframe
                     width="100%"
                     height="100%"
                     frameBorder="0"
                     style={{ border: 0 }}
+                    title="Address preview"
                     src={`https://www.openstreetmap.org/export/embed.html?bbox=${geocodeResult.lng - 0.01}%2C${geocodeResult.lat - 0.01}%2C${geocodeResult.lng + 0.01}%2C${geocodeResult.lat + 0.01}&layer=mapnik&marker=${geocodeResult.lat}%2C${geocodeResult.lng}`}
                     allowFullScreen
-                  ></iframe>
+                  />
                 </div>
-                <p className="mt-2 text-xs text-gray-500 text-center">Is this your correct location?</p>
+                <p className="mt-2 text-center text-xs text-gray-500">Is this your correct location?</p>
               </div>
             )}
           </form>
@@ -261,68 +216,62 @@ export default function RegistrationWizard() {
     }
   };
 
+  const advance = () => {
+    if (step === 1) step1Methods.handleSubmit(handleStep1Submit)();
+    else if (step === 2) step2Methods.handleSubmit(handleStep2Submit)();
+    else if (step === 3) step3Methods.handleSubmit(handleStep3Submit)();
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">
-      <div className="w-full max-w-md bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            {STEPS.map((s, i) => (
-              <React.Fragment key={s.id}>
-                <div className="flex flex-col items-center">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition ${
-                    i + 1 < step ? 'bg-blue-600 text-white' :
-                    i + 1 === step ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'
-                  }`}>
-                    {i + 1 < step ? (
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    ) : (i + 1)}
-                  </div>
-                  <span className={`mt-1 text-xs font-medium ${i + 1 <= step ? 'text-blue-600' : 'text-gray-400'}`}>
-                    {s.title}
-                  </span>
+    <div className="flex min-h-screen items-center justify-center bg-[#FAFAF8] px-4 py-12">
+      <div className="w-full max-w-md">
+        {/* Stepper */}
+        <div className="mb-6 flex items-center">
+          {STEPS.map((s, i) => (
+            <React.Fragment key={s.id}>
+              <div className="flex flex-col items-center">
+                <div className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold transition ${
+                  i + 1 < step ? 'bg-brand-600 text-white' : i + 1 === step ? 'bg-brand-600 text-white ring-4 ring-brand-100' : 'bg-gray-200 text-gray-500'
+                }`}>
+                  {i + 1 < step ? <Check className="h-5 w-5" /> : i + 1}
                 </div>
-                {i < STEPS.length - 1 && (
-                  <div className={`flex-1 h-1 mx-2 ${i + 1 < step ? 'bg-blue-600' : 'bg-gray-200'}`} />
-                )}
-              </React.Fragment>
-            ))}
-          </div>
+                <span className={`mt-1.5 text-xs font-semibold ${i + 1 <= step ? 'text-brand-700' : 'text-gray-400'}`}>{s.title}</span>
+              </div>
+              {i < STEPS.length - 1 && <div className={`mx-2 mb-5 h-1 flex-1 rounded ${i + 1 < step ? 'bg-brand-600' : 'bg-gray-200'}`} />}
+            </React.Fragment>
+          ))}
         </div>
 
-        {error && (
-          <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm" role="alert">
-            {error}
+        <div className="card p-8">
+          <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">{STEPS[step - 1].title}</h1>
+          <p className="mt-1 text-sm text-gray-500">{STEPS[step - 1].description}</p>
+
+          {error && (
+            <div className="mt-5 rounded-xl border border-red-200 bg-red-50 p-3.5 text-sm text-red-700" role="alert">
+              {error}
+            </div>
+          )}
+
+          <div className="mt-6">{renderStep()}</div>
+
+          <div className="mt-7 flex items-center justify-between">
+            <button
+              onClick={() => setStep((prev) => Math.max(1, prev - 1))}
+              disabled={step === 1 || loading}
+              className="inline-flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-600 transition hover:bg-gray-50 disabled:opacity-40"
+            >
+              <ArrowLeft className="h-4 w-4" /> Back
+            </button>
+            <button onClick={advance} disabled={loading} className="btn-primary px-6 py-2.5">
+              {loading ? 'Processing...' : step === 3 ? 'Complete Registration' : 'Continue'}
+              {!loading && <ArrowRight className="h-4 w-4" />}
+            </button>
           </div>
-        )}
-
-        <div className="mb-6">{renderStep()}</div>
-
-        <div className="flex justify-between">
-          <button
-            onClick={() => setStep(prev => Math.max(1, prev - 1))}
-            disabled={step === 1 || loading}
-            className="px-4 py-2 text-gray-600 hover:text-gray-900 font-medium disabled:opacity-50"
-          >
-            Back
-          </button>
-          <button
-            onClick={() => {
-              if (step === 1) step1Methods.handleSubmit(handleStep1Submit)();
-              else if (step === 2) step2Methods.handleSubmit(handleStep2Submit)();
-              else if (step === 3) step3Methods.handleSubmit(handleStep3Submit)();
-            }}
-            disabled={loading}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50"
-          >
-            {loading ? 'Processing...' : step === 3 ? 'Complete Registration' : 'Continue'}
-          </button>
         </div>
 
         <p className="mt-6 text-center text-sm text-gray-600">
           Already have an account?{' '}
-          <a href="/login" className="text-blue-600 hover:underline font-medium">Sign in</a>
+          <Link to="/login" className="font-semibold text-brand-700 hover:underline">Sign in</Link>
         </p>
       </div>
     </div>

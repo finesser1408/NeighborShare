@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { usersApi, itemsApi, transactionsApi } from '../../api';
+import {
+  User, Package, Receipt, Camera, BadgeCheck, Pencil, Save, X, ShieldCheck,
+} from 'lucide-react';
+import { formatTrustScore } from '../../utils/formatters';
 
 export default function Profile() {
   const { user, updateUser } = useAuth();
@@ -50,16 +54,12 @@ export default function Profile() {
 
   const handleSave = async () => {
     try {
-      console.log('Saving profile with data:', formData);
       const response = await usersApi.updateProfile(user.id, formData);
-      console.log('Profile save response:', response.data);
-      console.log('Phone number in response:', response.data.phone_number);
       updateUser(response.data);
       setProfile(response.data);
       setEditing(false);
     } catch (err) {
       console.error('Error saving profile:', err);
-      console.error('Error response:', err.response?.data);
     }
   };
 
@@ -70,95 +70,81 @@ export default function Profile() {
       formData.append('profile_photo', file);
       const response = await usersApi.uploadPhoto(user.id, formData);
       updateUser(response.data);
-      setProfile(prev => ({ ...prev, profile_photo: response.data.profile_photo }));
+      setProfile((prev) => ({ ...prev, profile_photo: response.data.profile_photo }));
     } catch (err) {
       console.error(err);
     }
   };
 
-  const trustScoreDisplay = (score) => {
-    if (!score || score === 0) return 'New Member';
-    return `${Math.round(score)}/100`;
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
+      <div className="flex min-h-screen items-center justify-center bg-[#FAFAF8]">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-brand-600 border-t-transparent" />
       </div>
     );
   }
 
+  const tabs = [
+    { id: 'profile', label: 'Profile', icon: User },
+    { id: 'listings', label: `My Listings (${listings.length})`, icon: Package },
+    { id: 'transactions', label: `Transactions (${transactions.length})`, icon: Receipt },
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="bg-[#FAFAF8] py-10">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">My Profile</h1>
-          <p className="text-gray-600 mt-1">Manage your account and view your activity</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">My Profile</h1>
+          <p className="mt-1 text-gray-500">Manage your account and view your activity</p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="border-b border-gray-200">
-            <nav className="flex -mb-px" aria-label="Tabs">
-              {[
-                { id: 'profile', label: 'Profile', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
-                { id: 'listings', label: 'My Listings', icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10' },
-                { id: 'transactions', label: 'Transactions', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-4 text-sm font-medium border-b-2 transition ${
-                    activeTab === tab.id
-                      ? 'border-blue-600 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={tab.icon} />
-                  </svg>
-                  {tab.label}
-                </button>
-              ))}
-            </nav>
+        <div className="card overflow-hidden">
+          {/* Tabs */}
+          <div className="flex gap-1 overflow-x-auto border-b border-gray-100 px-4 sm:px-6">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`inline-flex shrink-0 items-center gap-2 border-b-2 px-4 py-4 text-sm font-semibold transition ${
+                  activeTab === tab.id ? 'border-brand-600 text-brand-700' : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                <tab.icon className="h-4 w-4" />
+                {tab.label}
+              </button>
+            ))}
           </div>
 
-          <div className="p-6">
+          <div className="p-6 sm:p-8">
             {activeTab === 'profile' && profile && (
               <div className="max-w-2xl">
-                <div className="flex items-center gap-6 mb-8">
+                <div className="mb-8 flex flex-wrap items-center gap-6">
                   <div className="relative">
-                    <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                    <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-brand-100 text-brand-700">
                       {profile.profile_photo ? (
-                        <img src={profile.profile_photo} alt="" className="w-full h-full object-cover" />
+                        <img src={profile.profile_photo} alt="" className="h-full w-full object-cover" />
                       ) : (
-                        <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
+                        <span className="text-2xl font-bold uppercase">{(profile.full_name || 'U').slice(0, 2)}</span>
                       )}
                     </div>
                     {editing && (
-                      <label className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full cursor-pointer hover:bg-blue-700">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
+                      <label className="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-brand-600 text-white shadow transition hover:bg-brand-700">
+                        <Camera className="h-4 w-4" />
                         <input type="file" accept="image/*" className="sr-only" onChange={(e) => handlePhotoUpload(e.target.files[0])} />
                       </label>
                     )}
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900">{profile.full_name}</h2>
+                    <h2 className="text-2xl font-extrabold tracking-tight text-gray-900">{profile.full_name}</h2>
                     <p className="text-gray-500">{profile.email}</p>
-                    <div className="flex items-center gap-4 mt-2">
-                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        profile.trust_score > 0 ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
-                      }`}>
-                        Trust Score: {trustScoreDisplay(profile.trust_score)}
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                      <span className={`badge ${profile.trust_score > 0 ? 'bg-brand-50 text-brand-800' : 'bg-gray-100 text-gray-600'}`}>
+                        <ShieldCheck className="h-3.5 w-3.5" />
+                        Trust: {formatTrustScore(profile.trust_score)}
                       </span>
                       {profile.national_id_verified && (
-                        <span className="flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm font-medium">
-                          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>
-                          Verified
+                        <span className="badge bg-emerald-50 text-emerald-700">
+                          <BadgeCheck className="h-3.5 w-3.5" /> Verified
                         </span>
                       )}
                     </div>
@@ -167,70 +153,71 @@ export default function Profile() {
 
                 {editing ? (
                   <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-4 sm:grid-cols-2">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                        <label className="mb-1.5 block text-sm font-semibold text-gray-700">First Name</label>
                         <input
                           value={formData.first_name}
                           onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                          className="input-field"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                        <label className="mb-1.5 block text-sm font-semibold text-gray-700">Last Name</label>
                         <input
                           value={formData.last_name}
                           onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                          className="input-field"
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                      <label className="mb-1.5 block text-sm font-semibold text-gray-700">Phone Number</label>
                       <input
                         value={formData.phone_number}
                         onChange={(e) => setFormData({ ...formData, phone_number: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="input-field"
                       />
                     </div>
                     <div className="flex gap-3">
-                      <button onClick={handleSave} className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700">Save</button>
-                      <button onClick={() => setEditing(false)} className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50">Cancel</button>
+                      <button onClick={handleSave} className="btn-primary">
+                        <Save className="h-4 w-4" /> Save
+                      </button>
+                      <button onClick={() => setEditing(false)} className="btn-secondary">
+                        <X className="h-4 w-4" /> Cancel
+                      </button>
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm text-gray-500">First Name</p>
-                        <p className="font-medium text-gray-900">{profile.first_name || '-'}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500">Last Name</p>
-                        <p className="font-medium text-gray-900">{profile.last_name || '-'}</p>
-                      </div>
+                  <div className="grid gap-6 sm:grid-cols-2">
+                    <div>
+                      <p className="text-sm text-gray-500">First Name</p>
+                      <p className="font-semibold text-gray-900">{profile.first_name || '-'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Last Name</p>
+                      <p className="font-semibold text-gray-900">{profile.last_name || '-'}</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Phone Number</p>
-                      <p className="font-medium text-gray-900">{profile.phone_number || '-'}</p>
+                      <p className="font-semibold text-gray-900">{profile.phone_number || '-'}</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Member Since</p>
-                      <p className="font-medium text-gray-900">{new Date(profile.created_at).toLocaleDateString()}</p>
+                      <p className="font-semibold text-gray-900">{new Date(profile.created_at).toLocaleDateString()}</p>
                     </div>
-                    <button onClick={() => setEditing(true)} className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50">Edit Profile</button>
+                    <div className="sm:col-span-2">
+                      <button onClick={() => setEditing(true)} className="btn-secondary">
+                        <Pencil className="h-4 w-4" /> Edit Profile
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
             )}
 
-            {activeTab === 'listings' && (
-              <MyListingsView listings={listings} onRefresh={fetchProfile} />
-            )}
-
-            {activeTab === 'transactions' && (
-              <MyTransactionsView transactions={transactions} />
-            )}
+            {activeTab === 'listings' && <MyListingsView listings={listings} onRefresh={fetchProfile} />}
+            {activeTab === 'transactions' && <MyTransactionsView transactions={transactions} />}
           </div>
         </div>
       </div>
@@ -255,62 +242,68 @@ function MyListingsView({ listings, onRefresh }) {
     }
   };
 
+  if (listings.length === 0) {
+    return (
+      <div className="py-8 text-center">
+        <Package className="mx-auto h-12 w-12 text-gray-300" />
+        <h3 className="mt-3 text-lg font-bold text-gray-900">No listings yet</h3>
+        <p className="mt-1 text-sm text-gray-500">Create your first listing to start sharing with neighbors.</p>
+        <button onClick={() => navigate('/create-listing')} className="btn-primary mt-5">Create Listing</button>
+      </div>
+    );
+  }
+
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-lg font-semibold text-gray-900">My Listings ({listings.length})</h2>
-        <button onClick={() => navigate('/create-listing')} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">Add Listing</button>
-      </div>
-      {listings.length === 0 ? (
-        <div className="text-center py-12">
-          <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-          </svg>
-          <h3 className="mt-2 text-lg font-medium text-gray-900">No listings yet</h3>
-          <p className="mt-1 text-gray-500">Create your first listing to start sharing with neighbors.</p>
-          <button onClick={() => navigate('/create-listing')} className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700">Create Listing</button>
-        </div>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {listings.map((item) => (
-            <div key={item.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition">
-              <div className="aspect-video bg-gray-100 relative">
-                {item.images?.[0] ? (
-                  <img src={item.images[0].image} alt={item.title} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400">
-                    <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                )}
-                <span className="absolute top-2 left-2 px-2 py-1 text-xs font-medium rounded-full bg-white/90 backdrop-blur text-gray-700">
-                  {item.category?.replace('_', ' ')}
-                </span>
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {listings.map((item) => (
+          <div key={item.id} className="card overflow-hidden transition hover:shadow-card-hover">
+            <div className="relative aspect-video bg-gray-100">
+              {item.images?.[0] ? (
+                <img src={item.images[0].image} alt={item.title} className="h-full w-full object-cover" />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center text-gray-300">
+                  <svg className="h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+              )}
+              <span className="absolute left-2.5 top-2.5 rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-gray-700 shadow-sm backdrop-blur">
+                {item.category?.replace('_', ' ')}
+              </span>
+              {!item.is_available && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                  <span className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white">Unavailable</span>
+                </div>
+              )}
+            </div>
+            <div className="p-4">
+              <h3 className="truncate font-bold text-gray-900">{item.title}</h3>
+              <div className="mt-2 flex items-baseline gap-1">
+                <span className="text-lg font-extrabold text-gray-900">{item.time_credits_per_day}</span>
+                <span className="text-sm text-gray-500">Credits/day</span>
               </div>
-              <div className="p-4">
-                <h3 className="font-semibold text-gray-900 truncate">{item.title}</h3>
-                <p className="text-sm text-gray-500 mt-1">{item.time_credits_per_day} credits/day</p>
-                <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-                  <span className={`text-sm font-medium ${item.is_available ? 'text-green-600' : 'text-red-600'}`}>
-                    {item.is_available ? 'Available' : 'Unavailable'}
-                  </span>
-                  <div className="flex gap-2">
-                    <button onClick={() => navigate(`/edit-item/${item.id}`)} className="text-sm text-blue-600 hover:underline">Edit</button>
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      disabled={deleting === item.id}
-                      className="text-sm text-red-600 hover:underline disabled:opacity-50"
-                    >
-                      {deleting === item.id ? 'Deleting...' : 'Delete'}
-                    </button>
-                  </div>
+              <div className="mt-3 flex items-center justify-between border-t border-gray-100 pt-3">
+                <span className={`badge ${item.is_available ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-500'}`}>
+                  {item.is_available ? 'Available' : 'Unavailable'}
+                </span>
+                <div className="flex gap-2">
+                  <button onClick={() => navigate(`/edit-item/${item.id}`)} className="btn-secondary px-3 py-1.5 text-xs">
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    disabled={deleting === item.id}
+                    className="rounded-xl border border-red-200 px-3 py-1.5 text-xs font-semibold text-red-600 transition hover:bg-red-50 disabled:opacity-50"
+                  >
+                    {deleting === item.id ? 'Deleting...' : 'Delete'}
+                  </button>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-      )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -328,47 +321,46 @@ function MyTransactionsView({ transactions }) {
   };
 
   const stateColors = {
-    PENDING: 'bg-yellow-100 text-yellow-800',
-    AGREED: 'bg-blue-100 text-blue-800',
-    ACTIVE: 'bg-purple-100 text-purple-800',
-    ITEM_OUT: 'bg-orange-100 text-orange-800',
-    ITEM_RETURNED: 'bg-green-100 text-green-800',
-    CLOSED: 'bg-gray-100 text-gray-800',
-    DISPUTED: 'bg-red-100 text-red-800',
+    PENDING: 'bg-amber-50 text-amber-700',
+    AGREED: 'bg-brand-50 text-brand-700',
+    ACTIVE: 'bg-violet-50 text-violet-700',
+    ITEM_OUT: 'bg-orange-50 text-orange-700',
+    ITEM_RETURNED: 'bg-emerald-50 text-emerald-700',
+    CLOSED: 'bg-gray-100 text-gray-600',
+    DISPUTED: 'bg-red-50 text-red-700',
   };
 
+  if (transactions.length === 0) {
+    return (
+      <div className="py-8 text-center">
+        <Receipt className="mx-auto h-12 w-12 text-gray-300" />
+        <h3 className="mt-3 text-lg font-bold text-gray-900">No transactions yet</h3>
+        <p className="mt-1 text-sm text-gray-500">Your borrowing and lending history will appear here.</p>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <h2 className="text-lg font-semibold text-gray-900 mb-4">My Transactions ({transactions.length})</h2>
-      {transactions.length === 0 ? (
-        <div className="text-center py-12">
-          <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-          </svg>
-          <h3 className="mt-2 text-lg font-medium text-gray-900">No transactions yet</h3>
-          <p className="mt-1 text-gray-500">Your borrowing and lending history will appear here.</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {transactions.map((txn) => (
-            <div key={txn.id} className="bg-white border border-gray-200 rounded-xl p-4">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="font-semibold text-gray-900">{txn.item?.title || 'Item'}</h3>
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${stateColors[txn.state]}`}>
-                      {stateLabels[txn.state] || txn.state}
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-500">{txn.requested_from} to {txn.requested_to}</p>
-                  <p className="text-sm text-gray-500 mt-1">{txn.time_credits_per_day} credits/day • Total: {txn.total_time_credits} credits</p>
-                </div>
-                <button onClick={() => navigate(`/transactions/${txn.id}`)} className="text-sm text-blue-600 hover:underline">View Details</button>
+    <div className="space-y-4">
+      {transactions.map((txn) => (
+        <div key={txn.id} className="rounded-2xl border border-gray-100 bg-white p-5 transition hover:shadow-card-hover">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="font-bold text-gray-900">{txn.item?.title || 'Item'}</h3>
+                <span className={`badge ${stateColors[txn.state]}`}>{stateLabels[txn.state] || txn.state}</span>
               </div>
+              <p className="mt-1 text-sm text-gray-500">{txn.requested_from} to {txn.requested_to}</p>
+              <p className="mt-0.5 text-sm text-gray-500">
+                {txn.time_credits_per_day} credits/day • Total: {txn.total_time_credits} credits
+              </p>
             </div>
-          ))}
+            <button onClick={() => navigate(`/transactions/${txn.id}`)} className="btn-secondary shrink-0 px-4 py-2 text-xs">
+              View Details
+            </button>
+          </div>
         </div>
-      )}
+      ))}
     </div>
   );
 }

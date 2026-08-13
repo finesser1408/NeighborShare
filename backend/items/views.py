@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status, filters
+from rest_framework import viewsets, status, filters, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -16,9 +16,18 @@ from .serializers import (
 from users.models import UserProfile
 
 
+class IsOwnerOrReadOnly(permissions.BasePermission):
+    """Allow owners to modify their own items; everyone else is read-only."""
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return obj.owner == request.user
+
+
 class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.select_related('owner', 'owner__profile').prefetch_related('images')
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
     filterset_fields = ['category', 'is_available', 'owner', 'tier', 'trade_type', 'listing_type']
     search_fields = ['title', 'description']
@@ -33,9 +42,11 @@ class ItemViewSet(viewsets.ModelViewSet):
         return ItemSerializer
 
     def get_permissions(self):
-        if self.action in ['list', 'retrieve', 'search']:
-            return [AllowAny()]
-        return [IsAuthenticated()]
+        # Lookup/metadata actions are public; everything else requires auth.
+        # IsOwnerOrReadOnly always applies so only owners can modify an item.
+        if self.action in ['list', 'retrieve', 'search', 'categories', 'tiers', 'trade_types', 'listing_types']:
+            return [AllowAny(), IsOwnerOrReadOnly()]
+        return [IsAuthenticated(), IsOwnerOrReadOnly()]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -69,6 +80,7 @@ class ItemViewSet(viewsets.ModelViewSet):
 
         category = request.query_params.get('category')
         sort = request.query_params.get('sort', 'distance')
+        q = (request.query_params.get('q') or '').strip()
 
         point = Point(lng, lat, srid=4326)
 
@@ -79,6 +91,8 @@ class ItemViewSet(viewsets.ModelViewSet):
             # Fallback for local development when GDAL is not installed
             # Use Haversine formula for distance filtering
             queryset = Item.objects.filter(is_available=True).select_related('owner', 'owner__profile').prefetch_related('images')
+            if q:
+                queryset = queryset.filter(Q(title__icontains=q) | Q(description__icontains=q))
             
             def haversine_distance(lat1, lon1, lat2, lon2):
                 """Calculate distance between two points in kilometers using Haversine formula"""
@@ -110,6 +124,8 @@ class ItemViewSet(viewsets.ModelViewSet):
             ).annotate(
                 distance=Distance('location', point)
             ).select_related('owner', 'owner__profile').prefetch_related('images')
+            if q:
+                queryset = queryset.filter(Q(title__icontains=q) | Q(description__icontains=q))
             print(f"[SEARCH] GDAL mode - found {queryset.count()} items within {radius_km}km")
 
         if not gdal_available:

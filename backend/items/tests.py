@@ -26,8 +26,7 @@ class ItemModelTests(TestCase):
             title='Test Drill',
             description='A power drill',
             category=Category.TOOLS,
-            daily_rate_usd=5.00,
-            deposit_amount_usd=50.00,
+            time_credits_per_day=5,
             location=Point(31.05, -17.7833, srid=4326),
         )
         self.assertEqual(item.title, 'Test Drill')
@@ -39,8 +38,7 @@ class ItemModelTests(TestCase):
             owner=self.owner,
             title='Test Item',
             category=Category.TOOLS,
-            daily_rate_usd=10.00,
-            deposit_amount_usd=100.00,
+            time_credits_per_day=10,
             location=Point(31.05, -17.7833, srid=4326),
         )
         self.assertEqual(str(item), 'Test Item (owner@example.com)')
@@ -80,23 +78,22 @@ class ItemAPITests(TestCase):
             title='Power Drill',
             description='Cordless drill',
             category=Category.TOOLS,
-            daily_rate_usd=5.00,
-            deposit_amount_usd=50.00,
+            time_credits_per_day=5,
             location=Point(31.05, -17.7833, srid=4326),
         )
 
     def test_search_requires_lat_lng(self):
-        response = self.client.get('/api/items/search')
+        response = self.client.get('/api/items/search/')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_search_within_radius(self):
-        response = self.client.get('/api/items/search', {'lat': -17.7833, 'lng': 31.05})
+        response = self.client.get('/api/items/search/', {'lat': -17.7833, 'lng': 31.05})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['type'], 'FeatureCollection')
         self.assertEqual(len(response.data['features']), 1)
 
     def test_search_outside_radius(self):
-        response = self.client.get('/api/items/search', {'lat': -18.0, 'lng': 30.0, 'radius_km': 5})
+        response = self.client.get('/api/items/search/', {'lat': -18.0, 'lng': 30.0, 'radius_km': 5})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['features']), 0)
         self.assertTrue(response.data['widen_suggestion'])
@@ -106,11 +103,10 @@ class ItemAPITests(TestCase):
             owner=self.owner,
             title='Lawn Mower',
             category=Category.GARDEN_EQUIPMENT,
-            daily_rate_usd=10.00,
-            deposit_amount_usd=100.00,
+            time_credits_per_day=10,
             location=Point(31.05, -17.7833, srid=4326),
         )
-        response = self.client.get('/api/items/search', {
+        response = self.client.get('/api/items/search/', {
             'lat': -17.7833, 'lng': 31.05, 'category': 'tools'
         })
         self.assertEqual(len(response.data['features']), 1)
@@ -121,11 +117,10 @@ class ItemAPITests(TestCase):
             owner=self.owner,
             title='Far Item',
             category=Category.TOOLS,
-            daily_rate_usd=5.00,
-            deposit_amount_usd=50.00,
+            time_credits_per_day=5,
             location=Point(31.1, -17.8, srid=4326),
         )
-        response = self.client.get('/api/items/search', {
+        response = self.client.get('/api/items/search/', {
             'lat': -17.7833, 'lng': 31.05, 'sort': 'distance'
         })
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -138,8 +133,7 @@ class ItemAPITests(TestCase):
             'title': 'New Item',
             'description': 'Description',
             'category': 'tools',
-            'daily_rate_usd': '10.00',
-            'deposit_amount_usd': '100.00',
+            'time_credits_per_day': '10',
         }
         response = self.client.post('/api/items/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -148,8 +142,7 @@ class ItemAPITests(TestCase):
         data = {
             'title': 'New Item',
             'category': 'tools',
-            'daily_rate_usd': '10.00',
-            'deposit_amount_usd': '100.00',
+            'time_credits_per_day': '10',
         }
         response = self.client.post('/api/items/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -174,3 +167,50 @@ class ItemAPITests(TestCase):
         response = self.client.get('/api/items/categories/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 18)
+
+    def test_search_keyword_matches_title(self):
+        response = self.client.get('/api/items/search/', {
+            'lat': -17.7833, 'lng': 31.05, 'q': 'drill'
+        })
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['features']), 1)
+        self.assertEqual(response.data['features'][0]['properties']['title'], 'Power Drill')
+
+    def test_search_keyword_matches_description(self):
+        response = self.client.get('/api/items/search/', {
+            'lat': -17.7833, 'lng': 31.05, 'q': 'cordless'
+        })
+        self.assertEqual(len(response.data['features']), 1)
+        self.assertEqual(response.data['features'][0]['properties']['title'], 'Power Drill')
+
+    def test_search_keyword_case_insensitive(self):
+        response = self.client.get('/api/items/search/', {
+            'lat': -17.7833, 'lng': 31.05, 'q': 'POWER DRILL'
+        })
+        self.assertEqual(len(response.data['features']), 1)
+
+    def test_search_keyword_no_match(self):
+        response = self.client.get('/api/items/search/', {
+            'lat': -17.7833, 'lng': 31.05, 'q': 'doesnotexist'
+        })
+        self.assertEqual(len(response.data['features']), 0)
+
+    def test_search_keyword_combined_with_category(self):
+        # Keyword + wrong category returns nothing
+        response = self.client.get('/api/items/search/', {
+            'lat': -17.7833, 'lng': 31.05, 'q': 'drill', 'category': 'garden_equipment'
+        })
+        self.assertEqual(len(response.data['features']), 0)
+        # Keyword + matching category still finds it
+        response = self.client.get('/api/items/search/', {
+            'lat': -17.7833, 'lng': 31.05, 'q': 'drill', 'category': 'tools'
+        })
+        self.assertEqual(len(response.data['features']), 1)
+
+    def test_search_keyword_ignores_unavailable_items(self):
+        self.item.is_available = False
+        self.item.save()
+        response = self.client.get('/api/items/search/', {
+            'lat': -17.7833, 'lng': 31.05, 'q': 'drill'
+        })
+        self.assertEqual(len(response.data['features']), 0)

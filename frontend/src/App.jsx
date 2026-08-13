@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Layout/Navbar';
 import Footer from './components/Layout/Footer';
+import HomePage from './components/Home/HomePage';
 import RegistrationWizard from './components/Registration/RegistrationWizard';
 import Login from './components/Registration/Login';
 import ItemSearch from './components/ItemSearch/ItemSearch';
@@ -16,15 +17,19 @@ import PublicProfile from './components/Profile/PublicProfile';
 import AdminDashboard from './components/Admin/AdminDashboard';
 import { useAuth } from './context/AuthContext';
 
+function LoadingScreen() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-[#FAFAF8]">
+      <div className="h-12 w-12 animate-spin rounded-full border-4 border-brand-600 border-t-transparent" />
+    </div>
+  );
+}
+
 function ProtectedRoute({ children, requireAdmin = false }) {
   const { isAuthenticated, user, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (!isAuthenticated) {
@@ -42,11 +47,7 @@ function PublicRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (isAuthenticated) {
@@ -58,11 +59,12 @@ function PublicRoute({ children }) {
 
 export default function App() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex min-h-screen flex-col">
       <Navbar />
       <main className="flex-1">
         <Routes>
-          <Route path="/" element={<ItemSearch />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/browse" element={<ItemSearch />} />
           <Route path="/items/:id" element={<ItemDetail />} />
           <Route path="/users/:id/profile" element={<PublicProfile />} />
 

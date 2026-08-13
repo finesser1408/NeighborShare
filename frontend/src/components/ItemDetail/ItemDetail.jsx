@@ -1,10 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import { itemsApi, transactionsApi } from '../../api';
 import { useAuth } from '../../context/AuthContext';
 import QRCode from 'qrcode.react';
 import L from 'leaflet';
+import {
+  ArrowLeft, BadgeCheck, CalendarDays, Clock, MapPin, Pencil, ShieldCheck,
+  X, CheckCircle2, Info,
+} from 'lucide-react';
+import { getCategoryMeta } from '../../utils/categories';
+import { formatTrustScore } from '../../utils/formatters';
 
 const iconRetinaUrl = 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png';
 const iconUrl = 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png';
@@ -20,6 +26,7 @@ export default function ItemDetail() {
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeImage, setActiveImage] = useState(0);
   const [activeTab, setActiveTab] = useState('details');
   const [borrowDates, setBorrowDates] = useState({ from: '', to: '' });
   const [borrowLoading, setBorrowLoading] = useState(false);
@@ -42,6 +49,12 @@ export default function ItemDetail() {
     };
     fetchItem();
   }, [id]);
+
+  const totalCredits = useMemo(() => {
+    if (!borrowDates.from || !borrowDates.to || !item) return null;
+    const days = Math.max(1, Math.round((new Date(borrowDates.to) - new Date(borrowDates.from)) / (1000 * 60 * 60 * 24)) + 1);
+    return item.time_credits_per_day * days;
+  }, [borrowDates, item]);
 
   const handleBorrowRequest = async (e) => {
     e.preventDefault();
@@ -97,309 +110,338 @@ export default function ItemDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
+      <div className="flex min-h-screen items-center justify-center bg-[#FAFAF8]">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-brand-600 border-t-transparent" />
       </div>
     );
   }
 
   if (error || !item) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Item Not Found</h1>
-          <button onClick={() => navigate('/')} className="mt-4 text-blue-600 hover:underline">
-            Back to Search
-          </button>
-        </div>
+      <div className="flex min-h-screen flex-col items-center justify-center bg-[#FAFAF8] px-4 text-center">
+        <Info className="h-12 w-12 text-gray-300" />
+        <h1 className="mt-4 text-2xl font-bold text-gray-900">Item Not Found</h1>
+        <button onClick={() => navigate('/browse')} className="btn-primary mt-6">
+          Back to Browse
+        </button>
       </div>
     );
   }
 
   const isOwner = user && item.owner === user.id;
   const canBorrow = user && !isOwner && item.is_available;
+  const meta = getCategoryMeta(item.category);
+  const images = item.images || [];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex space-x-8 py-4" role="tablist">
-            {[
-              { id: 'details', label: 'Details' },
-              { id: 'availability', label: 'Availability' },
-              { id: 'transaction', label: 'Transaction' },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                role="tab"
-                aria-selected={activeTab === tab.id}
-                className={`py-2 px-1 border-b-2 font-medium text-sm transition ${
-                  activeTab === tab.id
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-            {isOwner && (
-              <button
-                onClick={() => navigate(`/edit-item/${id}`)}
-                className="ml-auto py-2 px-4 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
-              >
-                Edit Listing
-              </button>
-            )}
-          </div>
+    <div className="bg-[#FAFAF8]">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        {/* Breadcrumb */}
+        <div className="mb-6 flex items-center justify-between gap-4">
+          <Link to="/browse" className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-600 transition hover:text-brand-700">
+            <ArrowLeft className="h-4 w-4" />
+            Back to browse
+          </Link>
+          {isOwner && (
+            <button
+              onClick={() => navigate(`/edit-item/${id}`)}
+              className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50"
+            >
+              <Pencil className="h-4 w-4" /> Edit Listing
+            </button>
+          )}
         </div>
-      </nav>
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="grid gap-8 lg:grid-cols-3">
+          {/* ============ LEFT: gallery + info ============ */}
+          <div className="space-y-6 lg:col-span-2">
+            <div className="card overflow-hidden">
               <div className="relative aspect-video bg-gray-100">
-                {item.images?.length > 0 ? (
-                  <img
-                    src={item.images[0].image}
-                    alt={item.title}
-                    className="w-full h-full object-cover"
-                  />
+                {images[activeImage] ? (
+                  <img src={images[activeImage].image} alt={item.title} className="h-full w-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400">
-                    <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  <div className="flex h-full w-full items-center justify-center text-gray-300">
+                    <svg className="h-16 w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                   </div>
                 )}
+                <span className="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-sm backdrop-blur">
+                  {meta.label}
+                </span>
+                {item.is_available ? (
+                  <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-white shadow-sm">
+                    <CheckCircle2 className="h-3.5 w-3.5" /> Available
+                  </span>
+                ) : (
+                  <span className="absolute right-3 top-3 rounded-full bg-gray-900/80 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur">
+                    Unavailable
+                  </span>
+                )}
               </div>
 
+              {images.length > 1 && (
+                <div className="flex gap-2 border-t border-gray-100 p-3">
+                  {images.map((img, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveImage(i)}
+                      className={`h-16 w-20 overflow-hidden rounded-lg border-2 transition ${
+                        activeImage === i ? 'border-brand-600' : 'border-transparent opacity-70 hover:opacity-100'
+                      }`}
+                    >
+                      <img src={img.image} alt="" className="h-full w-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
+
               <div className="p-6">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="px-3 py-1 text-sm font-medium rounded-full bg-blue-50 text-blue-700">
-                    {item.category?.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                  </span>
-                  {item.is_available ? (
-                    <span className="px-3 py-1 text-sm font-medium rounded-full bg-green-50 text-green-700">
-                      Available
-                    </span>
-                  ) : (
-                    <span className="px-3 py-1 text-sm font-medium rounded-full bg-red-50 text-red-700">
-                      Unavailable
-                    </span>
-                  )}
-                </div>
+                <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">{item.title}</h1>
+                <p className="mt-3 whitespace-pre-wrap text-gray-600">{item.description}</p>
 
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">{item.title}</h1>
-                <p className="text-gray-600 mb-6">{item.description}</p>
-
-                <div className="grid grid-cols-3 gap-4 mb-6">
-                  <div>
-                    <p className="text-sm text-gray-500">Tier</p>
-                    <p className="text-xl font-bold text-gray-900 capitalize">{item.tier?.replace('_', ' ')}</p>
+                <dl className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
+                  <div className="rounded-xl bg-gray-50 p-4">
+                    <dt className="text-xs font-medium text-gray-500">Tier</dt>
+                    <dd className="mt-1 font-bold text-gray-900 capitalize">{item.tier?.replace('_', ' ')}</dd>
                   </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Trade Type</p>
-                    <p className="text-xl font-bold text-gray-900 capitalize">{item.trade_type?.replace('_', ' ')}</p>
+                  <div className="rounded-xl bg-gray-50 p-4">
+                    <dt className="text-xs font-medium text-gray-500">Trade Type</dt>
+                    <dd className="mt-1 font-bold text-gray-900 capitalize">{item.trade_type?.replace('_', ' ')}</dd>
                   </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Credits / Day</p>
-                    <p className="text-xl font-bold text-gray-900">{item.time_credits_per_day}</p>
+                  <div className="rounded-xl bg-gray-50 p-4">
+                    <dt className="text-xs font-medium text-gray-500">Credits / Day</dt>
+                    <dd className="mt-1 font-bold text-gray-900">{item.time_credits_per_day}</dd>
                   </div>
-                </div>
-
-                <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-                  <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
-                    {item.owner_profile_photo ? (
-                      <img src={item.owner_profile_photo} alt="" className="w-full h-full rounded-full object-cover" />
-                    ) : (
-                      <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
-                    )}
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-900">{item.owner_name}</p>
-                    <p className="text-sm text-gray-500 flex items-center gap-1">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {item.owner_trust_score ? `${item.owner_trust_score}/100` : 'New Member'}
-                    </p>
-                  </div>
-                </div>
+                </dl>
               </div>
             </div>
 
-            {activeTab === 'details' && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Item Details</h2>
-                <dl className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <dt className="text-sm text-gray-500">Category</dt>
-                      <dd className="text-gray-900 capitalize">{item.category?.replace('_', ' ')}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-sm text-gray-500">Condition</dt>
-                      <dd className="text-gray-900">Good</dd>
-                    </div>
-                  </div>
-                  <div>
-                    <dt className="text-sm text-gray-500">Description</dt>
-                    <dd className="text-gray-900 mt-1 whitespace-pre-wrap">{item.description}</dd>
-                  </div>
-                  {item.availability_calendar?.length > 0 && (
-                    <div>
-                      <dt className="text-sm text-gray-500">Unavailable Dates</dt>
-                      <dd className="text-gray-900 mt-1">
-                        <ul className="list-disc list-inside space-y-1">
-                          {item.availability_calendar.map((range, i) => (
-                            <li key={i}>{range.start} to {range.end}</li>
-                          ))}
-                        </ul>
-                      </dd>
-                    </div>
-                  )}
-                </dl>
+            {/* Owner card */}
+            <div className="card flex flex-wrap items-center gap-4 p-5">
+              <span className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-brand-100 text-brand-700">
+                {item.owner_profile_photo ? (
+                  <img src={item.owner_profile_photo} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  <span className="text-sm font-bold uppercase">{(item.owner_name || 'U').slice(0, 2)}</span>
+                )}
+              </span>
+              <div className="flex-1">
+                <p className="font-bold text-gray-900">{item.owner_name}</p>
+                <p className="flex items-center gap-1 text-sm text-gray-500">
+                  <BadgeCheck className="h-4 w-4 text-brand-600" />
+                  Trust score: {formatTrustScore(item.owner_trust_score)}
+                </p>
               </div>
-            )}
+              <Link to={`/users/${item.owner}/profile`} className="btn-secondary">
+                View profile
+              </Link>
+            </div>
 
-            {activeTab === 'availability' && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Availability Calendar</h2>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <p className="text-gray-600 text-center py-8">Calendar view coming soon</p>
-                </div>
+            {/* Tabs */}
+            <div className="card overflow-hidden">
+              <div className="flex gap-6 border-b border-gray-100 px-6" role="tablist">
+                {[
+                  { id: 'details', label: 'Details' },
+                  { id: 'availability', label: 'Availability' },
+                  { id: 'transaction', label: 'Transaction' },
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    role="tab"
+                    aria-selected={activeTab === tab.id}
+                    className={`-mb-px border-b-2 py-4 text-sm font-semibold transition ${
+                      activeTab === tab.id ? 'border-brand-600 text-brand-700' : 'border-transparent text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
               </div>
-            )}
 
-            {activeTab === 'transaction' && transaction && (
-              <TransactionPanel
-                transaction={transaction}
-                item={item}
-                isOwner={isOwner}
-                qrToken={qrToken}
-                showQR={showQR}
-                onGenerateQR={handleGenerateQR}
-                onScanQR={handleScanQR}
-                onCloseQR={() => setShowQR(false)}
-              />
-            )}
+              <div className="p-6">
+                {activeTab === 'details' && (
+                  <dl className="space-y-4 text-sm">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <dt className="text-gray-500">Category</dt>
+                        <dd className="mt-0.5 font-medium text-gray-900 capitalize">{item.category?.replace('_', ' ')}</dd>
+                      </div>
+                      <div>
+                        <dt className="text-gray-500">Condition</dt>
+                        <dd className="mt-0.5 font-medium text-gray-900">Good</dd>
+                      </div>
+                    </div>
+                    {item.availability_calendar?.length > 0 && (
+                      <div>
+                        <dt className="text-gray-500">Unavailable dates</dt>
+                        <dd className="mt-1">
+                          <ul className="list-inside list-disc space-y-1 text-gray-900">
+                            {item.availability_calendar.map((range, i) => (
+                              <li key={i}>{range.start} to {range.end}</li>
+                            ))}
+                          </ul>
+                        </dd>
+                      </div>
+                    )}
+                  </dl>
+                )}
+
+                {activeTab === 'availability' && (
+                  <div className="rounded-xl bg-gray-50 p-8 text-center">
+                    <CalendarDays className="mx-auto h-8 w-8 text-gray-300" />
+                    <p className="mt-2 text-sm text-gray-500">Calendar view coming soon</p>
+                  </div>
+                )}
+
+                {activeTab === 'transaction' && transaction && (
+                  <TransactionPanel
+                    transaction={transaction}
+                    item={item}
+                    isOwner={isOwner}
+                    qrToken={qrToken}
+                    showQR={showQR}
+                    onGenerateQR={handleGenerateQR}
+                    onScanQR={handleScanQR}
+                    onCloseQR={() => setShowQR(false)}
+                  />
+                )}
+              </div>
+            </div>
           </div>
 
-          <aside className="space-y-6">
-            {canBorrow && !transaction && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-24">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Request to Borrow</h3>
-                <form onSubmit={handleBorrowRequest} className="space-y-4">
+          {/* ============ RIGHT: sticky action card ============ */}
+          <div className="space-y-6">
+            <div className="card sticky top-36 p-6">
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-extrabold tracking-tight text-gray-900">{item.time_credits_per_day}</span>
+                <span className="text-sm font-medium text-gray-500">Credits / day</span>
+              </div>
+
+              <div className="mt-5 flex items-center gap-2 rounded-xl bg-brand-50 px-4 py-3 text-xs font-semibold text-brand-800">
+                <ShieldCheck className="h-4 w-4 shrink-0" />
+                Escrow-protected — both parties are covered
+              </div>
+
+              {canBorrow && !transaction && (
+                <form onSubmit={handleBorrowRequest} className="mt-5 space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                    <label className="mb-1.5 block text-sm font-semibold text-gray-700">Start date</label>
                     <input
                       type="date"
                       min={new Date().toISOString().split('T')[0]}
                       value={borrowDates.from}
                       onChange={(e) => setBorrowDates({ ...borrowDates, from: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="input-field"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                    <label className="mb-1.5 block text-sm font-semibold text-gray-700">End date</label>
                     <input
                       type="date"
                       min={borrowDates.from || new Date().toISOString().split('T')[0]}
                       value={borrowDates.to}
                       onChange={(e) => setBorrowDates({ ...borrowDates, to: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="input-field"
                       required
                     />
                   </div>
-                  <div className="bg-gray-50 p-4 rounded-lg">
+
+                  <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Credits / Day</span>
-                      <span className="font-medium">{item.time_credits_per_day}</span>
+                      <span className="text-gray-600">Credits / day</span>
+                      <span className="font-semibold">{item.time_credits_per_day}</span>
                     </div>
-                    <div className="flex justify-between text-sm mt-1 border-t border-gray-200 pt-2">
-                      <span className="font-medium text-gray-900">Total Credits</span>
-                      <span className="font-bold text-blue-600">
-                        {borrowDates.from && borrowDates.to
-                          ? item.time_credits_per_day * (Math.max(1, (new Date(borrowDates.to) - new Date(borrowDates.from)) / (1000 * 60 * 60 * 24) + 1))
-                          : 'Select dates'}
-                      </span>
+                    <div className="mt-2 flex justify-between border-t border-gray-200 pt-2">
+                      <span className="font-semibold text-gray-900">Total credits</span>
+                      <span className="font-bold text-brand-700">{totalCredits ?? 'Select dates'}</span>
                     </div>
                   </div>
+
                   {borrowError && (
-                    <p className="text-sm text-red-600 bg-red-50 p-2 rounded">{borrowError}</p>
+                    <p className="rounded-lg bg-red-50 p-2.5 text-sm text-red-700" role="alert">{borrowError}</p>
                   )}
                   {borrowSuccess && (
-                    <p className="text-sm text-green-600 bg-green-50 p-2 rounded">Request sent! Waiting for lender approval.</p>
+                    <p className="rounded-lg bg-emerald-50 p-2.5 text-sm text-emerald-700">
+                      Request sent! Waiting for lender approval.
+                    </p>
                   )}
-                  <button
-                    type="submit"
-                    disabled={borrowLoading || borrowSuccess}
-                    className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50"
-                  >
-                    {borrowLoading ? 'Submitting...' : borrowSuccess ? 'Request Sent' : 'Submit Borrow Request'}
+
+                  <button type="submit" disabled={borrowLoading || borrowSuccess} className="btn-primary w-full py-3">
+                    {borrowLoading ? 'Submitting...' : borrowSuccess ? 'Request Sent ✓' : 'Request to borrow'}
                   </button>
                 </form>
-              </div>
-            )}
+              )}
 
-            {isOwner && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Owner Actions</h3>
-                <div className="space-y-2">
-                  <button className="w-full py-2 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
-                    Edit Listing
-                  </button>
-                  <button className="w-full py-2 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
-                    Manage Availability
-                  </button>
-                  <button className="w-full py-2 px-4 border border-red-300 rounded-lg text-red-700 hover:bg-red-50">
-                    Delete Listing
+              {canBorrow && transaction && (
+                <div className="mt-5 rounded-xl bg-emerald-50 p-4 text-sm text-emerald-800">
+                  Your request has been sent to {item.owner_name}. You can track it in
+                  <Link to="/my-transactions" className="font-semibold underline"> My Transactions</Link>.
+                </div>
+              )}
+
+              {!isAuthenticated && item.is_available && (
+                <button onClick={() => navigate('/login', { state: { from: `/items/${id}` } })} className="btn-primary mt-5 w-full py-3">
+                  Sign in to request
+                </button>
+              )}
+
+              {isOwner && (
+                <div className="mt-5 space-y-2">
+                  <button onClick={() => navigate(`/edit-item/${id}`)} className="btn-secondary w-full">
+                    <Pencil className="h-4 w-4" /> Edit Listing
                   </button>
                 </div>
-              </div>
-            )}
+              )}
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Location</h3>
-              <div className="h-48 rounded-lg overflow-hidden">
-                <MapContainer center={[item.location.coordinates[1], item.location.coordinates[0]]} zoom={15} style={{ height: '100%', width: '100%' }}>
-                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; OpenStreetMap' />
-                  <Marker position={[item.location.coordinates[1], item.location.coordinates[0]]} />
-                </MapContainer>
+              <div className="mt-5 flex items-center justify-between border-t border-gray-100 pt-4 text-sm text-gray-500">
+                <span className="inline-flex items-center gap-1.5"><MapPin className="h-4 w-4 text-brand-600" /> Belvedere area</span>
+                <span className="inline-flex items-center gap-1.5"><Clock className="h-4 w-4" /> Flexible hours</span>
               </div>
-              <p className="mt-2 text-sm text-gray-500 text-center">Approximate location in Belvedere</p>
             </div>
-          </aside>
-        </div>
-      </main>
 
+            {/* Location */}
+            <div className="card overflow-hidden">
+              <div className="h-48 bg-gray-100">
+                {item.location?.coordinates && (
+                  <MapContainer
+                    center={[item.location.coordinates[1], item.location.coordinates[0]]}
+                    zoom={15}
+                    style={{ height: '100%', width: '100%' }}
+                  >
+                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; OpenStreetMap' />
+                    <Marker position={[item.location.coordinates[1], item.location.coordinates[0]]} />
+                  </MapContainer>
+                )}
+              </div>
+              <p className="px-4 py-3 text-center text-xs text-gray-500">
+                Approximate location in Belvedere — exact address shared after approval
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* QR modal */}
       {showQR && qrToken && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowQR(false)}>
-          <div className="bg-white rounded-xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">QR Handshake Code</h3>
-              <button onClick={() => setShowQR(false)} className="text-gray-400 hover:text-gray-600">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowQR(false)}>
+          <div className="w-full max-w-md rounded-2xl bg-white p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-lg font-bold text-gray-900">QR Handshake Code</h3>
+              <button onClick={() => setShowQR(false)} className="rounded-full p-1.5 text-gray-400 hover:bg-gray-50 hover:text-gray-600">
+                <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="text-center mb-4">
-              <QRCode value={qrToken} size={200} level="M" includeMargin={true} />
+            <div className="mb-4 flex justify-center rounded-2xl border border-gray-100 bg-gray-50 p-6">
+              <QRCode value={qrToken} size={200} level="M" includeMargin />
             </div>
-            <p className="text-sm text-gray-600 text-center mb-4">
+            <p className="mb-4 text-center text-sm text-gray-600">
               Both parties must scan this code to confirm {transaction?.state === 'AGREED' ? 'hand-off' : 'return'}.
             </p>
-            <button
-              onClick={handleScanQR}
-              className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700"
-            >
-              I've Scanned - Confirm
+            <button onClick={handleScanQR} className="btn-primary w-full py-3">
+              I've Scanned — Confirm
             </button>
           </div>
         </div>
@@ -420,70 +462,51 @@ function TransactionPanel({ transaction, item, isOwner, qrToken, showQR, onGener
   };
 
   const stateColors = {
-    PENDING: 'bg-yellow-50 text-yellow-700',
-    AGREED: 'bg-blue-50 text-blue-700',
-    ACTIVE: 'bg-purple-50 text-purple-700',
+    PENDING: 'bg-amber-50 text-amber-700',
+    AGREED: 'bg-brand-50 text-brand-700',
+    ACTIVE: 'bg-violet-50 text-violet-700',
     ITEM_OUT: 'bg-orange-50 text-orange-700',
-    ITEM_RETURNED: 'bg-green-50 text-green-700',
-    CLOSED: 'bg-gray-50 text-gray-700',
+    ITEM_RETURNED: 'bg-emerald-50 text-emerald-700',
+    CLOSED: 'bg-gray-100 text-gray-600',
     DISPUTED: 'bg-red-50 text-red-700',
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Transaction Status</h2>
-          <span className={`px-3 py-1 text-sm font-medium rounded-full ${stateColors[transaction.state]}`}>
-            {stateLabels[transaction.state] || transaction.state}
-          </span>
-        </div>
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <p className="text-gray-500">Borrower</p>
-            <p className="font-medium">{transaction.borrower?.full_name || 'Loading...'}</p>
-          </div>
-          <div>
-            <p className="text-gray-500">Dates</p>
-            <p className="font-medium">{transaction.requested_from} to {transaction.requested_to}</p>
-          </div>
-          <div>
-            <p className="text-gray-500">Credits / Day</p>
-            <p className="font-medium">{transaction.time_credits_per_day}</p>
-          </div>
-          <div>
-            <p className="text-gray-500">Total Credits</p>
-            <p className="font-medium">{transaction.total_time_credits}</p>
-          </div>
-        </div>
+    <div>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-lg font-bold text-gray-900">Transaction Status</h2>
+        <span className={`badge ${stateColors[transaction.state] || 'bg-gray-100 text-gray-600'}`}>
+          {stateLabels[transaction.state] || transaction.state}
+        </span>
       </div>
 
-      <div className="p-6 space-y-4">
+      <div className="grid grid-cols-2 gap-4 text-sm">
+        <div><p className="text-gray-500">Borrower</p><p className="font-semibold text-gray-900">{transaction.borrower?.full_name || 'Loading...'}</p></div>
+        <div><p className="text-gray-500">Dates</p><p className="font-semibold text-gray-900">{transaction.requested_from} to {transaction.requested_to}</p></div>
+        <div><p className="text-gray-500">Credits / Day</p><p className="font-semibold text-gray-900">{transaction.time_credits_per_day}</p></div>
+        <div><p className="text-gray-500">Total Credits</p><p className="font-semibold text-gray-900">{transaction.total_time_credits}</p></div>
+      </div>
+
+      <div className="mt-5 space-y-3">
         {transaction.state === 'PENDING' && isOwner && (
           <button
             onClick={async () => {
-              try {
-                await transactionsApi.accept(transaction.id);
-                window.location.reload();
-              } catch (e) { console.error(e); }
+              try { await transactionsApi.accept(transaction.id); window.location.reload(); } catch (e) { console.error(e); }
             }}
-            className="w-full py-3 px-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700"
+            className="btn-primary w-full py-3 bg-emerald-600 hover:bg-emerald-700"
           >
             Accept Request
           </button>
         )}
 
         {transaction.state === 'AGREED' && !isOwner && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-blue-800 mb-2">Terms agreed. Please activate the transaction to proceed to hand-off.</p>
+          <div className="rounded-xl bg-brand-50 p-4">
+            <p className="mb-2 text-sm text-brand-800">Terms agreed. Please activate the transaction to proceed to hand-off.</p>
             <button
               onClick={async () => {
-                try {
-                  await transactionsApi.activate(transaction.id);
-                  window.location.reload();
-                } catch (e) { console.error(e); }
+                try { await transactionsApi.activate(transaction.id); window.location.reload(); } catch (e) { console.error(e); }
               }}
-              className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700"
+              className="btn-primary w-full py-2.5"
             >
               Activate Transaction
             </button>
@@ -491,33 +514,29 @@ function TransactionPanel({ transaction, item, isOwner, qrToken, showQR, onGener
         )}
 
         {transaction.state === 'AGREED' && isOwner && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-blue-800 mb-2">Waiting for the borrower to confirm terms and activate the transaction.</p>
+          <div className="rounded-xl bg-brand-50 p-4 text-sm text-brand-800">
+            Waiting for the borrower to confirm terms and activate the transaction.
           </div>
         )}
 
         {(transaction.state === 'ACTIVE' || transaction.state === 'ITEM_OUT') && (
-          <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-            <p className="text-purple-800 mb-3">
+          <div className="rounded-xl bg-violet-50 p-4">
+            <p className="mb-3 text-sm text-violet-800">
               {transaction.state === 'ACTIVE'
                 ? 'Both parties must scan the QR code to confirm hand-off.'
                 : 'Both parties must scan the QR code to confirm return.'}
             </p>
             <div className="flex gap-2">
-              <button onClick={onGenerateQR} className="flex-1 py-2 px-4 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700">
-                Generate QR Code
-              </button>
+              <button onClick={onGenerateQR} className="btn-primary flex-1 py-2.5 bg-violet-600 hover:bg-violet-700">Generate QR Code</button>
               {showQR && (
-                <button onClick={onCloseQR} className="px-4 py-2 border border-purple-300 text-purple-700 rounded-lg font-medium hover:bg-purple-50">
-                  Close QR
-                </button>
+                <button onClick={onCloseQR} className="btn-secondary px-4 py-2.5 border-violet-300 text-violet-700">Close QR</button>
               )}
             </div>
             <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
-              <div className={`p-2 rounded ${transaction.lender_scanned_handoff || transaction.lender_scanned_return ? 'bg-green-100' : 'bg-gray-100'}`}>
+              <div className={`rounded-lg p-2 ${transaction.lender_scanned_handoff || transaction.lender_scanned_return ? 'bg-emerald-100' : 'bg-gray-100'}`}>
                 Lender: {transaction.lender_scanned_handoff || transaction.lender_scanned_return ? '✓ Scanned' : '✗ Pending'}
               </div>
-              <div className={`p-2 rounded ${transaction.borrower_scanned_handoff || transaction.borrower_scanned_return ? 'bg-green-100' : 'bg-gray-100'}`}>
+              <div className={`rounded-lg p-2 ${transaction.borrower_scanned_handoff || transaction.borrower_scanned_return ? 'bg-emerald-100' : 'bg-gray-100'}`}>
                 Borrower: {transaction.borrower_scanned_handoff || transaction.borrower_scanned_return ? '✓ Scanned' : '✗ Pending'}
               </div>
             </div>
@@ -525,16 +544,13 @@ function TransactionPanel({ transaction, item, isOwner, qrToken, showQR, onGener
         )}
 
         {transaction.state === 'ITEM_RETURNED' && isOwner && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-            <p className="text-green-800 mb-2">Item returned. Close transaction to finalize Time Credits.</p>
+          <div className="rounded-xl bg-emerald-50 p-4">
+            <p className="mb-2 text-sm text-emerald-800">Item returned. Close transaction to finalize Time Credits.</p>
             <button
               onClick={async () => {
-                try {
-                  await transactionsApi.close(transaction.id);
-                  window.location.reload();
-                } catch (e) { console.error(e); }
+                try { await transactionsApi.close(transaction.id); window.location.reload(); } catch (e) { console.error(e); }
               }}
-              className="w-full py-2 px-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700"
+              className="btn-primary w-full py-2.5 bg-emerald-600 hover:bg-emerald-700"
             >
               Confirm & Close
             </button>
@@ -542,15 +558,14 @@ function TransactionPanel({ transaction, item, isOwner, qrToken, showQR, onGener
         )}
 
         {transaction.state === 'DISPUTED' && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <p className="text-red-800">This transaction is under dispute. An admin will review and resolve.</p>
+          <div className="rounded-xl bg-red-50 p-4 text-sm text-red-800">
+            This transaction is under dispute. An admin will review and resolve.
           </div>
         )}
 
         {transaction.state === 'CLOSED' && (
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
-            <p className="text-gray-700">Transaction completed successfully.</p>
-            <button className="mt-2 text-blue-600 hover:underline text-sm">Leave a Rating</button>
+          <div className="rounded-xl bg-gray-50 p-4 text-center text-sm text-gray-600">
+            Transaction completed successfully.
           </div>
         )}
       </div>

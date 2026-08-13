@@ -3,6 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { transactionsApi } from '../../api';
 import QRCode from 'qrcode.react';
+import {
+  ArrowLeft, Check, Clock, Info, QrCode, X, AlertTriangle, ShieldCheck,
+} from 'lucide-react';
 
 export default function QRScan() {
   const { id } = useParams();
@@ -37,14 +40,12 @@ export default function QRScan() {
   };
 
   const handleGenerateQR = async (type) => {
-    // Request camera permission before opening QR scanner (iOS Safari fix)
     try {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         await navigator.mediaDevices.getUserMedia({ video: false });
       }
     } catch (err) {
       console.warn('Camera permission check failed:', err);
-      // Continue anyway - permission will be requested when scanner opens
     }
 
     try {
@@ -68,34 +69,31 @@ export default function QRScan() {
   };
 
   const queueScanOffline = (token) => {
-    setOfflineQueue(prev => [...prev, token]);
+    setOfflineQueue((prev) => [...prev, token]);
     setShowQR(false);
   };
 
   useEffect(() => {
     if (navigator.onLine && offlineQueue.length > 0) {
-      offlineQueue.forEach(token => handleScanQR(token));
+      offlineQueue.forEach((token) => handleScanQR(token));
       setOfflineQueue([]);
     }
   }, [offlineQueue]);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
+      <div className="flex min-h-screen items-center justify-center bg-[#FAFAF8]">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-brand-600 border-t-transparent" />
       </div>
     );
   }
 
   if (error || !transaction) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Transaction Not Found</h1>
-          <button onClick={() => navigate('/my-transactions')} className="mt-4 text-blue-600 hover:underline">
-            Back to Transactions
-          </button>
-        </div>
+      <div className="flex min-h-screen flex-col items-center justify-center bg-[#FAFAF8] px-4 text-center">
+        <Info className="h-12 w-12 text-gray-300" />
+        <h1 className="mt-4 text-2xl font-bold text-gray-900">Transaction Not Found</h1>
+        <button onClick={() => navigate('/my-transactions')} className="btn-primary mt-6">Back to Transactions</button>
       </div>
     );
   }
@@ -103,122 +101,105 @@ export default function QRScan() {
   const isLender = transaction.item?.owner?.id === user?.id;
   const isBorrower = transaction.borrower?.id === user?.id;
 
+  const stateBadge = (() => {
+    const map = {
+      CLOSED: 'bg-gray-100 text-gray-600',
+      DISPUTED: 'bg-red-50 text-red-700',
+      ACTIVE: 'bg-violet-50 text-violet-700',
+      ITEM_OUT: 'bg-orange-50 text-orange-700',
+      ITEM_RETURNED: 'bg-emerald-50 text-emerald-700',
+      AGREED: 'bg-brand-50 text-brand-700',
+    };
+    return `badge ${map[transaction.state] || 'bg-amber-50 text-amber-700'}`;
+  })();
+
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-2xl mx-auto px-4">
+    <div className="bg-[#FAFAF8] py-10">
+      <div className="mx-auto max-w-2xl px-4">
         <div className="mb-8">
-          <button onClick={() => navigate(-1)} className="text-blue-600 hover:underline mb-4 flex items-center gap-1">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Back
+          <button onClick={() => navigate(-1)} className="mb-4 inline-flex items-center gap-1.5 text-sm font-semibold text-gray-600 transition hover:text-brand-700">
+            <ArrowLeft className="h-4 w-4" /> Back
           </button>
-          <h1 className="text-3xl font-bold text-gray-900">QR Digital Handshake</h1>
-          <p className="text-gray-600 mt-1">Scan to confirm hand-off or return of {transaction.item?.title}</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">QR Digital Handshake</h1>
+          <p className="mt-1 text-gray-500">Scan to confirm hand-off or return of {transaction.item?.title}</p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700" role="alert">
-            {error}
+          <div className="mb-6 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700" role="alert">
+            <Info className="mt-0.5 h-4 w-4 shrink-0" /> {error}
           </div>
         )}
 
         {offlineQueue.length > 0 && (
-          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">
+          <div className="mb-6 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+            <Clock className="mt-0.5 h-4 w-4 shrink-0" />
             {offlineQueue.length} scan(s) queued offline. Will retry when connection returns.
           </div>
         )}
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Transaction Status</h2>
-            <span className={`px-3 py-1 text-sm font-medium rounded-full ${
-              transaction.state === 'CLOSED' ? 'bg-gray-100 text-gray-800' :
-              transaction.state === 'DISPUTED' ? 'bg-red-100 text-red-800' :
-              transaction.state === 'ACTIVE' ? 'bg-purple-100 text-purple-800' :
-              transaction.state === 'ITEM_OUT' ? 'bg-orange-100 text-orange-800' :
-              transaction.state === 'ITEM_RETURNED' ? 'bg-green-100 text-green-800' :
-              transaction.state === 'AGREED' ? 'bg-blue-100 text-blue-800' :
-              'bg-yellow-100 text-yellow-800'
-            }`}>
-              {transaction.state.replace('_', ' ')}
-            </span>
+        <div className="card p-6">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+            <h2 className="text-lg font-bold text-gray-900">Transaction Status</h2>
+            <span className={stateBadge}>{transaction.state.replace('_', ' ')}</span>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 text-sm mb-6">
-            <div>
-              <p className="text-gray-500">Borrower</p>
-              <p className="font-medium text-gray-900">{transaction.borrower?.full_name}</p>
-            </div>
-            <div>
-              <p className="text-gray-500">Lender</p>
-              <p className="font-medium text-gray-900">{transaction.item?.owner?.full_name}</p>
-            </div>
-            <div>
-              <p className="text-gray-500">Dates</p>
-              <p className="font-medium text-gray-900">{transaction.requested_from} to {transaction.requested_to}</p>
-            </div>
-            <div>
-              <p className="text-gray-500">Total Credits</p>
-              <p className="font-medium text-gray-900">{transaction.total_time_credits} credits</p>
-            </div>
+          <div className="mb-6 grid grid-cols-2 gap-4 text-sm">
+            <div><p className="text-gray-500">Borrower</p><p className="font-semibold text-gray-900">{transaction.borrower?.full_name}</p></div>
+            <div><p className="text-gray-500">Lender</p><p className="font-semibold text-gray-900">{transaction.item?.owner?.full_name}</p></div>
+            <div><p className="text-gray-500">Dates</p><p className="font-semibold text-gray-900">{transaction.requested_from} to {transaction.requested_to}</p></div>
+            <div><p className="text-gray-500">Total Credits</p><p className="font-semibold text-gray-900">{transaction.total_time_credits} credits</p></div>
+          </div>
+
+          <div className="mb-5 flex items-start gap-2 rounded-xl bg-brand-50 p-4 text-xs font-semibold text-brand-800">
+            <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
+            Both parties must scan the same QR code to verify the exchange — safe, simple and secure.
           </div>
 
           {(transaction.state === 'ACTIVE' || transaction.state === 'ITEM_OUT') && (
             <div className="space-y-4">
-              <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                <p className="text-purple-800 mb-3">
-                  {transaction.state === 'ACTIVE'
-                    ? 'Both parties must scan the QR code to confirm hand-off.'
-                    : 'Both parties must scan the QR code to confirm return.'}
-                </p>
-                <button
-                  onClick={() => handleGenerateQR(transaction.state === 'ACTIVE' ? 'handoff' : 'return')}
-                  className="w-full py-3 px-4 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700"
-                >
-                  Generate QR Code
-                </button>
-              </div>
+              <button
+                onClick={() => handleGenerateQR(transaction.state === 'ACTIVE' ? 'handoff' : 'return')}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 py-3 text-sm font-semibold text-white transition hover:bg-violet-700"
+              >
+                <QrCode className="h-4 w-4" />
+                {transaction.state === 'ACTIVE' ? 'Generate Hand-off QR Code' : 'Generate Return QR Code'}
+              </button>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className={`p-4 rounded-lg border ${scanStatus.lender ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
+                <div className={`rounded-2xl border p-4 ${scanStatus.lender ? 'border-emerald-200 bg-emerald-50' : 'border-gray-200 bg-gray-50'}`}>
                   <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-900">Lender</span>
+                    <span className="font-bold text-gray-900">Lender</span>
                     {scanStatus.lender ? (
-                      <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
+                      <Check className="h-5 w-5 text-emerald-600" />
                     ) : (
-                      <span className="text-gray-400">Pending</span>
+                      <span className="text-xs font-medium text-gray-400">Pending</span>
                     )}
                   </div>
                   {isLender && !scanStatus.lender && (
                     <button
                       onClick={() => handleScanQR(qrToken)}
                       disabled={!qrToken}
-                      className="mt-2 w-full py-2 px-4 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 disabled:opacity-50"
+                      className="mt-3 w-full rounded-xl bg-violet-600 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       Scan
                     </button>
                   )}
                 </div>
 
-                <div className={`p-4 rounded-lg border ${scanStatus.borrower ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'}`}>
+                <div className={`rounded-2xl border p-4 ${scanStatus.borrower ? 'border-emerald-200 bg-emerald-50' : 'border-gray-200 bg-gray-50'}`}>
                   <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-900">Borrower</span>
+                    <span className="font-bold text-gray-900">Borrower</span>
                     {scanStatus.borrower ? (
-                      <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
+                      <Check className="h-5 w-5 text-emerald-600" />
                     ) : (
-                      <span className="text-gray-400">Pending</span>
+                      <span className="text-xs font-medium text-gray-400">Pending</span>
                     )}
                   </div>
                   {isBorrower && !scanStatus.borrower && (
                     <button
                       onClick={() => handleScanQR(qrToken)}
                       disabled={!qrToken}
-                      className="mt-2 w-full py-2 px-4 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 disabled:opacity-50"
+                      className="mt-3 w-full rounded-xl bg-violet-600 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       Scan
                     </button>
@@ -227,77 +208,61 @@ export default function QRScan() {
               </div>
 
               {!navigator.onLine && (
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                  <p className="text-yellow-800 text-sm">
-                    You are offline. Scans will be queued and sent automatically when connection returns.
-                  </p>
+                <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+                  You are offline. Scans will be queued and sent automatically when connection returns.
                 </div>
               )}
             </div>
           )}
 
           {transaction.state === 'PENDING' && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <p className="text-yellow-800">Waiting for lender to accept the request.</p>
-            </div>
+            <div className="rounded-xl bg-amber-50 p-4 text-sm text-amber-800">Waiting for lender to accept the request.</div>
           )}
 
           {transaction.state === 'AGREED' && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-blue-800">Transaction accepted. Ready for hand-off.</p>
-            </div>
+            <div className="rounded-xl bg-brand-50 p-4 text-sm text-brand-800">Transaction accepted. Ready for hand-off.</div>
           )}
 
           {transaction.state === 'ITEM_RETURNED' && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <p className="text-green-800">Item returned. Waiting for lender to close transaction.</p>
-            </div>
+            <div className="rounded-xl bg-emerald-50 p-4 text-sm text-emerald-800">Item returned. Waiting for lender to close transaction.</div>
           )}
 
           {transaction.state === 'CLOSED' && (
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
-              <p className="text-gray-700">Transaction completed successfully.</p>
-            </div>
+            <div className="rounded-xl bg-gray-50 p-4 text-center text-sm text-gray-600">Transaction completed successfully.</div>
           )}
 
           {transaction.state === 'DISPUTED' && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-              <p className="text-red-800">This transaction is under dispute. An admin will review.</p>
-            </div>
+            <div className="rounded-xl bg-red-50 p-4 text-sm text-red-800">This transaction is under dispute. An admin will review.</div>
           )}
         </div>
       </div>
 
+      {/* QR modal */}
       {showQR && qrToken && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowQR(false)}>
-          <div className="bg-white rounded-xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">QR Handshake Code</h3>
-              <button onClick={() => setShowQR(false)} className="text-gray-400 hover:text-gray-600">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setShowQR(false)}>
+          <div className="w-full max-w-md rounded-2xl bg-white p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-lg font-bold text-gray-900">QR Handshake Code</h3>
+              <button onClick={() => setShowQR(false)} className="rounded-full p-1.5 text-gray-400 hover:bg-gray-50 hover:text-gray-600">
+                <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="text-center mb-4">
-              <QRCode value={qrToken} size={200} level="M" includeMargin={true} />
+            <div className="mb-4 flex justify-center rounded-2xl border border-gray-100 bg-gray-50 p-6">
+              <QRCode value={qrToken} size={200} level="M" includeMargin />
             </div>
-            <p className="text-sm text-gray-600 text-center mb-4">
+            <p className="mb-4 text-center text-sm text-gray-600">
               Both parties must scan this code to confirm {qrType === 'handoff' ? 'hand-off' : 'return'}.
             </p>
             <div className="space-y-2">
               <button
                 onClick={() => handleScanQR(qrToken)}
                 disabled={!navigator.onLine}
-                className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary w-full py-3 disabled:cursor-not-allowed"
               >
-                {navigator.onLine ? 'I\'ve Scanned - Confirm' : 'Offline - Scan Disabled'}
+                {navigator.onLine ? "I've Scanned — Confirm" : 'Offline — Scan Disabled'}
               </button>
               {!navigator.onLine && (
-                <button
-                  onClick={() => queueScanOffline(qrToken)}
-                  className="w-full py-2 px-4 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50"
-                >
+                <button onClick={() => queueScanOffline(qrToken)} className="btn-secondary w-full">
                   Queue Scan for Later
                 </button>
               )}

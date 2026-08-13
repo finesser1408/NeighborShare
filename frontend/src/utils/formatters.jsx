@@ -34,13 +34,13 @@ export const TRANSACTION_STATE_LABELS = {
 };
 
 export const TRANSACTION_STATE_COLORS = {
-  PENDING: 'bg-yellow-100 text-yellow-800',
-  AGREED: 'bg-blue-100 text-blue-800',
-  ACTIVE: 'bg-purple-100 text-purple-800',
-  ITEM_OUT: 'bg-orange-100 text-orange-800',
-  ITEM_RETURNED: 'bg-green-100 text-green-800',
-  CLOSED: 'bg-gray-100 text-gray-800',
-  DISPUTED: 'bg-red-100 text-red-800',
+  PENDING: 'bg-amber-50 text-amber-700',
+  AGREED: 'bg-brand-50 text-brand-700',
+  ACTIVE: 'bg-fuchsia-50 text-fuchsia-700',
+  ITEM_OUT: 'bg-orange-50 text-orange-700',
+  ITEM_RETURNED: 'bg-emerald-50 text-emerald-700',
+  CLOSED: 'bg-gray-100 text-gray-600',
+  DISPUTED: 'bg-red-50 text-red-700',
 };
 
 /**

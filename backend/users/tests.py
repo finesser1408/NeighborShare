@@ -302,7 +302,7 @@ class ProfileAPITests(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.token}')
 
     def test_get_my_profile(self):
-        response = self.client.get('/api/users/me')
+        response = self.client.get('/api/users/me/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['email'], 'profile@example.com')
         self.assertEqual(response.data['trust_score'], 75)
@@ -321,7 +321,7 @@ class ProfileAPITests(TestCase):
             home_address='123 Secret St',
             home_location=Point(31.05, -17.7833, srid=4326),
         )
-        response = self.client.get(f'/api/users/{other_user.id}/profile')
+        response = self.client.get(f'/api/users/{other_user.id}/profile/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertNotIn('home_location', response.data)
         self.assertNotIn('home_address', response.data)

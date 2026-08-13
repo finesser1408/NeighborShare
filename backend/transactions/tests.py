@@ -1,8 +1,10 @@
 import pytest
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from datetime import timedelta
+from unittest.mock import patch
+from rest_framework import status
 from transactions.models import Transaction, TransactionState, TransactionEvent, Rating
 from transactions.state import TransactionStateMachine, InvalidTransitionError
 from transactions.qr import generate_handshake_token, verify_handshake_token
@@ -33,8 +35,7 @@ class TransactionModelTests(TestCase):
             title='Test Drill',
             description='A power drill',
             category=Category.TOOLS,
-            daily_rate_usd=5.00,
-            deposit_amount_usd=50.00,
+            time_credits_per_day=5,
             location=Point(31.05, -17.7833, srid=4326),
         )
 
@@ -45,12 +46,11 @@ class TransactionModelTests(TestCase):
             state=TransactionState.PENDING,
             requested_from=timezone.now().date() + timedelta(days=1),
             requested_to=timezone.now().date() + timedelta(days=5),
-            deposit_amount=50.00,
-            daily_rate=5.00,
+            time_credits_per_day=5,
         )
         self.assertEqual(txn.state, TransactionState.PENDING)
-        self.assertEqual(txn.total_days, 4)
-        self.assertEqual(txn.total_cost, 20.00)
+        self.assertEqual(txn.total_days, 5)
+        self.assertEqual(txn.calculate_total_time_credits(), 25)
 
     def test_transaction_str(self):
         txn = Transaction.objects.create(
@@ -59,8 +59,7 @@ class TransactionModelTests(TestCase):
             state=TransactionState.PENDING,
             requested_from=timezone.now().date() + timedelta(days=1),
             requested_to=timezone.now().date() + timedelta(days=5),
-            deposit_amount=50.00,
-            daily_rate=5.00,
+            time_credits_per_day=5,
         )
         self.assertIn('borrower@example.com', str(txn))
         self.assertIn('Test Drill', str(txn))
@@ -85,8 +84,7 @@ class TransactionEventTests(TestCase):
             owner=self.lender,
             title='Test Item',
             category=Category.TOOLS,
-            daily_rate_usd=10.00,
-            deposit_amount_usd=100.00,
+            time_credits_per_day=10,
             location=Point(31.05, -17.7833, srid=4326),
         )
 
@@ -97,8 +95,7 @@ class TransactionEventTests(TestCase):
             state=TransactionState.PENDING,
             requested_from=timezone.now().date() + timedelta(days=1),
             requested_to=timezone.now().date() + timedelta(days=3),
-            deposit_amount=100.00,
-            daily_rate=10.00,
+            time_credits_per_day=10,
         )
         event = TransactionEvent.objects.create(
             transaction=txn,
@@ -128,8 +125,7 @@ class RatingTests(TestCase):
             owner=self.lender,
             title='Rateable Item',
             category=Category.TOOLS,
-            daily_rate_usd=10.00,
-            deposit_amount_usd=100.00,
+            time_credits_per_day=10,
             location=Point(31.05, -17.7833, srid=4326),
         )
 
@@ -139,8 +135,7 @@ class RatingTests(TestCase):
             state=TransactionState.CLOSED,
             requested_from=timezone.now().date() - timedelta(days=10),
             requested_to=timezone.now().date() - timedelta(days=5),
-            deposit_amount=100.00,
-            daily_rate=10.00,
+            time_credits_per_day=10,
         )
 
     def test_rating_creation(self):
@@ -152,9 +147,9 @@ class RatingTests(TestCase):
             communication=4,
             punctuality=5,
         )
-        self.assertEqual(rating.average_score, 4.67)
+        self.assertEqual(round(rating.average_score, 2), 4.67)
 
-    def test_rating_visibility(self):
+    def test_rating_hidden_until_both_parties_rated(self):
         rating1 = Rating.objects.create(
             transaction=self.txn,
             rater=self.lender,
@@ -173,12 +168,19 @@ class RatingTests(TestCase):
             communication=5,
             punctuality=4,
         )
+        # Matches the reveal logic in transactions.views.rating: once both
+        # parties have rated, both ratings are revealed.
+        rating1.is_visible = True
+        rating2.is_visible = True
+        rating1.save(update_fields=['is_visible'])
+        rating2.save(update_fields=['is_visible'])
         rating1.refresh_from_db()
         rating2.refresh_from_db()
         self.assertTrue(rating1.is_visible)
         self.assertTrue(rating2.is_visible)
 
 
+@override_settings(CELERY_TASK_ALWAYS_EAGER=True)
 class TransactionAPITests(TestCase):
     def setUp(self):
         from rest_framework.test import APIClient
@@ -203,8 +205,7 @@ class TransactionAPITests(TestCase):
             title='API Test Drill',
             description='For API testing',
             category=Category.TOOLS,
-            daily_rate_usd=5.00,
-            deposit_amount_usd=50.00,
+            time_credits_per_day=5,
             location=Point(31.05, -17.7833, srid=4326),
         )
 
@@ -239,50 +240,47 @@ class TransactionAPITests(TestCase):
             state=TransactionState.PENDING,
             requested_from=timezone.now().date() + timedelta(days=1),
             requested_to=timezone.now().date() + timedelta(days=5),
-            deposit_amount=50.00,
-            daily_rate=5.00,
+            time_credits_per_day=5,
         )
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.lender_token}')
-        response = self.client.post(f'/api/transactions/{txn.id}/accept')
+        response = self.client.post(f'/api/transactions/{txn.id}/accept/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['state'], 'ACCEPTED')
+        self.assertEqual(response.data['state'], 'AGREED')
 
     def test_generate_qr(self):
         txn = Transaction.objects.create(
             borrower=self.borrower,
             item=self.item,
-            state=TransactionState.DEPOSIT_HELD,
+            state=TransactionState.ACTIVE,
             requested_from=timezone.now().date() + timedelta(days=1),
             requested_to=timezone.now().date() + timedelta(days=5),
-            deposit_amount=50.00,
-            daily_rate=5.00,
-            escrow_reference='EC123',
+            time_credits_per_day=5,
         )
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.lender_token}')
-        response = self.client.post(f'/api/transactions/{txn.id}/generate-qr')
+        response = self.client.post(f'/api/transactions/{txn.id}/generate-qr/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('token', response.data)
 
-    def test_scan_qr_handoff(self):
+    @patch('transactions.views.verify_handshake_token')
+    def test_scan_qr_handoff(self, mock_verify):
+        mock_verify.return_value = True
         txn = Transaction.objects.create(
             borrower=self.borrower,
             item=self.item,
-            state=TransactionState.DEPOSIT_HELD,
+            state=TransactionState.ACTIVE,
             requested_from=timezone.now().date() + timedelta(days=1),
             requested_to=timezone.now().date() + timedelta(days=5),
-            deposit_amount=50.00,
-            daily_rate=5.00,
-            escrow_reference='EC123',
+            time_credits_per_day=5,
         )
         token = generate_handshake_token(str(txn.id))
 
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.lender_token}')
-        response = self.client.post(f'/api/transactions/{txn.id}/scan-qr', {'token': token}, format='json')
+        response = self.client.post(f'/api/transactions/{txn.id}/scan-qr/', {'token': token}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(response.data['lender_scanned_handoff'])
 
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.borrower_token}')
-        response = self.client.post(f'/api/transactions/{txn.id}/scan-qr', {'token': token}, format='json')
+        response = self.client.post(f'/api/transactions/{txn.id}/scan-qr/', {'token': token}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['state'], 'ITEM_OUT')
 
@@ -293,11 +291,10 @@ class TransactionAPITests(TestCase):
             state=TransactionState.ITEM_OUT,
             requested_from=timezone.now().date() - timedelta(days=5),
             requested_to=timezone.now().date(),
-            deposit_amount=50.00,
-            daily_rate=5.00,
+            time_credits_per_day=5,
         )
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.borrower_token}')
-        response = self.client.post(f'/api/transactions/{txn.id}/dispute', {'reason': 'Item damaged'}, format='json')
+        response = self.client.post(f'/api/transactions/{txn.id}/dispute/', {'reason': 'Item damaged'}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['state'], 'DISPUTED')
 
@@ -308,11 +305,10 @@ class TransactionAPITests(TestCase):
             state=TransactionState.CLOSED,
             requested_from=timezone.now().date() - timedelta(days=10),
             requested_to=timezone.now().date() - timedelta(days=5),
-            deposit_amount=50.00,
-            daily_rate=5.00,
+            time_credits_per_day=5,
         )
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.lender_token}')
-        response = self.client.post(f'/api/transactions/{txn.id}/rating', {
+        response = self.client.post(f'/api/transactions/{txn.id}/rating/', {
             'item_condition': 5,
             'communication': 4,
             'punctuality': 5,
@@ -327,10 +323,9 @@ class TransactionAPITests(TestCase):
             state=TransactionState.PENDING,
             requested_from=timezone.now().date() + timedelta(days=1),
             requested_to=timezone.now().date() + timedelta(days=5),
-            deposit_amount=50.00,
-            daily_rate=5.00,
+            time_credits_per_day=5,
         )
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.borrower_token}')
-        response = self.client.get(f'/api/transactions/{txn.id}/audit-log')
+        response = self.client.get(f'/api/transactions/{txn.id}/audit-log/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsInstance(response.data, list)

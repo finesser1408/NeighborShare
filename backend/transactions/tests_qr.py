@@ -1,6 +1,7 @@
 import pytest
 from django.test import TestCase
 from django.core.cache import cache
+from unittest.mock import patch
 from transactions.qr import generate_handshake_token, verify_handshake_token
 from transactions.models import Transaction, TransactionState
 from users.models import User, UserProfile
@@ -29,19 +30,18 @@ class QRTokenTests(TestCase):
             owner=self.lender,
             title='Test Item',
             category=Category.TOOLS,
-            daily_rate_usd=10.00,
-            deposit_amount_usd=100.00,
+            time_credits_per_day=10,
             location=Point(31.05, -17.7833, srid=4326),
         )
 
         self.transaction = Transaction.objects.create(
             borrower=self.borrower,
             item=self.item,
-            state=TransactionState.DEPOSIT_HELD,
+            state=TransactionState.ACTIVE,
             requested_from='2024-01-10',
             requested_to='2024-01-15',
-            deposit_amount=100.00,
-            daily_rate=10.00,
+            time_credits_per_day=10,
+            total_time_credits=60,
         )
 
     def test_generate_token_format(self):
@@ -53,12 +53,16 @@ class QRTokenTests(TestCase):
         self.assertEqual(len(parts[2]), 16)
         self.assertEqual(len(parts[3]), 64)
 
-    def test_verify_valid_token(self):
+    @patch('transactions.qr.get_redis_connection')
+    def test_verify_valid_token(self, mock_redis):
+        mock_redis.return_value.getset.return_value = b'unused'
         token = generate_handshake_token(str(self.transaction.id))
         result = verify_handshake_token(token)
         self.assertTrue(result)
 
-    def test_verify_replay_attack(self):
+    @patch('transactions.qr.get_redis_connection')
+    def test_verify_replay_attack(self, mock_redis):
+        mock_redis.return_value.getset.side_effect = [b'unused', b'used']
         token = generate_handshake_token(str(self.transaction.id))
         verify_handshake_token(token)
         result = verify_handshake_token(token)
@@ -78,7 +82,9 @@ class QRTokenTests(TestCase):
         result = verify_handshake_token(wrong_txn)
         self.assertFalse(result)
 
-    def test_verify_expired_token(self):
+    @patch('transactions.qr.get_redis_connection')
+    def test_verify_expired_token(self, mock_redis):
+        mock_redis.return_value.getset.return_value = None
         token = generate_handshake_token(str(self.transaction.id))
         cache.delete(f'qr:{token}')
         result = verify_handshake_token(token)
@@ -113,14 +119,18 @@ class QRTokenTests(TestCase):
         self.assertEqual(len(nonce), 16)
         self.assertTrue(all(c in '0123456789abcdef' for c in nonce))
 
-    def test_different_tokens_for_same_transaction(self):
+    @patch('transactions.qr.get_redis_connection')
+    def test_different_tokens_for_same_transaction(self, mock_redis):
+        mock_redis.return_value.getset.return_value = b'unused'
         token1 = generate_handshake_token(str(self.transaction.id))
         token2 = generate_handshake_token(str(self.transaction.id))
         self.assertNotEqual(token1, token2)
         self.assertTrue(verify_handshake_token(token1))
         self.assertTrue(verify_handshake_token(token2))
 
-    def test_custom_secret_key(self):
+    @patch('transactions.qr.get_redis_connection')
+    def test_custom_secret_key(self, mock_redis):
+        mock_redis.return_value.getset.return_value = b'unused'
         token = generate_handshake_token(str(self.transaction.id), 'custom-secret')
         result = verify_handshake_token(token, 'custom-secret')
         self.assertTrue(result)

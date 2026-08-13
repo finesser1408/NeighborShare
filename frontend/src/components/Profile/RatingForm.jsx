@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { CheckCircle2 } from 'lucide-react';
 import { transactionsApi } from '../../api';
 
 const ratingSchema = yup.object().shape({
@@ -36,14 +37,17 @@ export default function RatingForm({ transaction, onSubmitted }) {
 
   const StarRating = ({ name, label, value }) => (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <label className="mb-1.5 block text-sm font-semibold text-gray-700">{label}</label>
       <div className="flex gap-1">
-        {[1, 2, 3, 4, 5].map(star => (
+        {[1, 2, 3, 4, 5].map((star) => (
           <button
             key={star}
             type="button"
             onClick={() => setValue(name, star, { shouldValidate: true })}
-            className={`text-2xl ${star <= value ? 'text-yellow-400' : 'text-gray-300'} hover:text-yellow-400 transition`}
+            className={`text-3xl transition ${
+              star <= value ? 'text-amber-400 hover:text-amber-500' : 'text-gray-200 hover:text-amber-300'
+            }`}
+            aria-label={`${label} ${star} star${star > 1 ? 's' : ''}`}
           >
             ★
           </button>
@@ -55,20 +59,18 @@ export default function RatingForm({ transaction, onSubmitted }) {
 
   if (submitted) {
     return (
-      <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
-        <svg className="mx-auto h-12 w-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <h3 className="mt-2 text-lg font-medium text-green-800">Rating Submitted!</h3>
-        <p className="text-sm text-green-700">Thank you for your feedback.</p>
+      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center">
+        <CheckCircle2 className="mx-auto h-12 w-12 text-emerald-600" />
+        <h3 className="mt-2 text-lg font-bold text-emerald-800">Rating Submitted!</h3>
+        <p className="text-sm text-emerald-700">Thank you for your feedback — it helps the community.</p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       {error && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm" role="alert">
+        <div className="rounded-xl border border-red-200 bg-red-50 p-3.5 text-sm text-red-700" role="alert">
           {error}
         </div>
       )}
@@ -77,11 +79,7 @@ export default function RatingForm({ transaction, onSubmitted }) {
       <StarRating name="communication" label="Communication" value={watch('communication')} />
       <StarRating name="punctuality" label="Punctuality" value={watch('punctuality')} />
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50"
-      >
+      <button type="submit" disabled={loading} className="btn-primary w-full py-3">
         {loading ? 'Submitting...' : 'Submit Rating'}
       </button>
     </form>

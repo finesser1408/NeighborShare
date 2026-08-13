@@ -120,6 +120,11 @@ export const transactionsApi = {
    * Close a transaction after item has been returned and deposit released.
    */
   close: (id) => api.post(`/transactions/${id}/close/`),
+  /**
+   * Hold the escrow deposit (deposit held by the mock EcoCash provider).
+   */
+  holdDeposit: (id, providerTransactionId) =>
+    api.post(`/transactions/${id}/hold-deposit/`, { provider_transaction_id: providerTransactionId }),
   generateQr: (id) => api.post(`/transactions/${id}/generate-qr/`),
   scanQr: (id, token) => api.post(`/transactions/${id}/scan-qr/`, { token }),
   dispute: (id, reason) => api.post(`/transactions/${id}/dispute/`, { reason }),

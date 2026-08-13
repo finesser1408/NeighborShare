@@ -42,7 +42,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
 
         if Transaction.objects.filter(
             item=item,
-            state__in=[TransactionState.PENDING, TransactionState.ACCEPTED, TransactionState.ACTIVE, TransactionState.ITEM_OUT]
+            state__in=[TransactionState.PENDING, TransactionState.AGREED, TransactionState.ACTIVE, TransactionState.ITEM_OUT]
         ).exists():
             return Response({'error': 'Item already has an active transaction'}, status=status.HTTP_400_BAD_REQUEST)
 
