@@ -13,10 +13,12 @@ import logging
 
 from users.models import User, UserProfile
 from users.serializers import (
-    Step1Serializer, Step2Serializer, Step3Serializer,
+    Step1Serializer, Step2Serializer, Step3Serializer, VerifyEmailSerializer,
+    ResendVerificationSerializer,
     UserProfileSerializer, UserRegistrationResponseSerializer
 )
 from users.verification import MockVerificationProvider, NominatimProvider
+from users.email_verify import send_verification_email, verify_verification_code
 
 logger = logging.getLogger(__name__)
 
@@ -34,10 +36,73 @@ class RegistrationViewSet(viewsets.GenericViewSet):
             logger.error(f"Registration validation failed: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         user = serializer.save()
+
+        # Send the email verification code (Django built-in mail system)
+        try:
+            send_verification_email(user)
+        except Exception:
+            # Registration is created but delivery failed — allow retry via resend endpoint.
+            logger.error(f"Verification email could not be sent to {user.email}")
+
         return Response({
             'user_id': user.id,
-            'message': 'Account created. Proceed to ID verification.',
+            'message': 'Account created. Check your email for the verification code.',
         }, status=status.HTTP_201_CREATED)
+
+    @action(detail=False, methods=['post'], url_path='verify-email')
+    @method_decorator(ratelimit(key='ip', rate='20/h', method='POST'))
+    def verify_email(self, request):
+        serializer = VerifyEmailSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            user = User.objects.get(id=serializer.validated_data['user_id'])
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        profile = user.profile
+        if profile.email_verified:
+            return Response({'message': 'Email already verified'})
+
+        code = serializer.validated_data['code']
+        if not verify_verification_code(user.id, code):
+            return Response(
+                {'error': 'Invalid or expired verification code. Request a new one.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        profile.email_verified = True
+        profile.email_verified_at = timezone.now()
+        if profile.registration_step < 2:
+            profile.registration_step = 2
+        profile.save()
+
+        return Response({'message': 'Email verified. Proceed to ID verification.'})
+
+    @action(detail=False, methods=['post'], url_path='resend-verification')
+    @method_decorator(ratelimit(key='ip', rate='5/h', method='POST'))
+    def resend_verification(self, request):
+        serializer = ResendVerificationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            user = User.objects.get(id=serializer.validated_data['user_id'])
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        if user.profile.email_verified:
+            return Response({'message': 'Email already verified'})
+
+        try:
+            send_verification_email(user)
+        except Exception:
+            logger.error(f"Verification email could not be resent to {user.email}")
+            return Response(
+                {'error': 'Could not send the verification email right now. Please try again in a few minutes.'},
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
+
+        return Response({'message': 'A new verification code has been sent to your email.'})
 
     @action(detail=False, methods=['post'], url_path='verify-id')
     @method_decorator(ratelimit(key='ip', rate='10/h', method='POST'))
@@ -52,8 +117,10 @@ class RegistrationViewSet(viewsets.GenericViewSet):
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
         profile = user.profile
-        if profile.registration_step < 1:
-            return Response({'error': 'Complete step 1 first'}, status=status.HTTP_400_BAD_REQUEST)
+        if not profile.email_verified:
+            return Response({'error': 'Verify your email address first'}, status=status.HTTP_400_BAD_REQUEST)
+        if profile.registration_step < 2:
+            return Response({'error': 'Complete email verification first'}, status=status.HTTP_400_BAD_REQUEST)
 
         national_id = serializer.validated_data['national_id']
         provider = MockVerificationProvider()
@@ -67,7 +134,7 @@ class RegistrationViewSet(viewsets.GenericViewSet):
         profile.national_id_hash = hashed
         profile.national_id_verified = True
         profile.trust_score = 50
-        profile.registration_step = 2
+        profile.registration_step = 3
         if 'selfie' in request.FILES:
             profile.selfie = request.FILES['selfie']
         profile.save()
@@ -90,8 +157,8 @@ class RegistrationViewSet(viewsets.GenericViewSet):
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
         profile = user.profile
-        if profile.registration_step < 2:
-            return Response({'error': 'Complete step 2 first'}, status=status.HTTP_400_BAD_REQUEST)
+        if profile.registration_step < 3:
+            return Response({'error': 'Complete ID verification first'}, status=status.HTTP_400_BAD_REQUEST)
 
         address = serializer.validated_data['street_address']
         nominatim = NominatimProvider()
@@ -106,7 +173,7 @@ class RegistrationViewSet(viewsets.GenericViewSet):
         profile.home_address = address
         profile.home_location = point
         profile.geocoded_at = timezone.now()
-        profile.registration_step = 3
+        profile.registration_step = 4
         profile.is_active = True
         profile.save()
 

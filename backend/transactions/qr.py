@@ -6,7 +6,6 @@ import logging
 from typing import Optional
 from django.conf import settings
 from django.core.cache import cache
-from django_redis import get_redis_connection
 
 logger = logging.getLogger(__name__)
 
@@ -27,14 +26,26 @@ def generate_handshake_token(txn_id: str, secret_key: str = None) -> str:
 
     token = f'{payload}:{signature}'
 
+    # Store the list of user ids that have consumed this token (empty = fresh).
+    # Using the cache abstraction (not raw Redis) so the handshake works with
+    # LocMemCache in local development and RedisCache in production alike.
     cache_key = f'qr:{token}'
-    cache.set(cache_key, 'unused', timeout=1800)
+    cache.set(cache_key, [], timeout=1800)
 
     logger.info(f"Generated QR token for transaction {txn_id}")
     return token
 
 
-def verify_handshake_token(token: str, secret_key: str = None) -> bool:
+def verify_handshake_token(token: str, secret_key: str = None, user_id=None) -> bool:
+    """
+    Verify a handshake token.
+
+    Each party (identified by ``user_id``) may consume the token exactly once,
+    so the same QR code can be scanned by both the lender and the borrower —
+    but a replay by the same party (or a third party) is rejected.
+
+    When ``user_id`` is omitted, the token is single-use as a fallback.
+    """
     if secret_key is None:
         secret_key = settings.SECRET_KEY
 
@@ -63,18 +74,28 @@ def verify_handshake_token(token: str, secret_key: str = None) -> bool:
             logger.warning(f"Token expired: {token[:20]}...")
             return False
 
-        # Atomic single-use check using Redis GETSET
+        # One-use-per-party check via the cache
         cache_key = f'qr:{token}'
-        redis_conn = get_redis_connection("default")
-        previous = redis_conn.getset(cache_key, 'used')
-        
-        if previous is None:
+        users = cache.get(cache_key)
+
+        if users is None:
             logger.warning(f"Token not found or expired: {token[:20]}...")
             return False
-        
-        if previous != b'unused':
-            logger.warning(f"Token replay attempt: {token[:20]}...")
-            return False
+
+        if user_id is not None:
+            if str(user_id) in users:
+                logger.warning(f"Token replay by user {user_id}: {token[:20]}...")
+                return False
+            # At most two distinct parties may scan the same QR (lender + borrower)
+            if len(users) >= 2:
+                logger.warning(f"Token exhausted: {token[:20]}...")
+                return False
+            cache.set(cache_key, list(users) + [str(user_id)], timeout=1800)
+        else:
+            if users:
+                logger.warning(f"Token replay attempt: {token[:20]}...")
+                return False
+            cache.set(cache_key, ['__used__'], timeout=1800)
 
         logger.info(f"Verified QR token for transaction {txn_id}")
         return True

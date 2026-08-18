@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" role="img" aria-label="Outdoor &amp; Camping">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#16a34a"/>
+      <stop offset="100%" stop-color="#14b8a6"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#g)"/>
+  <circle cx="680" cy="90" r="150" fill="#ffffff" opacity="0.12"/>
+  <circle cx="90" cy="540" r="190" fill="#ffffff" opacity="0.10"/>
+  <circle cx="430" cy="90" r="70" fill="#ffffff" opacity="0.10"/>
+  <text x="400" y="410" font-size="230" text-anchor="middle">⛺</text>
+  <text x="400" y="530" font-size="42" font-family="Arial, Helvetica, sans-serif" font-weight="bold" fill="#ffffff" text-anchor="middle" opacity="0.95">Outdoor &amp; Camping</text>
+</svg>

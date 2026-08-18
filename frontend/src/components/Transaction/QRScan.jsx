@@ -98,7 +98,7 @@ export default function QRScan() {
     );
   }
 
-  const isLender = transaction.item?.owner?.id === user?.id;
+  const isLender = transaction.lender?.id === user?.id;
   const isBorrower = transaction.borrower?.id === user?.id;
 
   const stateBadge = (() => {
@@ -145,7 +145,7 @@ export default function QRScan() {
 
           <div className="mb-6 grid grid-cols-2 gap-4 text-sm">
             <div><p className="text-gray-500">Borrower</p><p className="font-semibold text-gray-900">{transaction.borrower?.full_name}</p></div>
-            <div><p className="text-gray-500">Lender</p><p className="font-semibold text-gray-900">{transaction.item?.owner?.full_name}</p></div>
+            <div><p className="text-gray-500">Lender</p><p className="font-semibold text-gray-900">{transaction.lender?.full_name}</p></div>
             <div><p className="text-gray-500">Dates</p><p className="font-semibold text-gray-900">{transaction.requested_from} to {transaction.requested_to}</p></div>
             <div><p className="text-gray-500">Total Credits</p><p className="font-semibold text-gray-900">{transaction.total_time_credits} credits</p></div>
           </div>

@@ -48,8 +48,8 @@ export default function AdminDashboard() {
 
   const stateColors = {
     PENDING: 'bg-amber-50 text-amber-700',
-    ACCEPTED: 'bg-brand-50 text-brand-700',
-    DEPOSIT_HELD: 'bg-violet-50 text-violet-700',
+    AGREED: 'bg-brand-50 text-brand-700',
+    ACTIVE: 'bg-fuchsia-50 text-fuchsia-700',
     ITEM_OUT: 'bg-orange-50 text-orange-700',
     ITEM_RETURNED: 'bg-emerald-50 text-emerald-700',
     CLOSED: 'bg-gray-100 text-gray-600',
@@ -143,10 +143,10 @@ export default function AdminDashboard() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="text-sm font-semibold text-gray-900">
-                          {dispute.deposit_amount ? `$${dispute.deposit_amount}` : `${dispute.total_time_credits ?? '—'} credits`}
+                          {dispute.total_time_credits ?? '—'} credits
                         </div>
                         <div className="text-sm text-gray-500">
-                          {dispute.daily_rate ? `$${dispute.daily_rate}/day` : `${dispute.time_credits_per_day ?? '—'} credits/day`}
+                          {dispute.time_credits_per_day ?? '—'} credits/day
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -191,8 +191,8 @@ export default function AdminDashboard() {
                     <div><p className="text-gray-500">Item</p><p className="font-semibold">{selectedDispute.item?.title}</p></div>
                     <div><p className="text-gray-500">Borrower</p><p className="font-semibold">{selectedDispute.borrower?.full_name}</p></div>
                     <div><p className="text-gray-500">Lender</p><p className="font-semibold">{selectedDispute.item?.owner?.full_name}</p></div>
-                    <div><p className="text-gray-500">Deposit</p><p className="font-semibold">{selectedDispute.deposit_amount ? `$${selectedDispute.deposit_amount}` : '—'}</p></div>
-                    <div><p className="text-gray-500">Daily Rate</p><p className="font-semibold">{selectedDispute.daily_rate ? `$${selectedDispute.daily_rate}` : `${selectedDispute.time_credits_per_day ?? '—'} credits`}</p></div>
+                    <div><p className="text-gray-500">Total Credits</p><p className="font-semibold">{selectedDispute.total_time_credits ?? '—'} credits</p></div>
+                    <div><p className="text-gray-500">Daily Rate</p><p className="font-semibold">{selectedDispute.time_credits_per_day ?? '—'} credits/day</p></div>
                     <div><p className="text-gray-500">Dates</p><p className="font-semibold">{selectedDispute.requested_from} to {selectedDispute.requested_to}</p></div>
                   </div>
                 </div>
@@ -211,8 +211,8 @@ export default function AdminDashboard() {
                   <h3 className="mb-3 font-bold text-gray-900">Resolution Options</h3>
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                     {[
-                      { value: 'lender', label: 'Release to Lender', desc: 'Full deposit to item owner', classes: 'border-emerald-300 hover:border-emerald-500 hover:bg-emerald-50' },
-                      { value: 'borrower', label: 'Refund to Borrower', desc: 'Full deposit back to borrower', classes: 'border-brand-300 hover:border-brand-500 hover:bg-brand-50' },
+                      { value: 'lender', label: 'Award to Lender', desc: 'All time credits to the item owner', classes: 'border-emerald-300 hover:border-emerald-500 hover:bg-emerald-50' },
+                      { value: 'borrower', label: 'Award to Borrower', desc: 'All time credits back to the borrower', classes: 'border-brand-300 hover:border-brand-500 hover:bg-brand-50' },
                       { value: 'split', label: 'Split 50/50', desc: 'Half to each party', classes: 'border-amber-300 hover:border-amber-500 hover:bg-amber-50' },
                     ].map((opt) => (
                       <button

@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { usersApi, itemsApi } from '../../api';
 import { ArrowLeft, BadgeCheck, ShieldCheck, Package, Info } from 'lucide-react';
 import { formatTrustScore } from '../../utils/formatters';
+import ItemImage from '../ItemImage';
 
 export default function PublicProfile() {
   const { id } = useParams();
@@ -100,15 +101,7 @@ export default function PublicProfile() {
               {listings.map((item) => (
                 <Link key={item.id} to={`/items/${item.id}`} className="card overflow-hidden transition hover:-translate-y-0.5 hover:shadow-card-hover">
                   <div className="aspect-video bg-gray-100">
-                    {item.images?.[0] ? (
-                      <img src={item.images[0].image} alt={item.title} className="h-full w-full object-cover" />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center text-gray-300">
-                        <svg className="h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                      </div>
-                    )}
+                    <ItemImage item={item} alt={item.title} className="h-full w-full object-cover" />
                   </div>
                   <div className="p-4">
                     <h3 className="truncate font-bold text-gray-900">{item.title}</h3>

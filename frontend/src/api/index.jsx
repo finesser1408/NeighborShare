@@ -23,7 +23,7 @@ api.interceptors.response.use(
     const originalRequest = error.config;
 
     // Don't redirect to login for public endpoints
-    const publicEndpoints = ['/auth/register', '/auth/login', '/items/search', '/items/categories', '/items/'];
+    const publicEndpoints = ['/auth/register', '/auth/verify-email', '/auth/resend-verification', '/auth/login', '/items/search', '/items/categories', '/items/'];
     const isPublicEndpoint = publicEndpoints.some(endpoint => originalRequest.url?.includes(endpoint));
 
     if (error.response?.status === 401 && !originalRequest._retry && !isPublicEndpoint) {
@@ -58,6 +58,8 @@ api.interceptors.response.use(
 
 export const authApi = {
   register: (data) => api.post('/auth/register', data),
+  verifyEmail: (data) => api.post('/auth/verify-email', data),
+  resendVerification: (data) => api.post('/auth/resend-verification', data),
   verifyId: (data) => api.post('/auth/verify-id', data, {
     headers: { 'Content-Type': 'multipart/form-data' },
   }),
@@ -117,14 +119,9 @@ export const transactionsApi = {
   decline: (id) => api.post(`/transactions/${id}/decline/`),
   activate: (id) => api.post(`/transactions/${id}/activate/`),
   /**
-   * Close a transaction after item has been returned and deposit released.
+   * Close a transaction after the item has been returned.
    */
   close: (id) => api.post(`/transactions/${id}/close/`),
-  /**
-   * Hold the escrow deposit (deposit held by the mock EcoCash provider).
-   */
-  holdDeposit: (id, providerTransactionId) =>
-    api.post(`/transactions/${id}/hold-deposit/`, { provider_transaction_id: providerTransactionId }),
   generateQr: (id) => api.post(`/transactions/${id}/generate-qr/`),
   scanQr: (id, token) => api.post(`/transactions/${id}/scan-qr/`, { token }),
   dispute: (id, reason) => api.post(`/transactions/${id}/dispute/`, { reason }),

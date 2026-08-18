@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { MapPin, BadgeCheck, X } from 'lucide-react';
 import { getCategoryMeta } from '../../utils/categories';
 import { formatTrustScore } from '../../utils/formatters';
+import ItemImage from '../ItemImage';
 
 function OwnerAvatar({ name, photo }) {
   return (
@@ -19,20 +20,11 @@ function OwnerAvatar({ name, photo }) {
 function ImageBlock({ item }) {
   return (
     <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
-      {item.images?.[0] ? (
-        <img
-          src={item.images[0].image}
-          alt={item.title}
-          loading="lazy"
-          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-        />
-      ) : (
-        <div className="flex h-full w-full items-center justify-center text-gray-300">
-          <svg className="h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-        </div>
-      )}
+      <ItemImage
+        item={item}
+        alt={item.title}
+        className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+      />
       <span className="absolute left-2.5 top-2.5 rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold text-gray-700 shadow-sm backdrop-blur">
         {getCategoryMeta(item.category).label}
       </span>
@@ -71,15 +63,7 @@ export default function ItemCard({ item, distance, selected, onClose, compact })
         aria-label={`View ${item.title}`}
       >
         <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-gray-100">
-          {item.images?.[0] ? (
-            <img src={item.images[0].image} alt={item.title} className="h-full w-full object-cover" />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center text-gray-300">
-              <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
-          )}
+          <ItemImage item={item} alt={item.title} className="h-full w-full object-cover" />
           {onClose && (
             <button
               onClick={(e) => { e.stopPropagation(); onClose(); }}

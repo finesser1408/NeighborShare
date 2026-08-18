@@ -63,6 +63,15 @@ class Step3Serializer(serializers.Serializer):
         return value.strip()
 
 
+class VerifyEmailSerializer(serializers.Serializer):
+    user_id = serializers.CharField()
+    code = serializers.CharField(max_length=10)
+
+
+class ResendVerificationSerializer(serializers.Serializer):
+    user_id = serializers.CharField()
+
+
 class UserProfileSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
     email = serializers.EmailField(source='user.email', read_only=True)
@@ -79,10 +88,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'full_name', 'email', 'first_name', 'last_name', 'phone_number', 'profile_photo',
             'home_address', 'home_location', 'trust_score', 'trust_score_display', 'vouching_components',
-            'national_id_verified', 'is_active', 'created_at',
+            'national_id_verified', 'email_verified', 'is_active', 'created_at',
         ]
         read_only_fields = ['id', 'email', 'home_location', 'trust_score', 'trust_score_display', 'vouching_components',
-                           'national_id_verified', 'is_active', 'created_at']
+                           'national_id_verified', 'email_verified', 'is_active', 'created_at']
 
     def get_full_name(self, obj):
         return f"{obj.user.first_name} {obj.user.last_name}".strip() if obj.user else ""

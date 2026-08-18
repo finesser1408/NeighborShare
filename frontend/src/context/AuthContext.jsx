@@ -66,6 +66,16 @@ export function AuthProvider({ children }) {
     return response.data;
   }, []);
 
+  const verifyEmail = useCallback(async (data) => {
+    const response = await authApi.verifyEmail(data);
+    return response.data;
+  }, []);
+
+  const resendVerification = useCallback(async (user_id) => {
+    const response = await authApi.resendVerification({ user_id });
+    return response.data;
+  }, []);
+
   const verifyId = useCallback(async (data) => {
     const response = await authApi.verifyId(data);
     return response.data;
@@ -95,6 +105,8 @@ export function AuthProvider({ children }) {
     loading,
     login,
     register,
+    verifyEmail,
+    resendVerification,
     verifyId,
     verifyAddress,
     logout,

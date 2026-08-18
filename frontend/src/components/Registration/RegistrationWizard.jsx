@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
-import { Check, ArrowLeft, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Check, ArrowLeft, ArrowRight, ShieldCheck, MailCheck, RefreshCw } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const step1Schema = yup.object().shape({
@@ -14,40 +14,53 @@ const step1Schema = yup.object().shape({
 });
 
 const step2Schema = yup.object().shape({
+  code: yup
+    .string()
+    .required('Verification code is required')
+    .matches(/^\d{6}$/, 'Code must be 6 digits'),
+});
+
+const step3Schema = yup.object().shape({
   national_id: yup.string().required('National ID is required').matches(/^\d{2}-\d{6,7}[A-Z]\d{2}$/, 'Invalid format. Use: XX-XXXXXXXA00'),
   selfie: yup.mixed().notRequired(),
 });
 
-const step3Schema = yup.object().shape({
+const step4Schema = yup.object().shape({
   street_address: yup.string().required('Street address is required').min(10, 'Please provide a complete address'),
 });
 
 const STEPS = [
   { id: 1, title: 'Account', description: 'Create your account' },
-  { id: 2, title: 'ID Verification', description: 'Verify your National ID' },
-  { id: 3, title: 'Address', description: 'Confirm your Belvedere address' },
+  { id: 2, title: 'Email Verification', description: 'Enter the code we emailed you' },
+  { id: 3, title: 'ID Verification', description: 'Verify your National ID' },
+  { id: 4, title: 'Address', description: 'Confirm your Belvedere address' },
 ];
 
 export default function RegistrationWizard() {
-  const { register, verifyId, verifyAddress } = useAuth();
+  const { register, verifyEmail, resendVerification, verifyId, verifyAddress } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [step1Data, setStep1Data] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [notice, setNotice] = useState(null);
+  const [resending, setResending] = useState(false);
   const [geocodeResult, setGeocodeResult] = useState(null);
   const [showMapPreview, setShowMapPreview] = useState(false);
 
   const step1Methods = useForm({ resolver: yupResolver(step1Schema), mode: 'onBlur' });
   const step2Methods = useForm({ resolver: yupResolver(step2Schema), mode: 'onBlur' });
   const step3Methods = useForm({ resolver: yupResolver(step3Schema), mode: 'onBlur' });
+  const step4Methods = useForm({ resolver: yupResolver(step4Schema), mode: 'onBlur' });
 
   const handleStep1Submit = async (data) => {
     setLoading(true);
     setError(null);
+    setNotice(null);
     try {
       const response = await register(data);
-      setStep1Data({ user_id: response.user_id });
+      setStep1Data({ user_id: response.user_id, email: data.email });
+      setNotice(`We sent a 6-digit verification code to ${data.email}.`);
       setStep(2);
     } catch (err) {
       console.error('Registration error:', err.response?.data);
@@ -70,6 +83,34 @@ export default function RegistrationWizard() {
   const handleStep2Submit = async (data) => {
     setLoading(true);
     setError(null);
+    setNotice(null);
+    try {
+      await verifyEmail({ user_id: step1Data.user_id, code: data.code });
+      setStep(3);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Verification failed. Check the code and try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    setResending(true);
+    setError(null);
+    setNotice(null);
+    try {
+      await resendVerification(step1Data.user_id);
+      setNotice(`A new code has been sent to ${step1Data.email}.`);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Could not resend the code. Please try again.');
+    } finally {
+      setResending(false);
+    }
+  };
+
+  const handleStep3Submit = async (data) => {
+    setLoading(true);
+    setError(null);
     try {
       const formData = new FormData();
       formData.append('user_id', step1Data.user_id);
@@ -77,7 +118,7 @@ export default function RegistrationWizard() {
       if (data.selfie) formData.append('selfie', data.selfie[0]);
 
       await verifyId(formData);
-      setStep(3);
+      setStep(4);
     } catch (err) {
       setError(err.response?.data?.error || err.response?.data?.national_id?.[0] || 'ID verification failed. Please try again.');
     } finally {
@@ -110,7 +151,7 @@ export default function RegistrationWizard() {
     }
   };
 
-  const handleStep3Submit = async (data) => {
+  const handleStep4Submit = async (data) => {
     if (!geocodeResult) {
       await handleGeocode(data.street_address);
       return;
@@ -167,28 +208,59 @@ export default function RegistrationWizard() {
         return (
           <form onSubmit={step2Methods.handleSubmit(handleStep2Submit)} className="space-y-5">
             <div className="flex items-start gap-2 rounded-xl bg-brand-50 p-4 text-sm text-brand-800">
-              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
-              We verify your National ID to keep the community safe. Your data stays private.
+              <MailCheck className="mt-0.5 h-4 w-4 shrink-0" />
+              Check your inbox{step1Data.email ? ` for ${step1Data.email}` : ''} — we sent a 6-digit verification code. It expires in 30 minutes.
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-gray-700">National ID</label>
-              <input {...step2Methods.register('national_id')} type="text" className={fieldClass(step2Methods.formState.errors.national_id)} placeholder="12-345678A90" />
-              {step2Methods.formState.errors.national_id && <p className="mt-1 text-sm text-red-600">{step2Methods.formState.errors.national_id.message}</p>}
-              <p className="mt-1.5 text-xs text-gray-500">Format: XX-XXXXXXXA00 (e.g., 12-345678A90)</p>
+              <label className="mb-1.5 block text-sm font-semibold text-gray-700">Verification Code</label>
+              <input
+                {...step2Methods.register('code')}
+                type="text"
+                inputMode="numeric"
+                maxLength={6}
+                autoComplete="one-time-code"
+                className={fieldClass(step2Methods.formState.errors.code) + ' text-center text-2xl font-bold tracking-[0.5em]'}
+                placeholder="••••••"
+              />
+              {step2Methods.formState.errors.code && <p className="mt-1 text-sm text-red-600">{step2Methods.formState.errors.code.message}</p>}
             </div>
-            <div>
-              <label className="mb-1.5 block text-sm font-semibold text-gray-700">Selfie (Optional)</label>
-              <input {...step2Methods.register('selfie')} type="file" accept="image/*" className={fieldClass(step2Methods.formState.errors.selfie)} />
-            </div>
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={resending}
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 transition hover:text-brand-800 disabled:opacity-50"
+            >
+              <RefreshCw className={`h-3.5 w-3.5 ${resending ? 'animate-spin' : ''}`} />
+              {resending ? 'Sending...' : "Didn't get it? Resend code"}
+            </button>
           </form>
         );
       case 3:
         return (
           <form onSubmit={step3Methods.handleSubmit(handleStep3Submit)} className="space-y-5">
+            <div className="flex items-start gap-2 rounded-xl bg-brand-50 p-4 text-sm text-brand-800">
+              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" />
+              We verify your National ID to keep the community safe. Your data stays private.
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-semibold text-gray-700">National ID</label>
+              <input {...step3Methods.register('national_id')} type="text" className={fieldClass(step3Methods.formState.errors.national_id)} placeholder="12-345678A90" />
+              {step3Methods.formState.errors.national_id && <p className="mt-1 text-sm text-red-600">{step3Methods.formState.errors.national_id.message}</p>}
+              <p className="mt-1.5 text-xs text-gray-500">Format: XX-XXXXXXXA00 (e.g., 12-345678A90)</p>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-semibold text-gray-700">Selfie (Optional)</label>
+              <input {...step3Methods.register('selfie')} type="file" accept="image/*" className={fieldClass(step3Methods.formState.errors.selfie)} />
+            </div>
+          </form>
+        );
+      case 4:
+        return (
+          <form onSubmit={step4Methods.handleSubmit(handleStep4Submit)} className="space-y-5">
             <div>
               <label className="mb-1.5 block text-sm font-semibold text-gray-700">Street Address</label>
-              <input {...step3Methods.register('street_address')} type="text" className={fieldClass(step3Methods.formState.errors.street_address)} placeholder="123 Main Street, Belvedere" />
-              {step3Methods.formState.errors.street_address && <p className="mt-1 text-sm text-red-600">{step3Methods.formState.errors.street_address.message}</p>}
+              <input {...step4Methods.register('street_address')} type="text" className={fieldClass(step4Methods.formState.errors.street_address)} placeholder="123 Main Street, Belvedere" />
+              {step4Methods.formState.errors.street_address && <p className="mt-1 text-sm text-red-600">{step4Methods.formState.errors.street_address.message}</p>}
             </div>
 
             {showMapPreview && geocodeResult && (
@@ -220,6 +292,7 @@ export default function RegistrationWizard() {
     if (step === 1) step1Methods.handleSubmit(handleStep1Submit)();
     else if (step === 2) step2Methods.handleSubmit(handleStep2Submit)();
     else if (step === 3) step3Methods.handleSubmit(handleStep3Submit)();
+    else if (step === 4) step4Methods.handleSubmit(handleStep4Submit)();
   };
 
   return (
@@ -246,6 +319,12 @@ export default function RegistrationWizard() {
           <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">{STEPS[step - 1].title}</h1>
           <p className="mt-1 text-sm text-gray-500">{STEPS[step - 1].description}</p>
 
+          {notice && (
+            <div className="mt-5 rounded-xl border border-emerald-200 bg-emerald-50 p-3.5 text-sm text-emerald-800" role="status">
+              {notice}
+            </div>
+          )}
+
           {error && (
             <div className="mt-5 rounded-xl border border-red-200 bg-red-50 p-3.5 text-sm text-red-700" role="alert">
               {error}
@@ -263,7 +342,7 @@ export default function RegistrationWizard() {
               <ArrowLeft className="h-4 w-4" /> Back
             </button>
             <button onClick={advance} disabled={loading} className="btn-primary px-6 py-2.5">
-              {loading ? 'Processing...' : step === 3 ? 'Complete Registration' : 'Continue'}
+              {loading ? 'Processing...' : step === 4 ? 'Complete Registration' : 'Continue'}
               {!loading && <ArrowRight className="h-4 w-4" />}
             </button>
           </div>

@@ -44,7 +44,7 @@ const TESTIMONIALS = [
     initials: 'TA',
   },
   {
-    quote: 'The QR handshake made lending my camera gear feel completely safe. Deposit held in escrow, returned in perfect condition.',
+    quote: 'The QR handshake made lending my camera gear feel completely safe — we both scan to confirm, and I earned Time Credits when it came back in perfect condition.',
     author: 'Community member · Belvedere',
     initials: 'TM',
   },

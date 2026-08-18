@@ -149,10 +149,14 @@ class TransactionViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         token = serializer.validated_data['token']
-        if not verify_handshake_token(token):
-            return Response({'error': 'Invalid or expired QR token'}, status=status.HTTP_400_BAD_REQUEST)
 
-        parsed = parse_token(token)
+        # Validate token/txn/party BEFORE consuming the token, so a wrong-txn
+        # scan or a non-party scan cannot burn one of the two token slots.
+        try:
+            parsed = parse_token(token)
+        except ValueError:
+            return Response({'error': 'Invalid QR token'}, status=status.HTTP_400_BAD_REQUEST)
+
         if parsed['txn_id'] != str(txn.id):
             return Response({'error': 'Token does not match this transaction'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -161,6 +165,9 @@ class TransactionViewSet(viewsets.ModelViewSet):
 
         if not is_lender and not is_borrower:
             return Response({'error': 'Not a party to this transaction'}, status=status.HTTP_403_FORBIDDEN)
+
+        if not verify_handshake_token(token, user_id=request.user.id):
+            return Response({'error': 'Invalid or expired QR token'}, status=status.HTTP_400_BAD_REQUEST)
 
         if txn.state == TransactionState.ACTIVE:
             if is_lender:

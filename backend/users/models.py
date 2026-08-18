@@ -29,12 +29,15 @@ class UserProfile(models.Model):
     REGISTRATION_STEPS = [
         (0, 'Not Started'),
         (1, 'Account Created'),
-        (2, 'ID Verified'),
-        (3, 'Address Verified'),
+        (2, 'Email Verified'),
+        (3, 'ID Verified'),
+        (4, 'Address Verified'),
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     registration_step = models.IntegerField(choices=REGISTRATION_STEPS, default=0)
+    email_verified = models.BooleanField(default=False, help_text='Email confirmed via 6-digit verification code')
+    email_verified_at = models.DateTimeField(null=True, blank=True)
     national_id_verified = models.BooleanField(default=False)
     national_id_hash = models.CharField(max_length=64, unique=True, null=True, blank=True)
     selfie = models.ImageField(upload_to='verification/', null=True, blank=True)
@@ -62,7 +65,7 @@ class UserProfile(models.Model):
         self.national_id_hash = hashed
         self.national_id_verified = True
         self.trust_score = 50
-        self.registration_step = 2
+        self.registration_step = 3
         self.save(update_fields=['national_id_hash', 'national_id_verified', 'trust_score', 'registration_step'])
         return True
 

@@ -10,7 +10,6 @@ urlpatterns = [
     path('borrow-request', TransactionViewSet.as_view({'post': 'borrow_request'}), name='borrow-request'),
     path('<uuid:pk>/accept/', TransactionViewSet.as_view({'post': 'accept'}), name='transaction-accept'),
     path('<uuid:pk>/decline/', TransactionViewSet.as_view({'post': 'decline'}), name='transaction-decline'),
-    path('<uuid:pk>/hold-deposit/', TransactionViewSet.as_view({'post': 'hold_deposit'}), name='transaction-hold-deposit'),
     path('<uuid:pk>/close/', TransactionViewSet.as_view({'post': 'close_transaction'}), name='transaction-close'),
     path('<uuid:pk>/generate-qr/', TransactionViewSet.as_view({'post': 'generate_qr'}), name='generate-qr'),
     path('<uuid:pk>/scan-qr/', TransactionViewSet.as_view({'post': 'scan_qr'}), name='scan-qr'),

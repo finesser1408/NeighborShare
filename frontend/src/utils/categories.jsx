@@ -35,6 +35,15 @@ export function getCategoryMeta(value) {
 }
 
 /**
+ * Offline category artwork served from the app's own bundle (frontend/public),
+ * so every item renders an image even with no network or uploaded photo.
+ */
+export function getCategoryPlaceholder(value) {
+  const cat = getCategoryMeta(value);
+  return `${import.meta.env.BASE_URL}images/categories/${cat.value}.svg`;
+}
+
+/**
  * Best-effort match a free-text query to a category using keywords.
  * Returns null when no confident match exists.
  */

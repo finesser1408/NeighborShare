@@ -100,7 +100,7 @@ class TransactionEventTests(TestCase):
         event = TransactionEvent.objects.create(
             transaction=txn,
             event_type='STATE_CHANGE',
-            detail={'from': 'PENDING', 'to': 'ACCEPTED'},
+            detail={'from': 'PENDING', 'to': 'AGREED'},
         )
         self.assertEqual(event.transaction, txn)
         self.assertEqual(event.event_type, 'STATE_CHANGE')
@@ -261,9 +261,8 @@ class TransactionAPITests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('token', response.data)
 
-    @patch('transactions.views.verify_handshake_token')
-    def test_scan_qr_handoff(self, mock_verify):
-        mock_verify.return_value = True
+    def test_scan_qr_handoff_real_token(self):
+        """Both parties must scan the SAME token; the second scan completes hand-off."""
         txn = Transaction.objects.create(
             borrower=self.borrower,
             item=self.item,
@@ -278,11 +277,107 @@ class TransactionAPITests(TestCase):
         response = self.client.post(f'/api/transactions/{txn.id}/scan-qr/', {'token': token}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(response.data['lender_scanned_handoff'])
+        self.assertEqual(response.data['state'], 'ACTIVE')
 
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.borrower_token}')
         response = self.client.post(f'/api/transactions/{txn.id}/scan-qr/', {'token': token}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['state'], 'ITEM_OUT')
+
+    def test_scan_qr_same_party_replay_rejected(self):
+        txn = Transaction.objects.create(
+            borrower=self.borrower,
+            item=self.item,
+            state=TransactionState.ACTIVE,
+            requested_from=timezone.now().date() + timedelta(days=1),
+            requested_to=timezone.now().date() + timedelta(days=5),
+            time_credits_per_day=5,
+        )
+        token = generate_handshake_token(str(txn.id))
+
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.lender_token}')
+        response = self.client.post(f'/api/transactions/{txn.id}/scan-qr/', {'token': token}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Same party scanning the same token again is a replay and must fail
+        response = self.client.post(f'/api/transactions/{txn.id}/scan-qr/', {'token': token}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_full_qr_handshake_cycle(self):
+        """
+        Complete digital handshake through the API:
+        borrow -> accept -> activate -> handoff QR (both scan) -> ITEM_OUT
+        -> return QR (both scan) -> ITEM_RETURNED -> close -> CLOSED
+        """
+        # 1. Borrower requests
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.borrower_token}')
+        data = {
+            'item_id': str(self.item.id),
+            'requested_from': (timezone.now().date() + timedelta(days=1)).isoformat(),
+            'requested_to': (timezone.now().date() + timedelta(days=4)).isoformat(),
+        }
+        response = self.client.post('/api/transactions/borrow-request', data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        txn_id = response.data['id']
+
+        # 2. Lender accepts -> AGREED
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.lender_token}')
+        response = self.client.post(f'/api/transactions/{txn_id}/accept/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['state'], 'AGREED')
+
+        # 3. Borrower activates -> ACTIVE
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.borrower_token}')
+        response = self.client.post(f'/api/transactions/{txn_id}/activate/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['state'], 'ACTIVE')
+
+        # 4. Handoff QR generated, both parties scan the SAME token
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.lender_token}')
+        response = self.client.post(f'/api/transactions/{txn_id}/generate-qr/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        handoff_token = response.data['token']
+
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.lender_token}')
+        response = self.client.post(f'/api/transactions/{txn_id}/scan-qr/', {'token': handoff_token}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data['lender_scanned_handoff'])
+        self.assertEqual(response.data['state'], 'ACTIVE')
+
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.borrower_token}')
+        response = self.client.post(f'/api/transactions/{txn_id}/scan-qr/', {'token': handoff_token}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['state'], 'ITEM_OUT')
+
+        # 5. Return QR generated (fresh token), both parties scan
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.borrower_token}')
+        response = self.client.post(f'/api/transactions/{txn_id}/generate-qr/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        return_token = response.data['token']
+        self.assertNotEqual(return_token, handoff_token)
+
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.lender_token}')
+        response = self.client.post(f'/api/transactions/{txn_id}/scan-qr/', {'token': return_token}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data['lender_scanned_return'])
+        self.assertEqual(response.data['state'], 'ITEM_OUT')
+
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.borrower_token}')
+        response = self.client.post(f'/api/transactions/{txn_id}/scan-qr/', {'token': return_token}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['state'], 'ITEM_RETURNED')
+
+        # 6. Lender closes -> CLOSED
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.lender_token}')
+        response = self.client.post(f'/api/transactions/{txn_id}/close/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['state'], 'CLOSED')
+
+        # Audit trail reflects the QR scans
+        response = self.client.get(f'/api/transactions/{txn_id}/audit-log/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        qr_events = [e for e in response.data if e['event_type'] == 'QR_SCAN']
+        self.assertEqual(len(qr_events), 4)
 
     def test_dispute(self):
         txn = Transaction.objects.create(

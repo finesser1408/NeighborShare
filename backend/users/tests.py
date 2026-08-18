@@ -32,7 +32,7 @@ class UserModelTests(TestCase):
         self.assertTrue(result)
         self.assertTrue(self.profile.national_id_verified)
         self.assertEqual(self.profile.trust_score, 50)
-        self.assertEqual(self.profile.registration_step, 2)
+        self.assertEqual(self.profile.registration_step, 3)
 
     def test_verify_national_id_duplicate_fails(self):
         national_id = '12-345678A90'
@@ -98,6 +98,93 @@ class RegistrationAPITests(TestCase):
         response = self.client.post('/api/auth/register', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn('user_id', response.data)
+        self.assertIn('verification code', response.data['message'].lower())
+
+    def test_step1_sends_verification_email(self):
+        from django.core import mail
+        data = {
+            'full_name': 'John Doe',
+            'email': 'john@example.com',
+            'password': 'securepass123',
+            'confirm_password': 'securepass123',
+        }
+        self.client.post('/api/auth/register', data, format='json')
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, ['john@example.com'])
+        self.assertIn('verification code', mail.outbox[0].body.lower())
+
+    def test_verify_email_success(self):
+        user = User.objects.create_user(
+            username='v@example.com',
+            email='v@example.com',
+            password='testpass123',
+            is_active=False,
+        )
+        profile = UserProfile.objects.create(user=user, registration_step=1)
+
+        from users.email_verify import store_verification_code
+        store_verification_code(user.id, '123456')
+
+        response = self.client.post('/api/auth/verify-email', {
+            'user_id': str(user.id),
+            'code': '123456',
+        }, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        profile.refresh_from_db()
+        self.assertTrue(profile.email_verified)
+        self.assertEqual(profile.registration_step, 2)
+
+    def test_verify_email_wrong_code(self):
+        user = User.objects.create_user(
+            username='w@example.com',
+            email='w@example.com',
+            password='testpass123',
+            is_active=False,
+        )
+        UserProfile.objects.create(user=user, registration_step=1)
+
+        from users.email_verify import store_verification_code
+        store_verification_code(user.id, '123456')
+
+        response = self.client.post('/api/auth/verify-email', {
+            'user_id': str(user.id),
+            'code': '999999',
+        }, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        user.profile.refresh_from_db()
+        self.assertFalse(user.profile.email_verified)
+
+    def test_resend_verification_sends_new_email(self):
+        from django.core import mail
+        user = User.objects.create_user(
+            username='r@example.com',
+            email='r@example.com',
+            password='testpass123',
+            is_active=False,
+        )
+        UserProfile.objects.create(user=user, registration_step=1)
+
+        response = self.client.post('/api/auth/resend-verification', {
+            'user_id': str(user.id),
+        }, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(mail.outbox), 1)
+
+    def test_step2_blocked_without_email_verification(self):
+        user = User.objects.create_user(
+            username='blocked@example.com',
+            email='blocked@example.com',
+            password='testpass123',
+            is_active=False,
+        )
+        UserProfile.objects.create(user=user, registration_step=1)
+
+        data = {
+            'user_id': user.id,
+            'national_id': '12-345678A90',
+        }
+        response = self.client.post('/api/auth/verify-id', data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_step1_invalid_email(self):
         data = {
@@ -141,7 +228,7 @@ class RegistrationAPITests(TestCase):
             password='testpass123',
             is_active=False,
         )
-        UserProfile.objects.create(user=user, registration_step=1)
+        UserProfile.objects.create(user=user, registration_step=2, email_verified=True)
 
         data = {
             'user_id': user.id,
@@ -150,6 +237,8 @@ class RegistrationAPITests(TestCase):
         response = self.client.post('/api/auth/verify-id', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['trust_score'], 50)
+        user.profile.refresh_from_db()
+        self.assertEqual(user.profile.registration_step, 3)
 
     def test_step2_invalid_national_id_format(self):
         user = User.objects.create_user(
@@ -158,7 +247,7 @@ class RegistrationAPITests(TestCase):
             password='testpass123',
             is_active=False,
         )
-        UserProfile.objects.create(user=user, registration_step=1)
+        UserProfile.objects.create(user=user, registration_step=2, email_verified=True)
 
         data = {
             'user_id': user.id,
@@ -174,7 +263,7 @@ class RegistrationAPITests(TestCase):
             password='testpass123',
             is_active=False,
         )
-        profile1 = UserProfile.objects.create(user=user1, registration_step=1)
+        profile1 = UserProfile.objects.create(user=user1, registration_step=2, email_verified=True)
         profile1.verify_national_id('12-345678A90')
 
         user2 = User.objects.create_user(
@@ -183,7 +272,7 @@ class RegistrationAPITests(TestCase):
             password='testpass123',
             is_active=False,
         )
-        UserProfile.objects.create(user=user2, registration_step=1)
+        UserProfile.objects.create(user=user2, registration_step=2, email_verified=True)
 
         data = {
             'user_id': user2.id,
@@ -206,7 +295,7 @@ class RegistrationAPITests(TestCase):
             password='testpass123',
             is_active=False,
         )
-        profile = UserProfile.objects.create(user=user, registration_step=2, national_id_verified=True)
+        profile = UserProfile.objects.create(user=user, registration_step=3, national_id_verified=True, email_verified=True)
 
         data = {
             'user_id': user.id,
@@ -231,7 +320,7 @@ class RegistrationAPITests(TestCase):
             password='testpass123',
             is_active=False,
         )
-        UserProfile.objects.create(user=user, registration_step=2, national_id_verified=True)
+        UserProfile.objects.create(user=user, registration_step=3, national_id_verified=True, email_verified=True)
 
         data = {
             'user_id': user.id,

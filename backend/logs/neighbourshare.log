@@ -2267,3 +2267,489 @@ INFO 2026-08-10 13:43:17,318 basehttp 17396 21640 "GET /api/items/search/?lat=-1
 INFO 2026-08-10 13:43:17,368 basehttp 17396 21640 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 1540
 INFO 2026-08-10 13:43:34,246 basehttp 17396 21640 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 1540
 INFO 2026-08-10 13:43:34,278 basehttp 17396 21640 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 1540
+WARNING 2026-08-15 11:08:04,878 log 13752 3088 Forbidden: /api/auth/login
+WARNING 2026-08-15 11:08:10,847 log 13752 3088 Unauthorized: /api/auth/login
+WARNING 2026-08-15 11:08:15,322 log 13752 3088 Bad Request: /api/auth/resend-verification
+ERROR 2026-08-15 11:08:16,225 views 13752 3088 Registration validation failed: {'email': [ErrorDetail(string='A user with this email already exists.', code='invalid')]}
+WARNING 2026-08-15 11:08:16,226 log 13752 3088 Bad Request: /api/auth/register
+ERROR 2026-08-15 11:08:16,236 views 13752 3088 Registration validation failed: {'email': [ErrorDetail(string='Enter a valid email address.', code='invalid')]}
+WARNING 2026-08-15 11:08:16,238 log 13752 3088 Bad Request: /api/auth/register
+ERROR 2026-08-15 11:08:16,246 views 13752 3088 Registration validation failed: {'confirm_password': [ErrorDetail(string='Passwords do not match.', code='invalid')]}
+WARNING 2026-08-15 11:08:16,250 log 13752 3088 Bad Request: /api/auth/register
+INFO 2026-08-15 11:08:17,211 email_verify 13752 3088 Verification email sent to john@example.com (code 174224)
+INFO 2026-08-15 11:08:18,141 email_verify 13752 3088 Verification email sent to john@example.com (code 019764)
+WARNING 2026-08-15 11:08:18,970 log 13752 3088 Bad Request: /api/auth/verify-id
+INFO 2026-08-15 11:08:20,565 verification 13752 3088 Mock verification for National ID: 12-3****
+WARNING 2026-08-15 11:08:20,568 log 13752 3088 Bad Request: /api/auth/verify-id
+WARNING 2026-08-15 11:08:21,491 log 13752 3088 Bad Request: /api/auth/verify-id
+INFO 2026-08-15 11:08:22,551 verification 13752 3088 Mock verification for National ID: 12-3****
+WARNING 2026-08-15 11:08:23,694 log 13752 3088 Bad Request: /api/auth/verify-address
+WARNING 2026-08-15 11:08:25,852 log 13752 3088 Bad Request: /api/auth/verify-email
+WARNING 2026-08-15 11:08:26,914 log 13752 3088 Bad Request: /api/auth/verify-email
+INFO 2026-08-15 11:08:31,441 verification 13752 3088 Mock verification for National ID: 12-3****
+ERROR 2026-08-15 11:08:31,446 verification 13752 3088 Nominatim geocoding failed: Network error
+WARNING 2026-08-15 11:08:55,854 log 16484 1092 Bad Request: /api/auth/resend-verification
+ERROR 2026-08-15 11:08:56,662 views 16484 1092 Registration validation failed: {'email': [ErrorDetail(string='A user with this email already exists.', code='invalid')]}
+WARNING 2026-08-15 11:08:56,663 log 16484 1092 Bad Request: /api/auth/register
+ERROR 2026-08-15 11:08:56,669 views 16484 1092 Registration validation failed: {'email': [ErrorDetail(string='Enter a valid email address.', code='invalid')]}
+WARNING 2026-08-15 11:08:56,673 log 16484 1092 Bad Request: /api/auth/register
+ERROR 2026-08-15 11:08:56,679 views 16484 1092 Registration validation failed: {'confirm_password': [ErrorDetail(string='Passwords do not match.', code='invalid')]}
+WARNING 2026-08-15 11:08:56,682 log 16484 1092 Bad Request: /api/auth/register
+INFO 2026-08-15 11:08:57,485 email_verify 16484 1092 Verification email sent to john@example.com (code 819747)
+INFO 2026-08-15 11:08:58,260 email_verify 16484 1092 Verification email sent to john@example.com (code 989839)
+WARNING 2026-08-15 11:08:59,042 log 16484 1092 Bad Request: /api/auth/verify-id
+INFO 2026-08-15 11:09:00,569 verification 16484 1092 Mock verification for National ID: 12-3****
+WARNING 2026-08-15 11:09:00,573 log 16484 1092 Bad Request: /api/auth/verify-id
+WARNING 2026-08-15 11:09:01,456 log 16484 1092 Bad Request: /api/auth/verify-id
+INFO 2026-08-15 11:09:02,352 verification 16484 1092 Mock verification for National ID: 12-3****
+WARNING 2026-08-15 11:09:03,278 log 16484 1092 Bad Request: /api/auth/verify-address
+WARNING 2026-08-15 11:09:05,195 log 16484 1092 Bad Request: /api/auth/verify-email
+WARNING 2026-08-15 11:09:06,029 log 16484 1092 Bad Request: /api/auth/verify-email
+WARNING 2026-08-15 11:09:35,751 log 648 1892 Forbidden: /api/auth/login
+WARNING 2026-08-15 11:09:38,740 log 648 1892 Unauthorized: /api/auth/login
+INFO 2026-08-15 11:09:42,712 email_verify 648 1892 Verification email sent to r@example.com (code 491791)
+ERROR 2026-08-15 11:09:43,429 views 648 1892 Registration validation failed: {'email': [ErrorDetail(string='A user with this email already exists.', code='invalid')]}
+WARNING 2026-08-15 11:09:43,432 log 648 1892 Bad Request: /api/auth/register
+ERROR 2026-08-15 11:09:43,439 views 648 1892 Registration validation failed: {'email': [ErrorDetail(string='Enter a valid email address.', code='invalid')]}
+WARNING 2026-08-15 11:09:43,440 log 648 1892 Bad Request: /api/auth/register
+ERROR 2026-08-15 11:09:43,447 views 648 1892 Registration validation failed: {'confirm_password': [ErrorDetail(string='Passwords do not match.', code='invalid')]}
+WARNING 2026-08-15 11:09:43,448 log 648 1892 Bad Request: /api/auth/register
+INFO 2026-08-15 11:09:44,195 email_verify 648 1892 Verification email sent to john@example.com (code 215382)
+INFO 2026-08-15 11:09:44,918 email_verify 648 1892 Verification email sent to john@example.com (code 690197)
+WARNING 2026-08-15 11:09:45,693 log 648 1892 Bad Request: /api/auth/verify-id
+INFO 2026-08-15 11:09:47,327 verification 648 1892 Mock verification for National ID: 12-3****
+WARNING 2026-08-15 11:09:47,329 log 648 1892 Bad Request: /api/auth/verify-id
+WARNING 2026-08-15 11:09:47,996 log 648 1892 Bad Request: /api/auth/verify-id
+INFO 2026-08-15 11:09:48,712 verification 648 1892 Mock verification for National ID: 12-3****
+WARNING 2026-08-15 11:09:49,451 log 648 1892 Bad Request: /api/auth/verify-address
+WARNING 2026-08-15 11:09:51,868 log 648 1892 Bad Request: /api/auth/verify-email
+INFO 2026-08-15 11:09:55,488 verification 648 1892 Mock verification for National ID: 12-3****
+ERROR 2026-08-15 11:09:55,491 verification 648 1892 Nominatim geocoding failed: Network error
+WARNING 2026-08-15 11:13:37,114 log 3944 18680 Bad Request: /api/transactions/borrow-request
+INFO 2026-08-15 11:13:42,547 tasks 3944 18680 Transaction bc94436f-ab0c-424a-abd9-57fe46cc8d65 flagged for admin review
+INFO 2026-08-15 11:13:42,909 trace 3944 18680 Task transactions.tasks.flag_for_admin_review[d21e86b9-1a05-435a-ba1d-c2f1d2a7f11b] succeeded in 0.35900000000037835s: None
+INFO 2026-08-15 11:13:44,619 qr 3944 18680 Generated QR token for transaction 529354db-d660-441d-ade7-01bfee139703
+INFO 2026-08-15 11:13:44,635 qr 3944 18680 Verified QR token for transaction 529354db-d660-441d-ade7-01bfee139703
+INFO 2026-08-15 11:13:44,688 qr 3944 18680 Verified QR token for transaction 529354db-d660-441d-ade7-01bfee139703
+INFO 2026-08-15 11:13:44,855 qr 3944 18680 Generated QR token for transaction 529354db-d660-441d-ade7-01bfee139703
+INFO 2026-08-15 11:13:44,894 qr 3944 18680 Verified QR token for transaction 529354db-d660-441d-ade7-01bfee139703
+INFO 2026-08-15 11:13:44,979 qr 3944 18680 Verified QR token for transaction 529354db-d660-441d-ade7-01bfee139703
+INFO 2026-08-15 11:13:45,137 tasks 3944 18680 Time credits awarded for transaction 529354db-d660-441d-ade7-01bfee139703
+INFO 2026-08-15 11:13:45,140 trace 3944 18680 Task transactions.tasks.award_time_credits[05e494ea-94fc-4605-83a0-1f3fc61aa95c] succeeded in 0.031000000000858563s: None
+INFO 2026-08-15 11:13:47,674 qr 3944 18680 Generated QR token for transaction a44b02cc-84a3-4ecb-aa4f-495ec62c1a82
+INFO 2026-08-15 11:13:49,735 tasks 3944 18680 Revealed rating 46f58831-1028-4971-a984-347ed506dbb9 after delay.
+INFO 2026-08-15 11:13:49,737 trace 3944 18680 Task transactions.tasks.reveal_rating_after_delay[a3bc0cfb-bc99-4382-a5d7-8ac4d39d39fa] succeeded in 0.0s: None
+INFO 2026-08-15 11:13:51,737 qr 3944 18680 Generated QR token for transaction ad952210-2db3-4f48-a97d-f3f440cdf68e
+INFO 2026-08-15 11:13:51,763 qr 3944 18680 Verified QR token for transaction ad952210-2db3-4f48-a97d-f3f440cdf68e
+INFO 2026-08-15 11:13:51,807 qr 3944 18680 Verified QR token for transaction ad952210-2db3-4f48-a97d-f3f440cdf68e
+INFO 2026-08-15 11:13:53,525 qr 3944 18680 Generated QR token for transaction 3770dc10-2a33-4f89-b330-752fae1a73fe
+INFO 2026-08-15 11:13:53,542 qr 3944 18680 Verified QR token for transaction 3770dc10-2a33-4f89-b330-752fae1a73fe
+WARNING 2026-08-15 11:13:53,577 qr 3944 18680 Token replay by user 1: 3770dc10-2a33-4f89-b...
+WARNING 2026-08-15 11:13:53,579 log 3944 18680 Bad Request: /api/transactions/3770dc10-2a33-4f89-b330-752fae1a73fe/scan-qr/
+INFO 2026-08-15 11:13:59,827 qr 3944 18680 Generated QR token for transaction ae739b61-c37f-42d9-ae41-8852f6b1f20b
+INFO 2026-08-15 11:13:59,828 qr 3944 18680 Verified QR token for transaction ae739b61-c37f-42d9-ae41-8852f6b1f20b
+WARNING 2026-08-15 11:13:59,831 qr 3944 18680 Invalid signature for token: ae739b61-c37f-42d9-a...
+INFO 2026-08-15 11:14:01,921 qr 3944 18680 Generated QR token for transaction fe2f9c76-d865-4169-a9cb-6dc97c923e8e
+INFO 2026-08-15 11:14:01,924 qr 3944 18680 Generated QR token for transaction fe2f9c76-d865-4169-a9cb-6dc97c923e8e
+INFO 2026-08-15 11:14:01,925 qr 3944 18680 Verified QR token for transaction fe2f9c76-d865-4169-a9cb-6dc97c923e8e
+INFO 2026-08-15 11:14:01,926 qr 3944 18680 Verified QR token for transaction fe2f9c76-d865-4169-a9cb-6dc97c923e8e
+INFO 2026-08-15 11:14:04,111 qr 3944 18680 Generated QR token for transaction 4c11a1ae-e908-4046-95a3-cd9b633d973c
+INFO 2026-08-15 11:14:07,919 qr 3944 18680 Generated QR token for transaction 0014462a-c168-4c4f-91aa-03324378a14d
+INFO 2026-08-15 11:14:09,566 qr 3944 18680 Generated QR token for transaction 88f28b64-eb36-430a-acdd-266a8be9424e
+INFO 2026-08-15 11:14:09,571 qr 3944 18680 Verified QR token for transaction 88f28b64-eb36-430a-acdd-266a8be9424e
+WARNING 2026-08-15 11:14:09,575 qr 3944 18680 Token replay by user 1: 88f28b64-eb36-430a-a...
+INFO 2026-08-15 11:14:11,438 qr 3944 18680 Generated QR token for transaction 0fd4d8c1-0041-465e-9ab2-dbf04f8d403d
+INFO 2026-08-15 11:14:11,440 qr 3944 18680 Verified QR token for transaction 0fd4d8c1-0041-465e-9ab2-dbf04f8d403d
+INFO 2026-08-15 11:14:11,442 qr 3944 18680 Verified QR token for transaction 0fd4d8c1-0041-465e-9ab2-dbf04f8d403d
+INFO 2026-08-15 11:14:13,276 qr 3944 18680 Generated QR token for transaction acf4f51d-5c0d-4c5d-aa95-a61b9f5dcc1a
+INFO 2026-08-15 11:14:13,278 qr 3944 18680 Verified QR token for transaction acf4f51d-5c0d-4c5d-aa95-a61b9f5dcc1a
+WARNING 2026-08-15 11:14:13,280 qr 3944 18680 Token replay attempt: acf4f51d-5c0d-4c5d-a...
+INFO 2026-08-15 11:14:14,969 qr 3944 18680 Generated QR token for transaction 658a0142-207c-45bb-bf4f-bba2a2c6f935
+INFO 2026-08-15 11:14:14,970 qr 3944 18680 Verified QR token for transaction 658a0142-207c-45bb-bf4f-bba2a2c6f935
+INFO 2026-08-15 11:14:14,971 qr 3944 18680 Verified QR token for transaction 658a0142-207c-45bb-bf4f-bba2a2c6f935
+INFO 2026-08-15 11:14:15,798 qr 3944 18680 Verified QR token for transaction 658a0142-207c-45bb-bf4f-bba2a2c6f935
+INFO 2026-08-15 11:14:17,490 qr 3944 18680 Generated QR token for transaction 51c4a3d2-94ca-4f60-bae1-73b59a4f9d17
+INFO 2026-08-15 11:14:19,069 qr 3944 18680 Generated QR token for transaction cff6275d-90e3-4faf-86e5-84ac8799f9ab
+INFO 2026-08-15 11:14:20,638 qr 3944 18680 Generated QR token for transaction 01e7aafe-5ee7-4128-85a1-790142815f63
+WARNING 2026-08-15 11:14:22,487 qr 3944 18680 Invalid token format: ...
+INFO 2026-08-15 11:14:24,042 qr 3944 18680 Generated QR token for transaction b9538a64-d1c4-4604-bbf6-43bde6653ee5
+WARNING 2026-08-15 11:14:24,044 qr 3944 18680 Token not found or expired: b9538a64-d1c4-4604-b...
+WARNING 2026-08-15 11:14:25,578 qr 3944 18680 Invalid token format: invalid:token:format...
+INFO 2026-08-15 11:14:27,170 qr 3944 18680 Generated QR token for transaction a37ecde8-40fa-4ce0-b6ba-963f767a64a6
+WARNING 2026-08-15 11:14:27,171 qr 3944 18680 Invalid signature for token: a37ecde8-40fa-4ce0-b...
+INFO 2026-08-15 11:14:28,769 qr 3944 18680 Generated QR token for transaction 9b75811b-67d5-4239-a446-1d7e0485e6d5
+INFO 2026-08-15 11:14:28,771 qr 3944 18680 Verified QR token for transaction 9b75811b-67d5-4239-a446-1d7e0485e6d5
+INFO 2026-08-15 11:14:30,310 qr 3944 18680 Generated QR token for transaction d7d537d6-16a6-4567-898d-668fe5b3ea4d
+WARNING 2026-08-15 11:14:30,312 qr 3944 18680 Invalid signature for token: wrong-id:1786785270:...
+INFO 2026-08-15 11:14:32,398 tasks 3944 18680 Transaction 2e38400b-a1ca-4603-aa8d-0d55b0038982 flagged for admin review
+INFO 2026-08-15 11:14:32,400 trace 3944 18680 Task transactions.tasks.flag_for_admin_review[4013198e-bdef-4a24-8e6a-e5f86413a7c8] succeeded in 0.01599999999962165s: None
+INFO 2026-08-15 11:14:37,596 tasks 3944 18680 Transaction 3d8a9b42-eb92-4537-b9e4-1017afdb41b9 flagged for admin review
+INFO 2026-08-15 11:14:37,597 trace 3944 18680 Task transactions.tasks.flag_for_admin_review[09139c5f-0a07-4962-af8e-c26e79471d71] succeeded in 0.0s: None
+INFO 2026-08-15 11:14:45,703 tasks 3944 18680 Time credits awarded for transaction aca81efb-bb0d-41ae-a253-b8663f1b6083
+INFO 2026-08-15 11:14:45,705 trace 3944 18680 Task transactions.tasks.award_time_credits[5b9b289c-0797-4fc5-aca2-10c661464019] succeeded in 0.01599999999962165s: None
+INFO 2026-08-15 11:14:57,068 tasks 3944 18680 Transaction 426ddda6-f989-4d79-bcd9-a47fccb0b547 flagged for admin review
+INFO 2026-08-15 11:14:57,069 trace 3944 18680 Task transactions.tasks.flag_for_admin_review[f064d0f5-f93a-4c62-8a01-9edeea5d5917] succeeded in 0.01599999999962165s: None
+INFO 2026-08-15 11:15:00,167 tasks 3944 18680 Time credits awarded for transaction b6e992bf-b165-48c3-b21d-d4ebf2885c43
+INFO 2026-08-15 11:15:00,169 trace 3944 18680 Task transactions.tasks.award_time_credits[3d3cf58c-5b34-4f3b-8218-106dde37cb66] succeeded in 0.01599999999962165s: None
+INFO 2026-08-15 11:15:02,147 tasks 3944 18680 Transaction 89896696-eeb4-4898-97e7-699fbbb43748 flagged for admin review
+INFO 2026-08-15 11:15:02,148 trace 3944 18680 Task transactions.tasks.flag_for_admin_review[13c5e5a7-db9a-4c98-92b6-d4747ca24ff1] succeeded in 0.01599999999962165s: None
+INFO 2026-08-15 11:15:07,464 tasks 3944 18680 Transaction 490845a7-c4e8-493b-819f-ef1d0c838614 flagged for admin review
+INFO 2026-08-15 11:15:07,466 trace 3944 18680 Task transactions.tasks.flag_for_admin_review[34619535-7f0e-46b7-b849-1ad4579eba0d] succeeded in 0.0s: None
+INFO 2026-08-15 11:15:30,166 qr 12808 17704 Generated QR token for transaction 67386992-0df2-4d28-85b9-2b5ce87b5516
+INFO 2026-08-15 11:15:30,168 qr 12808 17704 Verified QR token for transaction 67386992-0df2-4d28-85b9-2b5ce87b5516
+INFO 2026-08-15 11:15:30,169 qr 12808 17704 Verified QR token for transaction 67386992-0df2-4d28-85b9-2b5ce87b5516
+INFO 2026-08-15 11:15:30,988 qr 12808 17704 Verified QR token for transaction 67386992-0df2-4d28-85b9-2b5ce87b5516
+WARNING 2026-08-15 11:16:12,465 log 2600 17764 Bad Request: /api/transactions/borrow-request
+INFO 2026-08-15 11:16:16,042 tasks 2600 17764 Transaction eaa0e83a-c4d1-4a34-bf96-eb3bbbda8412 flagged for admin review
+INFO 2026-08-15 11:16:16,374 trace 2600 17764 Task transactions.tasks.flag_for_admin_review[337cb86e-dd8e-42a9-a11c-f15ac4a26ac2] succeeded in 0.3280000000013388s: None
+INFO 2026-08-15 11:16:18,424 qr 2600 17764 Generated QR token for transaction d819612d-b202-4c47-b069-1f05681e5e6d
+INFO 2026-08-15 11:16:18,444 qr 2600 17764 Verified QR token for transaction d819612d-b202-4c47-b069-1f05681e5e6d
+INFO 2026-08-15 11:16:18,484 qr 2600 17764 Verified QR token for transaction d819612d-b202-4c47-b069-1f05681e5e6d
+INFO 2026-08-15 11:16:18,527 qr 2600 17764 Generated QR token for transaction d819612d-b202-4c47-b069-1f05681e5e6d
+INFO 2026-08-15 11:16:18,549 qr 2600 17764 Verified QR token for transaction d819612d-b202-4c47-b069-1f05681e5e6d
+INFO 2026-08-15 11:16:18,596 qr 2600 17764 Verified QR token for transaction d819612d-b202-4c47-b069-1f05681e5e6d
+INFO 2026-08-15 11:16:18,647 tasks 2600 17764 Time credits awarded for transaction d819612d-b202-4c47-b069-1f05681e5e6d
+INFO 2026-08-15 11:16:18,648 trace 2600 17764 Task transactions.tasks.award_time_credits[182e1f78-c898-4cec-9e98-700e7c7d835a] succeeded in 0.01599999999962165s: None
+INFO 2026-08-15 11:16:20,276 qr 2600 17764 Generated QR token for transaction 0bdc607b-de7b-4be5-be15-7a4956208a52
+INFO 2026-08-15 11:16:22,066 tasks 2600 17764 Revealed rating 320c7d1f-a669-45b1-b67e-af37ba43f714 after delay.
+INFO 2026-08-15 11:16:22,067 trace 2600 17764 Task transactions.tasks.reveal_rating_after_delay[8852aa33-39ee-4687-8ec2-1fcc58b0194f] succeeded in 0.0s: None
+INFO 2026-08-15 11:16:23,717 qr 2600 17764 Generated QR token for transaction 7557cdc8-59b9-4b13-9b50-0484ddc60ef8
+INFO 2026-08-15 11:16:23,734 qr 2600 17764 Verified QR token for transaction 7557cdc8-59b9-4b13-9b50-0484ddc60ef8
+INFO 2026-08-15 11:16:23,784 qr 2600 17764 Verified QR token for transaction 7557cdc8-59b9-4b13-9b50-0484ddc60ef8
+INFO 2026-08-15 11:16:25,313 qr 2600 17764 Generated QR token for transaction 1d7ad41d-c145-4de0-9617-3e5234075434
+INFO 2026-08-15 11:16:25,334 qr 2600 17764 Verified QR token for transaction 1d7ad41d-c145-4de0-9617-3e5234075434
+WARNING 2026-08-15 11:16:25,383 qr 2600 17764 Token replay by user 1: 1d7ad41d-c145-4de0-9...
+WARNING 2026-08-15 11:16:25,384 log 2600 17764 Bad Request: /api/transactions/1d7ad41d-c145-4de0-9617-3e5234075434/scan-qr/
+INFO 2026-08-15 11:16:32,649 qr 2600 17764 Generated QR token for transaction 8f5b096d-366d-4acb-9ce7-e899a69d047c
+INFO 2026-08-15 11:16:32,651 qr 2600 17764 Verified QR token for transaction 8f5b096d-366d-4acb-9ce7-e899a69d047c
+WARNING 2026-08-15 11:16:32,652 qr 2600 17764 Invalid signature for token: 8f5b096d-366d-4acb-9...
+INFO 2026-08-15 11:16:34,737 qr 2600 17764 Generated QR token for transaction 2e5237e0-1ddc-4564-b26d-72e3988500e6
+INFO 2026-08-15 11:16:34,740 qr 2600 17764 Generated QR token for transaction 2e5237e0-1ddc-4564-b26d-72e3988500e6
+INFO 2026-08-15 11:16:34,742 qr 2600 17764 Verified QR token for transaction 2e5237e0-1ddc-4564-b26d-72e3988500e6
+INFO 2026-08-15 11:16:34,743 qr 2600 17764 Verified QR token for transaction 2e5237e0-1ddc-4564-b26d-72e3988500e6
+INFO 2026-08-15 11:16:36,394 qr 2600 17764 Generated QR token for transaction acf5920a-8507-4c1d-8e05-cf1250b3088d
+INFO 2026-08-15 11:16:39,588 qr 2600 17764 Generated QR token for transaction b7f07d64-2574-432a-a5a2-7357777a6a20
+INFO 2026-08-15 11:16:41,137 qr 2600 17764 Generated QR token for transaction aa5c2d47-35ac-4a86-ad25-9ae6db7dac1e
+INFO 2026-08-15 11:16:41,138 qr 2600 17764 Verified QR token for transaction aa5c2d47-35ac-4a86-ad25-9ae6db7dac1e
+WARNING 2026-08-15 11:16:41,140 qr 2600 17764 Token replay by user 1: aa5c2d47-35ac-4a86-a...
+INFO 2026-08-15 11:16:42,982 qr 2600 17764 Generated QR token for transaction 0e4a76a1-f179-4746-a09c-69e7e034a135
+INFO 2026-08-15 11:16:42,983 qr 2600 17764 Verified QR token for transaction 0e4a76a1-f179-4746-a09c-69e7e034a135
+INFO 2026-08-15 11:16:42,985 qr 2600 17764 Verified QR token for transaction 0e4a76a1-f179-4746-a09c-69e7e034a135
+INFO 2026-08-15 11:16:44,536 qr 2600 17764 Generated QR token for transaction 82a76c94-f3e1-4f49-803c-ef96f1bfbb44
+INFO 2026-08-15 11:16:44,538 qr 2600 17764 Verified QR token for transaction 82a76c94-f3e1-4f49-803c-ef96f1bfbb44
+WARNING 2026-08-15 11:16:44,539 qr 2600 17764 Token replay attempt: 82a76c94-f3e1-4f49-8...
+INFO 2026-08-15 11:16:46,105 qr 2600 17764 Generated QR token for transaction 20496811-556d-4956-bb22-c1039e9575da
+INFO 2026-08-15 11:16:46,107 qr 2600 17764 Verified QR token for transaction 20496811-556d-4956-bb22-c1039e9575da
+INFO 2026-08-15 11:16:46,108 qr 2600 17764 Verified QR token for transaction 20496811-556d-4956-bb22-c1039e9575da
+WARNING 2026-08-15 11:16:46,963 qr 2600 17764 Token exhausted: 20496811-556d-4956-b...
+INFO 2026-08-15 11:16:48,857 qr 2600 17764 Generated QR token for transaction 638fba9a-b4de-47a0-974f-f75838d277d0
+INFO 2026-08-15 11:16:50,525 qr 2600 17764 Generated QR token for transaction 51038f25-04ed-43e7-8a32-3f542a153d40
+INFO 2026-08-15 11:16:52,413 qr 2600 17764 Generated QR token for transaction 713b2bd8-bf57-4120-8787-8e0f31715907
+WARNING 2026-08-15 11:16:53,980 qr 2600 17764 Invalid token format: ...
+INFO 2026-08-15 11:16:55,758 qr 2600 17764 Generated QR token for transaction 2735d436-daad-4c8c-a49b-54eb42dbed47
+WARNING 2026-08-15 11:16:55,760 qr 2600 17764 Token not found or expired: 2735d436-daad-4c8c-a...
+WARNING 2026-08-15 11:16:57,573 qr 2600 17764 Invalid token format: invalid:token:format...
+INFO 2026-08-15 11:16:59,312 qr 2600 17764 Generated QR token for transaction 149805a6-447f-4004-9d42-10380f6850e9
+WARNING 2026-08-15 11:16:59,314 qr 2600 17764 Invalid signature for token: 149805a6-447f-4004-9...
+INFO 2026-08-15 11:17:01,191 qr 2600 17764 Generated QR token for transaction 6e4ad6a9-994d-401a-bade-931c98c32b3d
+INFO 2026-08-15 11:17:01,193 qr 2600 17764 Verified QR token for transaction 6e4ad6a9-994d-401a-bade-931c98c32b3d
+INFO 2026-08-15 11:17:03,620 qr 2600 17764 Generated QR token for transaction fa4553a6-4076-4d8b-88a5-d29ee3e36835
+WARNING 2026-08-15 11:17:03,621 qr 2600 17764 Invalid signature for token: wrong-id:1786785423:...
+INFO 2026-08-15 11:17:05,787 tasks 2600 17764 Transaction d25ccd84-c70f-4088-b8b1-c45cedbfd5c7 flagged for admin review
+INFO 2026-08-15 11:17:05,789 trace 2600 17764 Task transactions.tasks.flag_for_admin_review[029edcfd-79e0-4803-99d0-e04a1e723ca2] succeeded in 0.01599999999962165s: None
+INFO 2026-08-15 11:17:10,915 tasks 2600 17764 Transaction ba35916a-2937-4659-b54b-a482ff77561c flagged for admin review
+INFO 2026-08-15 11:17:10,916 trace 2600 17764 Task transactions.tasks.flag_for_admin_review[45fd6b51-786f-479e-94c7-1328319fa7c4] succeeded in 0.0s: None
+INFO 2026-08-15 11:17:19,434 tasks 2600 17764 Time credits awarded for transaction fb5a9cb6-49da-4e7d-974d-768b4016b0be
+INFO 2026-08-15 11:17:19,436 trace 2600 17764 Task transactions.tasks.award_time_credits[3daf4b98-4d18-40d8-9b45-485951026c3f] succeeded in 0.015000000001236913s: None
+INFO 2026-08-15 11:17:30,857 tasks 2600 17764 Transaction 4eb5a6ae-49f0-4364-b094-9dd25f76da6b flagged for admin review
+INFO 2026-08-15 11:17:30,858 trace 2600 17764 Task transactions.tasks.flag_for_admin_review[fd65516a-c05b-44d9-a102-395098373048] succeeded in 0.0s: None
+INFO 2026-08-15 11:17:34,777 tasks 2600 17764 Time credits awarded for transaction fd2c9974-2e51-4acf-8b38-a885fceeb3a6
+INFO 2026-08-15 11:17:34,779 trace 2600 17764 Task transactions.tasks.award_time_credits[f1b40f53-75bb-48a9-973d-fce6d5b3937d] succeeded in 0.01599999999962165s: None
+INFO 2026-08-15 11:17:36,401 tasks 2600 17764 Transaction 4c1965f0-539e-4fe5-ae31-778676f25d9d flagged for admin review
+INFO 2026-08-15 11:17:36,403 trace 2600 17764 Task transactions.tasks.flag_for_admin_review[ca9c2b6a-687d-4890-90f4-9d0ce77ebfb4] succeeded in 0.0s: None
+INFO 2026-08-15 11:17:41,435 tasks 2600 17764 Transaction 594b850f-5c6d-4d01-9e5f-ed91167af3e7 flagged for admin review
+INFO 2026-08-15 11:17:41,438 trace 2600 17764 Task transactions.tasks.flag_for_admin_review[8a1a8435-8caf-4c6d-8132-6c21c984ffdc] succeeded in 0.0s: None
+WARNING 2026-08-15 11:21:39,240 log 19308 8308 Unauthorized: /api/items/
+WARNING 2026-08-15 11:21:56,202 log 19308 8308 Bad Request: /api/items/search/
+WARNING 2026-08-15 11:22:01,398 log 19308 8308 Forbidden: /api/items/98350508-9fc4-4c84-98db-314dbbd5545c/
+WARNING 2026-08-15 11:22:16,730 log 19308 8308 Bad Request: /api/transactions/borrow-request
+INFO 2026-08-15 11:22:20,830 tasks 19308 8308 Transaction 92019d04-f9ca-4bc8-9009-9436d0959858 flagged for admin review
+INFO 2026-08-15 11:22:21,058 trace 19308 8308 Task transactions.tasks.flag_for_admin_review[dc8328ad-bcd5-4f73-8ec4-3fe19367c8a4] succeeded in 0.23400000000037835s: None
+INFO 2026-08-15 11:22:22,994 qr 19308 8308 Generated QR token for transaction be30afb0-8d01-4874-b60e-7c462768f379
+INFO 2026-08-15 11:22:23,012 qr 19308 8308 Verified QR token for transaction be30afb0-8d01-4874-b60e-7c462768f379
+INFO 2026-08-15 11:22:23,047 qr 19308 8308 Verified QR token for transaction be30afb0-8d01-4874-b60e-7c462768f379
+INFO 2026-08-15 11:22:23,084 qr 19308 8308 Generated QR token for transaction be30afb0-8d01-4874-b60e-7c462768f379
+INFO 2026-08-15 11:22:23,102 qr 19308 8308 Verified QR token for transaction be30afb0-8d01-4874-b60e-7c462768f379
+INFO 2026-08-15 11:22:23,154 qr 19308 8308 Verified QR token for transaction be30afb0-8d01-4874-b60e-7c462768f379
+INFO 2026-08-15 11:22:23,204 tasks 19308 8308 Time credits awarded for transaction be30afb0-8d01-4874-b60e-7c462768f379
+INFO 2026-08-15 11:22:23,206 trace 19308 8308 Task transactions.tasks.award_time_credits[a7ec3167-baff-47f0-a93c-22c1f5aa7e0b] succeeded in 0.0s: None
+INFO 2026-08-15 11:22:24,908 qr 19308 8308 Generated QR token for transaction 86c35c29-3bce-4176-b408-4535a04f61c4
+INFO 2026-08-15 11:22:26,435 tasks 19308 8308 Revealed rating 570acdac-f8fb-4b7f-a083-c7586cbc6102 after delay.
+INFO 2026-08-15 11:22:26,436 trace 19308 8308 Task transactions.tasks.reveal_rating_after_delay[78de63f7-5a51-4713-8527-27e05209f29e] succeeded in 0.0s: None
+INFO 2026-08-15 11:22:28,094 qr 19308 8308 Generated QR token for transaction b0d29ce5-42c3-4f7b-a040-81dfa439a0d1
+INFO 2026-08-15 11:22:28,112 qr 19308 8308 Verified QR token for transaction b0d29ce5-42c3-4f7b-a040-81dfa439a0d1
+INFO 2026-08-15 11:22:28,153 qr 19308 8308 Verified QR token for transaction b0d29ce5-42c3-4f7b-a040-81dfa439a0d1
+INFO 2026-08-15 11:22:29,740 qr 19308 8308 Generated QR token for transaction be8ec3de-2d7b-40e5-a1bb-22f59a33f8a4
+INFO 2026-08-15 11:22:29,756 qr 19308 8308 Verified QR token for transaction be8ec3de-2d7b-40e5-a1bb-22f59a33f8a4
+WARNING 2026-08-15 11:22:29,800 qr 19308 8308 Token replay by user 1: be8ec3de-2d7b-40e5-a...
+WARNING 2026-08-15 11:22:29,802 log 19308 8308 Bad Request: /api/transactions/be8ec3de-2d7b-40e5-a1bb-22f59a33f8a4/scan-qr/
+INFO 2026-08-15 11:22:37,073 qr 19308 8308 Generated QR token for transaction 1ee58f51-5035-404e-b855-1422e010da86
+INFO 2026-08-15 11:22:37,076 qr 19308 8308 Verified QR token for transaction 1ee58f51-5035-404e-b855-1422e010da86
+WARNING 2026-08-15 11:22:37,078 qr 19308 8308 Invalid signature for token: 1ee58f51-5035-404e-b...
+INFO 2026-08-15 11:22:38,835 qr 19308 8308 Generated QR token for transaction 9d5cbe9d-519d-47a8-ae33-736d99a1e162
+INFO 2026-08-15 11:22:38,837 qr 19308 8308 Generated QR token for transaction 9d5cbe9d-519d-47a8-ae33-736d99a1e162
+INFO 2026-08-15 11:22:38,838 qr 19308 8308 Verified QR token for transaction 9d5cbe9d-519d-47a8-ae33-736d99a1e162
+INFO 2026-08-15 11:22:38,840 qr 19308 8308 Verified QR token for transaction 9d5cbe9d-519d-47a8-ae33-736d99a1e162
+INFO 2026-08-15 11:22:40,586 qr 19308 8308 Generated QR token for transaction 4dd8b407-9838-4492-8292-687a384046de
+INFO 2026-08-15 11:22:44,007 qr 19308 8308 Generated QR token for transaction 1d0e7134-75fa-4350-9959-da904101718d
+INFO 2026-08-15 11:22:45,572 qr 19308 8308 Generated QR token for transaction 3e81ddee-fc09-4519-a5d4-55455990e422
+INFO 2026-08-15 11:22:45,573 qr 19308 8308 Verified QR token for transaction 3e81ddee-fc09-4519-a5d4-55455990e422
+WARNING 2026-08-15 11:22:45,575 qr 19308 8308 Token replay by user 1: 3e81ddee-fc09-4519-a...
+INFO 2026-08-15 11:22:47,128 qr 19308 8308 Generated QR token for transaction d104b2e5-081d-477a-9a3c-1fecd3905d1c
+INFO 2026-08-15 11:22:47,130 qr 19308 8308 Verified QR token for transaction d104b2e5-081d-477a-9a3c-1fecd3905d1c
+INFO 2026-08-15 11:22:47,131 qr 19308 8308 Verified QR token for transaction d104b2e5-081d-477a-9a3c-1fecd3905d1c
+INFO 2026-08-15 11:22:48,738 qr 19308 8308 Generated QR token for transaction a5f5fa18-6388-4248-8de3-d1d7ffbd5a64
+INFO 2026-08-15 11:22:48,740 qr 19308 8308 Verified QR token for transaction a5f5fa18-6388-4248-8de3-d1d7ffbd5a64
+WARNING 2026-08-15 11:22:48,742 qr 19308 8308 Token replay attempt: a5f5fa18-6388-4248-8...
+INFO 2026-08-15 11:22:50,281 qr 19308 8308 Generated QR token for transaction 70c14aa6-9d44-4bbe-86cd-0fcd4041340d
+INFO 2026-08-15 11:22:50,283 qr 19308 8308 Verified QR token for transaction 70c14aa6-9d44-4bbe-86cd-0fcd4041340d
+INFO 2026-08-15 11:22:50,284 qr 19308 8308 Verified QR token for transaction 70c14aa6-9d44-4bbe-86cd-0fcd4041340d
+WARNING 2026-08-15 11:22:51,065 qr 19308 8308 Token exhausted: 70c14aa6-9d44-4bbe-8...
+INFO 2026-08-15 11:22:52,952 qr 19308 8308 Generated QR token for transaction 99abfc1e-2376-402d-8937-b8e6aab7c86e
+INFO 2026-08-15 11:22:54,818 qr 19308 8308 Generated QR token for transaction a53ef9c2-cce9-4733-88e5-cb68abe49485
+INFO 2026-08-15 11:22:56,530 qr 19308 8308 Generated QR token for transaction 0e4a8983-8701-44d1-a299-4066a5fea975
+WARNING 2026-08-15 11:22:58,237 qr 19308 8308 Invalid token format: ...
+INFO 2026-08-15 11:22:59,772 qr 19308 8308 Generated QR token for transaction 2edfcae0-1f71-4959-9318-e18bec47c6bc
+WARNING 2026-08-15 11:22:59,774 qr 19308 8308 Token not found or expired: 2edfcae0-1f71-4959-9...
+WARNING 2026-08-15 11:23:01,483 qr 19308 8308 Invalid token format: invalid:token:format...
+INFO 2026-08-15 11:23:03,498 qr 19308 8308 Generated QR token for transaction 2dde1517-1a2c-4d4c-b3a1-9eed0dc18bce
+WARNING 2026-08-15 11:23:03,500 qr 19308 8308 Invalid signature for token: 2dde1517-1a2c-4d4c-b...
+INFO 2026-08-15 11:23:05,444 qr 19308 8308 Generated QR token for transaction af67a0ed-a2ad-4692-ba67-dcf26a1a6bf3
+INFO 2026-08-15 11:23:05,445 qr 19308 8308 Verified QR token for transaction af67a0ed-a2ad-4692-ba67-dcf26a1a6bf3
+INFO 2026-08-15 11:23:07,004 qr 19308 8308 Generated QR token for transaction 85925ab7-e486-47a0-8284-1b01d92cda12
+WARNING 2026-08-15 11:23:07,005 qr 19308 8308 Invalid signature for token: wrong-id:1786785787:...
+INFO 2026-08-15 11:23:08,713 tasks 19308 8308 Transaction c822cbe8-9a0b-472c-8bbc-c4ddc96dab77 flagged for admin review
+INFO 2026-08-15 11:23:08,714 trace 19308 8308 Task transactions.tasks.flag_for_admin_review[16f404b4-ac42-4a25-910e-d5d577458ac4] succeeded in 0.0s: None
+INFO 2026-08-15 11:23:13,698 tasks 19308 8308 Transaction 8f868bad-b103-404e-ac74-8af042234902 flagged for admin review
+INFO 2026-08-15 11:23:13,700 trace 19308 8308 Task transactions.tasks.flag_for_admin_review[319db63e-adb7-4e47-8672-f534e3bead50] succeeded in 0.0s: None
+INFO 2026-08-15 11:23:21,483 tasks 19308 8308 Time credits awarded for transaction 15b3033b-d1d0-44b2-8613-7e4741b80f85
+INFO 2026-08-15 11:23:21,484 trace 19308 8308 Task transactions.tasks.award_time_credits[00e11359-599f-4f8a-949f-b4fd3a03d526] succeeded in 0.014999999999417923s: None
+INFO 2026-08-15 11:23:33,452 tasks 19308 8308 Transaction 4b00d400-ed23-49e5-af21-5ba87da911eb flagged for admin review
+INFO 2026-08-15 11:23:33,455 trace 19308 8308 Task transactions.tasks.flag_for_admin_review[82eb6e48-303f-4ba7-ad8d-ea7dbd94cb00] succeeded in 0.01599999999962165s: None
+INFO 2026-08-15 11:23:37,051 tasks 19308 8308 Time credits awarded for transaction f1ee6c04-cef1-4cdf-8dde-09d0e38a7edb
+INFO 2026-08-15 11:23:37,053 trace 19308 8308 Task transactions.tasks.award_time_credits[c01d41c6-c338-4286-b164-52b460d3891e] succeeded in 0.015000000001236913s: None
+INFO 2026-08-15 11:23:38,624 tasks 19308 8308 Transaction 68f08edb-082b-485a-bc39-62f3f8f7d677 flagged for admin review
+INFO 2026-08-15 11:23:38,625 trace 19308 8308 Task transactions.tasks.flag_for_admin_review[f08ff0ae-b742-4199-a1ac-fb7346518126] succeeded in 0.0s: None
+INFO 2026-08-15 11:23:43,833 tasks 19308 8308 Transaction 72d3cb63-5b48-4417-b6fd-520830052038 flagged for admin review
+INFO 2026-08-15 11:23:43,835 trace 19308 8308 Task transactions.tasks.flag_for_admin_review[7fd044c2-5686-4493-b75f-c4a2e8e53a22] succeeded in 0.01599999999962165s: None
+WARNING 2026-08-15 11:23:47,475 log 19308 8308 Forbidden: /api/auth/login
+WARNING 2026-08-15 11:23:50,892 log 19308 8308 Unauthorized: /api/auth/login
+INFO 2026-08-15 11:23:55,190 email_verify 19308 8308 Verification email sent to r@example.com (code 341562)
+ERROR 2026-08-15 11:23:55,991 views 19308 8308 Registration validation failed: {'email': [ErrorDetail(string='A user with this email already exists.', code='invalid')]}
+WARNING 2026-08-15 11:23:55,993 log 19308 8308 Bad Request: /api/auth/register
+ERROR 2026-08-15 11:23:55,998 views 19308 8308 Registration validation failed: {'email': [ErrorDetail(string='Enter a valid email address.', code='invalid')]}
+WARNING 2026-08-15 11:23:56,000 log 19308 8308 Bad Request: /api/auth/register
+ERROR 2026-08-15 11:23:56,009 views 19308 8308 Registration validation failed: {'confirm_password': [ErrorDetail(string='Passwords do not match.', code='invalid')]}
+WARNING 2026-08-15 11:23:56,011 log 19308 8308 Bad Request: /api/auth/register
+INFO 2026-08-15 11:23:56,807 email_verify 19308 8308 Verification email sent to john@example.com (code 115303)
+INFO 2026-08-15 11:23:57,631 email_verify 19308 8308 Verification email sent to john@example.com (code 415551)
+WARNING 2026-08-15 11:23:58,507 log 19308 8308 Bad Request: /api/auth/verify-id
+INFO 2026-08-15 11:24:00,061 verification 19308 8308 Mock verification for National ID: 12-3****
+WARNING 2026-08-15 11:24:00,065 log 19308 8308 Bad Request: /api/auth/verify-id
+WARNING 2026-08-15 11:24:00,851 log 19308 8308 Bad Request: /api/auth/verify-id
+INFO 2026-08-15 11:24:01,879 verification 19308 8308 Mock verification for National ID: 12-3****
+WARNING 2026-08-15 11:24:02,918 log 19308 8308 Bad Request: /api/auth/verify-address
+WARNING 2026-08-15 11:24:05,721 log 19308 8308 Bad Request: /api/auth/verify-email
+INFO 2026-08-15 11:24:09,623 verification 19308 8308 Mock verification for National ID: 12-3****
+ERROR 2026-08-15 11:24:09,626 verification 19308 8308 Nominatim geocoding failed: Network error
+INFO 2026-08-15 11:26:24,735 autoreload 14464 4940 Watching for file changes with StatReloader
+INFO 2026-08-15 11:26:31,910 basehttp 14464 1924 "GET /api/health/ HTTP/1.1" 200 39
+INFO 2026-08-15 11:27:09,059 basehttp 14464 2008 "GET /api/items/search?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 301 0
+INFO 2026-08-15 11:27:13,882 basehttp 14464 18460 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 936688
+INFO 2026-08-15 11:27:16,543 basehttp 14464 18460 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 936688
+INFO 2026-08-15 11:27:26,356 basehttp 14464 17844 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 936688
+INFO 2026-08-15 11:27:29,538 basehttp 14464 17744 - Broken pipe from ('127.0.0.1', 61429)
+INFO 2026-08-15 11:27:31,255 basehttp 14464 17844 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 696690
+INFO 2026-08-15 11:27:33,815 basehttp 14464 17844 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 696690
+INFO 2026-08-15 11:27:46,244 basehttp 14464 17844 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 936688
+INFO 2026-08-15 11:27:49,521 basehttp 14464 16316 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 936688
+INFO 2026-08-15 11:28:11,395 basehttp 14464 16316 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 696690
+INFO 2026-08-15 11:28:16,862 basehttp 14464 17844 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 696690
+INFO 2026-08-15 11:29:29,945 basehttp 14464 17844 "OPTIONS /api/auth/register HTTP/1.1" 200 0
+INFO 2026-08-15 11:29:30,954 email_verify 14464 17844 Verification email sent to verifyuser@example.com (code 346160)
+INFO 2026-08-15 11:29:30,959 basehttp 14464 17844 "POST /api/auth/register HTTP/1.1" 201 87
+INFO 2026-08-15 11:29:55,210 basehttp 14464 17844 "OPTIONS /api/auth/verify-email HTTP/1.1" 200 0
+INFO 2026-08-15 11:29:55,246 basehttp 14464 17844 "POST /api/auth/verify-email HTTP/1.1" 200 57
+INFO 2026-08-15 11:30:49,668 basehttp 14464 17844 "OPTIONS /api/auth/login HTTP/1.1" 200 0
+INFO 2026-08-15 11:30:50,888 basehttp 14464 17844 "POST /api/auth/login HTTP/1.1" 200 900
+INFO 2026-08-15 11:30:51,081 basehttp 14464 17844 "OPTIONS /api/items/search?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 0
+INFO 2026-08-15 11:30:51,083 basehttp 14464 16316 "OPTIONS /api/items/search?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 0
+INFO 2026-08-15 11:30:51,096 basehttp 14464 16316 "OPTIONS /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 0
+INFO 2026-08-15 11:30:51,097 basehttp 14464 17844 "OPTIONS /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 0
+INFO 2026-08-15 11:30:54,430 basehttp 14464 17844 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 937283
+INFO 2026-08-15 11:30:55,031 basehttp 14464 17844 "OPTIONS /api/transactions/d011b088-30d1-449e-ac07-97e00500399f/ HTTP/1.1" 200 0
+INFO 2026-08-15 11:30:55,045 basehttp 14464 17844 "OPTIONS /api/transactions/d011b088-30d1-449e-ac07-97e00500399f/ HTTP/1.1" 200 0
+INFO 2026-08-15 11:30:55,455 basehttp 14464 17844 "GET /api/transactions/d011b088-30d1-449e-ac07-97e00500399f/ HTTP/1.1" 200 1772
+INFO 2026-08-15 11:30:56,474 basehttp 14464 17844 "GET /api/transactions/d011b088-30d1-449e-ac07-97e00500399f/ HTTP/1.1" 200 1772
+INFO 2026-08-15 11:30:58,533 basehttp 14464 16316 - Broken pipe from ('127.0.0.1', 61442)
+INFO 2026-08-15 11:31:04,944 basehttp 14464 17844 "OPTIONS /api/transactions/d011b088-30d1-449e-ac07-97e00500399f/activate/ HTTP/1.1" 200 0
+INFO 2026-08-15 11:31:05,039 basehttp 14464 17844 "POST /api/transactions/d011b088-30d1-449e-ac07-97e00500399f/activate/ HTTP/1.1" 200 1772
+INFO 2026-08-15 11:31:05,113 basehttp 14464 17844 "GET /api/transactions/d011b088-30d1-449e-ac07-97e00500399f/ HTTP/1.1" 200 1993
+INFO 2026-08-15 11:31:16,584 basehttp 14464 17844 "OPTIONS /api/transactions/d011b088-30d1-449e-ac07-97e00500399f/generate-qr/ HTTP/1.1" 200 0
+INFO 2026-08-15 11:31:16,623 qr 14464 17844 Generated QR token for transaction d011b088-30d1-449e-ac07-97e00500399f
+INFO 2026-08-15 11:31:16,627 basehttp 14464 17844 "POST /api/transactions/d011b088-30d1-449e-ac07-97e00500399f/generate-qr/ HTTP/1.1" 200 309
+INFO 2026-08-15 11:31:27,229 basehttp 14464 17844 "OPTIONS /api/transactions/d011b088-30d1-449e-ac07-97e00500399f/scan-qr/ HTTP/1.1" 200 0
+INFO 2026-08-15 11:31:27,262 qr 14464 17844 Verified QR token for transaction d011b088-30d1-449e-ac07-97e00500399f
+INFO 2026-08-15 11:31:27,322 basehttp 14464 17844 "POST /api/transactions/d011b088-30d1-449e-ac07-97e00500399f/scan-qr/ HTTP/1.1" 200 1992
+INFO 2026-08-15 11:31:27,394 basehttp 14464 17844 "GET /api/transactions/d011b088-30d1-449e-ac07-97e00500399f/ HTTP/1.1" 200 2153
+INFO 2026-08-15 11:32:59,110 autoreload 14464 4940 C:\Users\Tavonga\Documents\Projects\NeighbourShare\backend\users\views.py changed, reloading.
+INFO 2026-08-15 11:33:07,499 autoreload 8732 11412 Watching for file changes with StatReloader
+INFO 2026-08-15 11:33:40,231 basehttp 8732 17876 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 936688
+WARNING 2026-08-15 11:33:57,382 log 16540 19300 Forbidden: /api/auth/login
+WARNING 2026-08-15 11:34:00,920 log 16540 19300 Unauthorized: /api/auth/login
+INFO 2026-08-15 11:34:05,691 email_verify 16540 19300 Verification email sent to r@example.com (code 985155)
+ERROR 2026-08-15 11:34:06,528 views 16540 19300 Registration validation failed: {'email': [ErrorDetail(string='A user with this email already exists.', code='invalid')]}
+WARNING 2026-08-15 11:34:06,531 log 16540 19300 Bad Request: /api/auth/register
+ERROR 2026-08-15 11:34:06,539 views 16540 19300 Registration validation failed: {'email': [ErrorDetail(string='Enter a valid email address.', code='invalid')]}
+WARNING 2026-08-15 11:34:06,541 log 16540 19300 Bad Request: /api/auth/register
+ERROR 2026-08-15 11:34:06,550 views 16540 19300 Registration validation failed: {'confirm_password': [ErrorDetail(string='Passwords do not match.', code='invalid')]}
+WARNING 2026-08-15 11:34:06,552 log 16540 19300 Bad Request: /api/auth/register
+INFO 2026-08-15 11:34:07,430 email_verify 16540 19300 Verification email sent to john@example.com (code 654083)
+INFO 2026-08-15 11:34:08,256 email_verify 16540 19300 Verification email sent to john@example.com (code 707870)
+WARNING 2026-08-15 11:34:09,190 log 16540 19300 Bad Request: /api/auth/verify-id
+INFO 2026-08-15 11:34:11,034 verification 16540 19300 Mock verification for National ID: 12-3****
+WARNING 2026-08-15 11:34:11,039 log 16540 19300 Bad Request: /api/auth/verify-id
+WARNING 2026-08-15 11:34:12,085 log 16540 19300 Bad Request: /api/auth/verify-id
+INFO 2026-08-15 11:34:13,022 verification 16540 19300 Mock verification for National ID: 12-3****
+WARNING 2026-08-15 11:34:13,960 log 16540 19300 Bad Request: /api/auth/verify-address
+WARNING 2026-08-15 11:34:16,646 log 16540 19300 Bad Request: /api/auth/verify-email
+INFO 2026-08-15 11:34:21,039 verification 16540 19300 Mock verification for National ID: 12-3****
+ERROR 2026-08-15 11:34:21,043 verification 16540 19300 Nominatim geocoding failed: Network error
+WARNING 2026-08-15 11:34:29,987 log 16540 19300 Bad Request: /api/transactions/borrow-request
+INFO 2026-08-15 11:34:34,173 tasks 16540 19300 Transaction fb9aa26c-27e4-48db-853a-020137074baa flagged for admin review
+INFO 2026-08-15 11:34:34,447 trace 16540 19300 Task transactions.tasks.flag_for_admin_review[0761df70-f90b-499b-9807-9c7e7df48035] succeeded in 0.28100000000085856s: None
+INFO 2026-08-15 11:34:36,313 qr 16540 19300 Generated QR token for transaction 0c0c444d-a3e1-4a96-8bfb-7c59f2f19e91
+INFO 2026-08-15 11:34:36,333 qr 16540 19300 Verified QR token for transaction 0c0c444d-a3e1-4a96-8bfb-7c59f2f19e91
+INFO 2026-08-15 11:34:36,385 qr 16540 19300 Verified QR token for transaction 0c0c444d-a3e1-4a96-8bfb-7c59f2f19e91
+INFO 2026-08-15 11:34:36,442 qr 16540 19300 Generated QR token for transaction 0c0c444d-a3e1-4a96-8bfb-7c59f2f19e91
+INFO 2026-08-15 11:34:36,466 qr 16540 19300 Verified QR token for transaction 0c0c444d-a3e1-4a96-8bfb-7c59f2f19e91
+INFO 2026-08-15 11:34:36,512 qr 16540 19300 Verified QR token for transaction 0c0c444d-a3e1-4a96-8bfb-7c59f2f19e91
+INFO 2026-08-15 11:34:36,586 tasks 16540 19300 Time credits awarded for transaction 0c0c444d-a3e1-4a96-8bfb-7c59f2f19e91
+INFO 2026-08-15 11:34:36,587 trace 16540 19300 Task transactions.tasks.award_time_credits[4fa717b3-6311-4b1b-a0bd-59678e597747] succeeded in 0.01599999999962165s: None
+INFO 2026-08-15 11:34:38,439 qr 16540 19300 Generated QR token for transaction d59b4ea4-876b-49e3-8199-31e9e8ffc510
+INFO 2026-08-15 11:34:40,385 tasks 16540 19300 Revealed rating 1b047dab-03a4-452e-a249-fb4c6bca5052 after delay.
+INFO 2026-08-15 11:34:40,387 trace 16540 19300 Task transactions.tasks.reveal_rating_after_delay[74bb2a79-1ee8-44e8-a448-9011b44709cb] succeeded in 0.014999999999417923s: None
+INFO 2026-08-15 11:34:42,486 qr 16540 19300 Generated QR token for transaction b92427c3-f43a-4dbc-bd4c-019ddcc0aac5
+INFO 2026-08-15 11:34:42,509 qr 16540 19300 Verified QR token for transaction b92427c3-f43a-4dbc-bd4c-019ddcc0aac5
+INFO 2026-08-15 11:34:42,557 qr 16540 19300 Verified QR token for transaction b92427c3-f43a-4dbc-bd4c-019ddcc0aac5
+INFO 2026-08-15 11:34:44,499 qr 16540 19300 Generated QR token for transaction ea871e62-9c48-4f9b-bc05-5bf00e468472
+INFO 2026-08-15 11:34:44,524 qr 16540 19300 Verified QR token for transaction ea871e62-9c48-4f9b-bc05-5bf00e468472
+WARNING 2026-08-15 11:34:44,579 qr 16540 19300 Token replay by user 1: ea871e62-9c48-4f9b-b...
+WARNING 2026-08-15 11:34:44,581 log 16540 19300 Bad Request: /api/transactions/ea871e62-9c48-4f9b-bc05-5bf00e468472/scan-qr/
+INFO 2026-08-15 11:34:52,011 qr 16540 19300 Generated QR token for transaction b8705871-8670-41f3-994d-a02c23fc82a0
+INFO 2026-08-15 11:34:52,014 qr 16540 19300 Verified QR token for transaction b8705871-8670-41f3-994d-a02c23fc82a0
+WARNING 2026-08-15 11:34:52,016 qr 16540 19300 Invalid signature for token: b8705871-8670-41f3-9...
+INFO 2026-08-15 11:34:53,982 qr 16540 19300 Generated QR token for transaction 7648e460-e15b-4a55-ad96-bcd72f8a93d3
+INFO 2026-08-15 11:34:53,984 qr 16540 19300 Generated QR token for transaction 7648e460-e15b-4a55-ad96-bcd72f8a93d3
+INFO 2026-08-15 11:34:53,986 qr 16540 19300 Verified QR token for transaction 7648e460-e15b-4a55-ad96-bcd72f8a93d3
+INFO 2026-08-15 11:34:53,987 qr 16540 19300 Verified QR token for transaction 7648e460-e15b-4a55-ad96-bcd72f8a93d3
+INFO 2026-08-15 11:34:55,876 qr 16540 19300 Generated QR token for transaction 6d5b3be4-1ade-4cca-b66a-b9e3f6b83511
+INFO 2026-08-15 11:34:59,495 qr 16540 19300 Generated QR token for transaction 3be38243-1769-4454-a630-040322e787e2
+INFO 2026-08-15 11:35:01,268 qr 16540 19300 Generated QR token for transaction 084d192f-c71a-4048-905f-daf7a8497c31
+INFO 2026-08-15 11:35:01,270 qr 16540 19300 Verified QR token for transaction 084d192f-c71a-4048-905f-daf7a8497c31
+WARNING 2026-08-15 11:35:01,273 qr 16540 19300 Token replay by user 1: 084d192f-c71a-4048-9...
+INFO 2026-08-15 11:35:03,315 qr 16540 19300 Generated QR token for transaction 6806f236-97aa-4f8d-b49d-7440d34fedc9
+INFO 2026-08-15 11:35:03,316 qr 16540 19300 Verified QR token for transaction 6806f236-97aa-4f8d-b49d-7440d34fedc9
+INFO 2026-08-15 11:35:03,318 qr 16540 19300 Verified QR token for transaction 6806f236-97aa-4f8d-b49d-7440d34fedc9
+INFO 2026-08-15 11:35:05,322 qr 16540 19300 Generated QR token for transaction 2ffe963f-9f40-4b97-b385-3319b012e04c
+INFO 2026-08-15 11:35:05,324 qr 16540 19300 Verified QR token for transaction 2ffe963f-9f40-4b97-b385-3319b012e04c
+WARNING 2026-08-15 11:35:05,327 qr 16540 19300 Token replay attempt: 2ffe963f-9f40-4b97-b...
+INFO 2026-08-15 11:35:07,371 qr 16540 19300 Generated QR token for transaction 0ff676b1-e56e-4f8a-842a-a2fa1faee6f9
+INFO 2026-08-15 11:35:07,373 qr 16540 19300 Verified QR token for transaction 0ff676b1-e56e-4f8a-842a-a2fa1faee6f9
+INFO 2026-08-15 11:35:07,374 qr 16540 19300 Verified QR token for transaction 0ff676b1-e56e-4f8a-842a-a2fa1faee6f9
+WARNING 2026-08-15 11:35:08,248 qr 16540 19300 Token exhausted: 0ff676b1-e56e-4f8a-8...
+INFO 2026-08-15 11:35:10,235 qr 16540 19300 Generated QR token for transaction d3d56615-fcd8-4e4a-a79c-9f4d4e3937b5
+INFO 2026-08-15 11:35:12,213 qr 16540 19300 Generated QR token for transaction 48589d05-249b-470f-a977-7b03be7ebb8e
+INFO 2026-08-15 11:35:14,062 qr 16540 19300 Generated QR token for transaction b52e7d0a-22f9-4306-b1fc-865ca784ab7a
+WARNING 2026-08-15 11:35:15,911 qr 16540 19300 Invalid token format: ...
+INFO 2026-08-15 11:35:17,797 qr 16540 19300 Generated QR token for transaction 20ccd877-150d-4e11-a2d1-39abc730e385
+WARNING 2026-08-15 11:35:17,799 qr 16540 19300 Token not found or expired: 20ccd877-150d-4e11-a...
+WARNING 2026-08-15 11:35:19,659 qr 16540 19300 Invalid token format: invalid:token:format...
+INFO 2026-08-15 11:35:21,586 qr 16540 19300 Generated QR token for transaction a3342b3a-c5ce-434d-9872-8e9fd2f45d8c
+WARNING 2026-08-15 11:35:21,587 qr 16540 19300 Invalid signature for token: a3342b3a-c5ce-434d-9...
+INFO 2026-08-15 11:35:23,605 qr 16540 19300 Generated QR token for transaction ba3d55c1-e928-4d80-a81d-74c506631762
+INFO 2026-08-15 11:35:23,607 qr 16540 19300 Verified QR token for transaction ba3d55c1-e928-4d80-a81d-74c506631762
+INFO 2026-08-15 11:35:25,451 qr 16540 19300 Generated QR token for transaction 23490d77-7887-4310-9abe-522b053efe84
+WARNING 2026-08-15 11:35:25,453 qr 16540 19300 Invalid signature for token: wrong-id:1786786525:...
+INFO 2026-08-15 11:35:27,246 tasks 16540 19300 Transaction f2cf0eb8-3357-4239-b5d0-6c1933ac6d49 flagged for admin review
+INFO 2026-08-15 11:35:27,249 trace 16540 19300 Task transactions.tasks.flag_for_admin_review[32e22136-748c-4522-abfd-ed52b45cde2a] succeeded in 0.0s: None
+INFO 2026-08-15 11:35:33,145 tasks 16540 19300 Transaction 3ac7caac-a261-47cc-8ae5-981ce4f646f0 flagged for admin review
+INFO 2026-08-15 11:35:33,147 trace 16540 19300 Task transactions.tasks.flag_for_admin_review[2a7f005e-e5ad-4f1f-8c94-5052bf286c44] succeeded in 0.01599999999962165s: None
+INFO 2026-08-15 11:35:42,744 tasks 16540 19300 Time credits awarded for transaction 3d1349e8-c503-462d-a973-b9519a0090ab
+INFO 2026-08-15 11:35:42,745 trace 16540 19300 Task transactions.tasks.award_time_credits[92d4ccc3-1d8a-4f4e-9681-227ef2d0c7eb] succeeded in 0.01600000000144064s: None
+INFO 2026-08-15 11:35:57,490 tasks 16540 19300 Transaction 6b784521-22e9-4b91-ad42-6a439968712c flagged for admin review
+INFO 2026-08-15 11:35:57,492 trace 16540 19300 Task transactions.tasks.flag_for_admin_review[ae123d0a-2814-4f7d-9aa3-a931983846d5] succeeded in 0.01600000000144064s: None
+INFO 2026-08-15 11:36:01,244 tasks 16540 19300 Time credits awarded for transaction f7de5bcd-155a-4e33-93c1-5dacee225ff2
+INFO 2026-08-15 11:36:01,246 trace 16540 19300 Task transactions.tasks.award_time_credits[5b93b25d-b722-49d9-9c40-8b8d04eebb20] succeeded in 0.01600000000144064s: None
+INFO 2026-08-15 11:36:03,264 tasks 16540 19300 Transaction c3e10cdd-cfdf-4547-991d-c6448e79e67d flagged for admin review
+INFO 2026-08-15 11:36:03,265 trace 16540 19300 Task transactions.tasks.flag_for_admin_review[9d5c0aa7-2a19-446a-ae78-7b552ea435f4] succeeded in 0.0s: None
+INFO 2026-08-15 11:36:09,317 tasks 16540 19300 Transaction e9b294d3-460a-420e-b207-62c7fbd45970 flagged for admin review
+INFO 2026-08-15 11:36:09,318 trace 16540 19300 Task transactions.tasks.flag_for_admin_review[63893535-690f-4373-89d6-6afcdbe7329f] succeeded in 0.01599999999962165s: None
+WARNING 2026-08-15 11:37:43,360 log 6972 18412 Unauthorized: /api/items/
+WARNING 2026-08-15 11:38:01,787 log 6972 18412 Bad Request: /api/items/search/
+WARNING 2026-08-15 11:38:07,131 log 6972 18412 Forbidden: /api/items/e2b47876-1a7c-4af5-9c19-67dab1471eab/
+INFO 2026-08-15 12:21:56,848 basehttp 8732 18372 "GET /api/items/09a59741-281b-43a4-b535-ae0962f0a018/ HTTP/1.1" 200 852
+INFO 2026-08-15 12:21:56,888 basehttp 8732 18372 "GET /api/items/09a59741-281b-43a4-b535-ae0962f0a018/ HTTP/1.1" 200 852
+INFO 2026-08-15 12:22:12,789 basehttp 8732 18372 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 936688
+INFO 2026-08-15 12:22:12,816 basehttp 8732 17628 "GET /api/items/search?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 301 0
+INFO 2026-08-15 12:22:16,290 basehttp 8732 18372 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 936688
+INFO 2026-08-15 12:22:19,129 basehttp 8732 14552 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 696690
+INFO 2026-08-15 12:22:19,133 basehttp 8732 18372 "GET /api/items/search?lat=-17.7833&lng=31.05&radius_km=5&category=garden_equipment&sort=distance HTTP/1.1" 301 0
+INFO 2026-08-15 12:22:22,338 basehttp 8732 18660 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 696690
+INFO 2026-08-15 12:22:23,539 basehttp 8732 18660 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&category=garden_equipment&sort=distance HTTP/1.1" 200 39146
+INFO 2026-08-15 12:22:27,019 basehttp 8732 14552 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 696690
+INFO 2026-08-15 12:22:31,328 basehttp 8732 18660 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 936688
+INFO 2026-08-15 12:22:35,198 basehttp 8732 14552 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 696690
+INFO 2026-08-15 12:22:37,301 basehttp 8732 18660 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 936688
+INFO 2026-08-15 12:22:39,409 basehttp 8732 16864 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 696690
+INFO 2026-08-15 12:27:07,610 basehttp 8732 16864 "GET /api/items/search?lat=-17.7833&lng=31.05&radius_km=5&category=musical_instruments&sort=distance HTTP/1.1" 301 0
+INFO 2026-08-15 12:27:08,655 basehttp 8732 18660 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&category=musical_instruments&sort=distance HTTP/1.1" 200 38239
+INFO 2026-08-15 13:12:01,767 basehttp 8732 8132 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&category=musical_instruments&sort=distance HTTP/1.1" 200 38239
+INFO 2026-08-15 13:12:02,816 basehttp 8732 8132 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&category=musical_instruments&sort=distance HTTP/1.1" 200 38239
+INFO 2026-08-15 15:44:52,852 basehttp 8732 12104 "GET /api/items/ HTTP/1.1" 200 17404
+INFO 2026-08-15 15:44:59,915 basehttp 8732 8476 "OPTIONS /api/items/search?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 0
+INFO 2026-08-15 15:44:59,916 basehttp 8732 19000 "OPTIONS /api/auth/refresh HTTP/1.1" 200 0
+INFO 2026-08-15 15:44:59,917 basehttp 8732 18736 "OPTIONS /api/items/search?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 0
+INFO 2026-08-15 15:44:59,917 basehttp 8732 2892 "OPTIONS /api/auth/refresh HTTP/1.1" 200 0
+INFO 2026-08-15 15:44:59,931 basehttp 8732 8476 "OPTIONS /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 0
+INFO 2026-08-15 15:44:59,932 basehttp 8732 2892 "OPTIONS /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 0
+WARNING 2026-08-15 15:45:01,759 log 8732 19000 Unauthorized: /api/auth/refresh
+WARNING 2026-08-15 15:45:01,761 log 8732 2892 Unauthorized: /api/items/search/
+WARNING 2026-08-15 15:45:01,762 log 8732 18736 Unauthorized: /api/auth/refresh
+WARNING 2026-08-15 15:45:01,764 basehttp 8732 19000 "POST /api/auth/refresh HTTP/1.1" 401 269
+WARNING 2026-08-15 15:45:01,767 basehttp 8732 2892 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 401 269
+WARNING 2026-08-15 15:45:01,769 basehttp 8732 18736 "POST /api/auth/refresh HTTP/1.1" 401 269
+WARNING 2026-08-15 15:45:01,774 log 8732 2892 Unauthorized: /api/items/search/
+INFO 2026-08-15 15:45:01,780 basehttp 8732 18736 "OPTIONS /api/auth/refresh/ HTTP/1.1" 200 0
+WARNING 2026-08-15 15:45:01,781 basehttp 8732 2892 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 401 269
+WARNING 2026-08-15 15:45:01,828 log 8732 18736 Not Found: /api/auth/refresh/
+WARNING 2026-08-15 15:45:01,832 log 8732 2892 Not Found: /api/auth/refresh/
+WARNING 2026-08-15 15:45:01,834 basehttp 8732 18736 "POST /api/auth/refresh/ HTTP/1.1" 404 4296
+WARNING 2026-08-15 15:45:01,837 basehttp 8732 2892 "POST /api/auth/refresh/ HTTP/1.1" 404 4296
+INFO 2026-08-15 15:45:16,613 basehttp 8732 2892 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10 HTTP/1.1" 200 936688
+INFO 2026-08-15 15:45:54,562 basehttp 8732 2892 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 936688
+INFO 2026-08-15 15:45:56,193 basehttp 8732 18736 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 936688
+INFO 2026-08-15 15:46:20,084 basehttp 8732 18736 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 696690
+INFO 2026-08-15 15:46:21,859 basehttp 8732 2892 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 696690
+INFO 2026-08-15 15:46:36,856 basehttp 8732 2892 "GET /api/items/f1d9c387-6cc8-4a16-9f1d-9d7ce79a8e18/ HTTP/1.1" 200 889
+INFO 2026-08-15 15:46:36,876 basehttp 8732 2892 "GET /api/items/f1d9c387-6cc8-4a16-9f1d-9d7ce79a8e18/ HTTP/1.1" 200 889
+INFO 2026-08-15 20:46:00,032 basehttp 8732 23476 "GET /api/items/f1d9c387-6cc8-4a16-9f1d-9d7ce79a8e18/ HTTP/1.1" 200 889
+INFO 2026-08-15 20:46:00,082 basehttp 8732 23476 "GET /api/items/f1d9c387-6cc8-4a16-9f1d-9d7ce79a8e18/ HTTP/1.1" 200 889
+INFO 2026-08-15 21:37:34,363 basehttp 8732 23012 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 696690
+INFO 2026-08-15 21:37:36,391 basehttp 8732 18344 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=5&sort=distance HTTP/1.1" 200 696690
+INFO 2026-08-15 21:38:00,803 basehttp 8732 18344 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 936688
+INFO 2026-08-15 21:38:03,006 basehttp 8732 23012 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 936688
+INFO 2026-08-15 21:38:12,982 basehttp 8732 15960 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 936688
+INFO 2026-08-15 21:38:15,240 basehttp 8732 22480 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 936688
+INFO 2026-08-16 05:05:14,788 basehttp 8732 20920 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 936688
+INFO 2026-08-16 05:05:17,090 basehttp 8732 20720 "GET /api/items/search/?lat=-17.7833&lng=31.05&radius_km=10&sort=newest HTTP/1.1" 200 936688

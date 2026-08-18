@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { transactionsApi } from '../../api';
 import QRCode from 'qrcode.react';
 import {
-  ArrowLeft, Check, X, Info, QrCode, AlertTriangle, CheckCircle2, Clock,
+  ArrowLeft, Check, X, Info, QrCode, AlertTriangle, CheckCircle2, Clock, PlayCircle,
 } from 'lucide-react';
 
 export default function TransactionDetail() {
@@ -85,14 +85,14 @@ export default function TransactionDetail() {
     );
   }
 
-  const isLender = transaction.item?.owner?.id === user?.id;
+  const isLender = transaction.lender?.id === user?.id;
   const isBorrower = transaction.borrower?.id === user?.id;
 
   const stateSteps = [
     { state: 'PENDING', label: 'Requested' },
-    { state: 'ACCEPTED', label: 'Accepted' },
-    { state: 'DEPOSIT_HELD', label: 'Deposit Held' },
-    { state: 'ITEM_OUT', label: 'Handed Over' },
+    { state: 'AGREED', label: 'Agreed' },
+    { state: 'ACTIVE', label: 'Hand-off' },
+    { state: 'ITEM_OUT', label: 'Item Out' },
     { state: 'ITEM_RETURNED', label: 'Returned' },
     { state: 'CLOSED', label: 'Completed' },
   ];
@@ -103,12 +103,31 @@ export default function TransactionDetail() {
     const map = {
       CLOSED: 'bg-gray-100 text-gray-600',
       DISPUTED: 'bg-red-50 text-red-700',
-      DEPOSIT_HELD: 'bg-violet-50 text-violet-700',
+      ACTIVE: 'bg-fuchsia-50 text-fuchsia-700',
       ITEM_OUT: 'bg-orange-50 text-orange-700',
       ITEM_RETURNED: 'bg-emerald-50 text-emerald-700',
-      ACCEPTED: 'bg-brand-50 text-brand-700',
+      AGREED: 'bg-brand-50 text-brand-700',
+      PENDING: 'bg-amber-50 text-amber-700',
     };
     return `badge ${map[transaction.state] || 'bg-amber-50 text-amber-700'}`;
+  })();
+
+  const scanStatus = (() => {
+    if (transaction.state === 'ACTIVE') {
+      return {
+        lender: transaction.lender_scanned_handoff,
+        borrower: transaction.borrower_scanned_handoff,
+        type: 'handoff',
+      };
+    }
+    if (transaction.state === 'ITEM_OUT') {
+      return {
+        lender: transaction.lender_scanned_return,
+        borrower: transaction.borrower_scanned_return,
+        type: 'return',
+      };
+    }
+    return null;
   })();
 
   return (
@@ -143,12 +162,11 @@ export default function TransactionDetail() {
 
           <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
             <div><p className="text-xs text-gray-500">Borrower</p><p className="font-semibold text-gray-900">{transaction.borrower?.full_name}</p></div>
-            <div><p className="text-xs text-gray-500">Lender</p><p className="font-semibold text-gray-900">{transaction.item?.owner?.full_name}</p></div>
-            <div><p className="text-xs text-gray-500">Daily Rate</p><p className="font-semibold text-gray-900">{transaction.daily_rate ? `$${transaction.daily_rate}` : `${transaction.time_credits_per_day ?? '—'} credits`}</p></div>
-            <div><p className="text-xs text-gray-500">Deposit</p><p className="font-semibold text-gray-900">{transaction.deposit_amount ? `$${transaction.deposit_amount}` : '—'}</p></div>
+            <div><p className="text-xs text-gray-500">Lender</p><p className="font-semibold text-gray-900">{transaction.lender?.full_name}</p></div>
+            <div><p className="text-xs text-gray-500">Daily Rate</p><p className="font-semibold text-gray-900">{transaction.time_credits_per_day ?? '—'} credits/day</p></div>
+            <div><p className="text-xs text-gray-500">Total Credits</p><p className="font-semibold text-gray-900">{transaction.total_time_credits ?? '—'} credits</p></div>
             <div><p className="text-xs text-gray-500">Start Date</p><p className="font-semibold text-gray-900">{transaction.requested_from}</p></div>
             <div><p className="text-xs text-gray-500">End Date</p><p className="font-semibold text-gray-900">{transaction.requested_to}</p></div>
-            <div><p className="text-xs text-gray-500">Escrow Ref</p><p className="font-semibold text-gray-900">{transaction.escrow_reference || 'N/A'}</p></div>
             <div><p className="text-xs text-gray-500">Total Days</p><p className="font-semibold text-gray-900">{transaction.total_days}</p></div>
           </div>
 
@@ -193,49 +211,53 @@ export default function TransactionDetail() {
             </div>
           )}
 
-          {transaction.state === 'ACCEPTED' && (
+          {transaction.state === 'AGREED' && (
             <div className="rounded-xl bg-brand-50 p-4">
-              <p className="mb-3 text-sm text-brand-800">Deposit payment required to proceed.</p>
-              <button
-                onClick={async () => {
-                  try {
-                    const { MockEcoCashProvider } = await import('../../api');
-                    const provider = new MockEcoCashProvider();
-                    const result = await provider.hold_deposit(
-                      transaction.deposit_amount,
-                      transaction.borrower?.phone_number,
-                      transaction.escrow_reference
-                    );
-                    await transactionsApi.holdDeposit(id, result.transaction_id);
-                    fetchTransaction();
-                  } catch (e) { console.error(e); }
-                }}
-                className="btn-primary w-full py-3"
-              >
-                Process Deposit (Mock EcoCash)
-              </button>
+              <p className="mb-3 text-sm text-brand-800">
+                {isBorrower
+                  ? 'Terms agreed. Confirm to activate the hand-off phase and unlock the QR handshake.'
+                  : 'Terms agreed. Waiting for the borrower to confirm and activate the transaction.'}
+              </p>
+              {isBorrower && (
+                <button
+                  onClick={async () => {
+                    try { await transactionsApi.activate(id); fetchTransaction(); } catch (e) { console.error(e); }
+                  }}
+                  className="btn-primary w-full py-3"
+                >
+                  <PlayCircle className="h-4 w-4" /> Confirm & Activate
+                </button>
+              )}
             </div>
           )}
 
-          {(transaction.state === 'DEPOSIT_HELD' || transaction.state === 'ITEM_OUT') && (
+          {scanStatus && (
             <div className="rounded-xl bg-violet-50 p-4">
               <p className="mb-3 text-sm text-violet-800">
-                {transaction.state === 'DEPOSIT_HELD'
-                  ? 'Both parties must scan the QR code to confirm hand-off.'
-                  : 'Both parties must scan the QR code to confirm return.'}
+                {scanStatus.type === 'handoff'
+                  ? 'Both parties must scan the same QR code to confirm hand-off.'
+                  : 'Both parties must scan the same QR code to confirm return.'}
               </p>
-              <button
-                onClick={() => handleGenerateQR(transaction.state === 'DEPOSIT_HELD' ? 'handoff' : 'return')}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 py-3 text-sm font-semibold text-white transition hover:bg-violet-700"
-              >
-                <QrCode className="h-4 w-4" /> Generate QR Code
-              </button>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => handleGenerateQR(scanStatus.type)}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600 py-3 px-4 text-sm font-semibold text-white transition hover:bg-violet-700"
+                >
+                  <QrCode className="h-4 w-4" /> Generate {scanStatus.type === 'handoff' ? 'Hand-off' : 'Return'} QR Code
+                </button>
+                <button
+                  onClick={() => navigate(`/transactions/${transaction.id}/scan`)}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-violet-200 bg-white py-3 px-4 text-sm font-semibold text-violet-700 transition hover:bg-violet-50"
+                >
+                  Open QR Handshake Page
+                </button>
+              </div>
               <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
-                <div className={`rounded-lg p-2 ${transaction.lender_scanned_handoff || transaction.lender_scanned_return ? 'bg-emerald-100' : 'bg-gray-100'}`}>
-                  Lender: {transaction.lender_scanned_handoff || transaction.lender_scanned_return ? '✓ Scanned' : '✗ Pending'}
+                <div className={`rounded-lg p-2 ${scanStatus.lender ? 'bg-emerald-100' : 'bg-gray-100'}`}>
+                  Lender: {scanStatus.lender ? '✓ Scanned' : '✗ Pending'}
                 </div>
-                <div className={`rounded-lg p-2 ${transaction.borrower_scanned_handoff || transaction.borrower_scanned_return ? 'bg-emerald-100' : 'bg-gray-100'}`}>
-                  Borrower: {transaction.borrower_scanned_handoff || transaction.borrower_scanned_return ? '✓ Scanned' : '✗ Pending'}
+                <div className={`rounded-lg p-2 ${scanStatus.borrower ? 'bg-emerald-100' : 'bg-gray-100'}`}>
+                  Borrower: {scanStatus.borrower ? '✓ Scanned' : '✗ Pending'}
                 </div>
               </div>
             </div>
@@ -243,25 +265,19 @@ export default function TransactionDetail() {
 
           {transaction.state === 'ITEM_RETURNED' && isLender && (
             <div className="rounded-xl bg-emerald-50 p-4">
-              <p className="mb-3 text-sm text-emerald-800">Item returned. Release deposit to complete transaction.</p>
+              <p className="mb-3 text-sm text-emerald-800">Item returned. Close the transaction to finalize Time Credits.</p>
               <button
                 onClick={async () => {
-                  try {
-                    const { MockEcoCashProvider } = await import('../../api');
-                    const provider = new MockEcoCashProvider();
-                    await provider.release_deposit(transaction.escrow_reference);
-                    await transactionsApi.close(id);
-                    fetchTransaction();
-                  } catch (e) { console.error(e); }
+                  try { await transactionsApi.close(id); fetchTransaction(); } catch (e) { console.error(e); }
                 }}
                 className="btn-primary w-full bg-emerald-600 py-3 hover:bg-emerald-700"
               >
-                Release Deposit & Close
+                Close Transaction
               </button>
             </div>
           )}
 
-          {(transaction.state === 'ITEM_OUT' || transaction.state === 'DEPOSIT_HELD' || transaction.state === 'ITEM_RETURNED') && (
+          {(transaction.state === 'ACTIVE' || transaction.state === 'ITEM_OUT' || transaction.state === 'ITEM_RETURNED') && (
             <div className="mt-4">
               <button
                 onClick={async () => {

@@ -110,7 +110,7 @@ export default function MyTransactions() {
                       {txn.requested_from} to {txn.requested_to} • {txn.time_credits_per_day} Credits/day
                     </p>
                     <p className="mt-0.5 text-sm text-gray-500">
-                      {txn.item?.owner?.id === user.id ? 'You are the lender' : 'You are the borrower'}
+                      {txn.lender?.id === user.id ? 'You are the lender' : 'You are the borrower'}
                     </p>
                   </div>
 
@@ -129,7 +129,7 @@ export default function MyTransactions() {
                 </div>
 
                 {/* Inline actions */}
-                {txn.state === 'PENDING' && txn.item?.owner?.id === user.id && (
+                {txn.state === 'PENDING' && txn.lender?.id === user.id && (
                   <div className="mt-4 rounded-xl bg-amber-50 p-4 text-sm text-amber-800">
                     Waiting for your response to this borrow request.
                   </div>
@@ -137,13 +137,26 @@ export default function MyTransactions() {
 
                 {txn.state === 'AGREED' && (
                   <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-brand-50 p-4">
-                    <p className="text-sm text-brand-800">Terms agreed. Proceed to generate QR code for hand-off.</p>
-                    <button
-                      onClick={() => navigate(`/transactions/${txn.id}/scan`)}
-                      className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700"
-                    >
-                      <QrCode className="h-4 w-4" /> Generate QR Code
-                    </button>
+                    {txn.borrower?.id === user.id ? (
+                      <>
+                        <p className="text-sm text-brand-800">Terms agreed. Activate to unlock the QR handshake.</p>
+                        <button
+                          onClick={async () => {
+                            try {
+                              await transactionsApi.activate(txn.id);
+                              navigate(`/transactions/${txn.id}/scan`);
+                            } catch (e) {
+                              console.error(e);
+                            }
+                          }}
+                          className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700"
+                        >
+                          <QrCode className="h-4 w-4" /> Activate & Generate QR
+                        </button>
+                      </>
+                    ) : (
+                      <p className="text-sm text-brand-800">Terms agreed. Waiting for the borrower to activate.</p>
+                    )}
                   </div>
                 )}
 
@@ -159,7 +172,7 @@ export default function MyTransactions() {
                   </div>
                 )}
 
-                {txn.state === 'ITEM_RETURNED' && txn.item?.owner?.id === user.id && (
+                {txn.state === 'ITEM_RETURNED' && txn.lender?.id === user.id && (
                   <div className="mt-4 rounded-xl bg-emerald-50 p-4 text-sm text-emerald-800">
                     Item returned. Close transaction to finalize Time Credits.
                   </div>
